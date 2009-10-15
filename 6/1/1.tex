@@ -1,287 +1,230 @@
 \documentclass[a4paper,10pt]{article}
 
-\usepackage[latin2]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[hungarian]{babel}
 \usepackage{t1enc}
 \usepackage{listings}
 \usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage{url}
 
 %opening
-\title{Hello Window! - GTK+/gtkmm programozás GNU/Linux alatt}
-\author{Pfeiffer Szilárd}
-\date{2009. február 18.}
+\title{Hello Window! - GTK+/gtkmm programozÃ¡s GNU/Linux alatt}
+\author{Pfeiffer SzilÃ¡rd}
+\date{\today}
 
 \begin{document}
+
+\pagenumbering{roman}
+
+\begin{titlepage}
 
 \maketitle
 
 \begin{abstract}
-A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven --ám objektum-orientált meg\-kö\-ze\-lí\-tés\-sel-- íródott, grafikus felhasználói felületek (\textit{GUI}) létrehozására használatos al\-kal\-ma\-zás-programozási interfész. A \textit{gtkmm} nem más, mint ennek a függvénykönyvtárnak a \textit{C++} változata, pontosabban fogalmazva \textit{wrapper}e. Mindkét terjesztése \textit{LGPL} licenc alatt történik, így bátran felhasználható mind szabad/ingyenes, mind kereskedelmi szoftverek létrehozására.
+A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven -- Ã¡m objektum-orientÃ¡lt megkÃ¶zelÃ­tÃ©ssel -- Ã­rÃ³dott, grafikus felhasznÃ¡lÃ³i felÃ¼letek (\textit{GUI}) lÃ©trehozÃ¡sÃ¡ra hasznÃ¡latos alkalmazÃ¡s-programozÃ¡si interfÃ©sz. A \textit{gtkmm} nem mÃ¡s, mint ennek a fÃ¼ggvÃ©nykÃ¶nyvtÃ¡rnak a \textit{C++} vÃ¡ltozata, pontosabban fogalmazva \textit{wrapper}e. MindkÃ©t terjesztÃ©se \textit{LGPL} licenc alatt tÃ¶rtÃ©nik, Ã­gy bÃ¡tran felhasznÃ¡lhatÃ³ mind szabad/ingyenes, mind kereskedelmi szoftverek lÃ©trehozÃ¡sÃ¡ra.
 
-A most kezdõdõ sorozat célja az abszolút kezdetektõl indulva bemutatni a \textit{GTK+} és a \textit{gtkmm} hasonlóságait, különbözõségeit, sajátosságait eljutva egy olyan szintre, ahol remélhetõleg a több éves tapasztalattal rendelkezõ fejlesztõk is találnak hasznos, megfontolásra érdemes ötleteket, információkat.
+A most kezdÅ‘dÅ‘ sorozat cÃ©lja az abszolÃºt kezdetektÅ‘l indulva bemutatni a \textit{GTK+} Ã©s a \textit{gtkmm} hasonlÃ³sÃ¡gait, kÃ¼lÃ¶nbÃ¶zÅ‘sÃ©geit, sajÃ¡tossÃ¡gait eljutva egy olyan szintre, ahol remÃ©lhetÅ‘leg a tÃ¶bb Ã©ves tapasztalattal rendelkezÅ‘ fejlesztÅ‘k is talÃ¡lnak hasznos, megfontolÃ¡sra Ã©rdemes Ã¶tleteket, informÃ¡ciÃ³kat.
 \end{abstract}
 
-\newpage
+\pagebreak
 
 \tableofcontents
 
-\newpage
+\end{titlepage}
 
-\section{Bevezetés}
+\pagenumbering{arabic}
 
-Ez rész a Jelen rész a \textit{GTK+} . Ehhez egy új példprogramot veszünk górcsõ alá, mely forráskódját tekintve némiképp ugyan bonyolultabb az elõzõ részben tárgyalttól, mûködésére nézve azonban nem sokban különbözik tõle.
+\section{BevezetÃ©s}
 
-\subsection{Fogalmak}
+MÃ¡r a legegyszerÅ±bb felhasznÃ¡lÃ³i felÃ¼let lÃ¡ttÃ¡n is kÃ¶nnyen belÃ¡thatÃ³, hogy a korÃ¡bbi pÃ©ldaprogramjaink kissÃ© sÃ¡ntÃ­tanak, mÃ©gpedig abban a tekintetben, hogy nincs olyan valÃ³s Ã©letben is hasznÃ¡lt program amiben egy-egy \textit{widget} lenne csupÃ¡n. Ha viszont tÃ¶bb \textit{widget}et szeretnÃ©nk elhelyezni egy ablakban kÃ©zenfekvÅ‘ kÃ©rdÃ©s, hogy mikÃ©nt tudnÃ¡k Å‘ket a felÃ¼leten csoportokba rendezni. Erre a kÃ©rdÃ©sre keressÃ¼k a vÃ¡laszt ebben a rÃ©szben.
 
-A korábban már megismert alapfogalmak újra elõkerülnek majd, most azonban általános ismertetésük helyett a jelen témánkhoz kapcsolódó specifikumaikat vázoljuk fel.
+\section{Fogalmak}
 
-\subsubsection{Main Loop}
+A korÃ¡bbiakhoz hasonlÃ³an itt is Ã©rdemes elÅ‘szÃ¶r tisztÃ¡zni nÃ©hÃ¡ny alapfogalmat Ã©s csak utÃ¡na kezdeni bele az Ã©rdemi munkÃ¡ba.
 
-Ahogy arról az elõzõ részekben szó esett -- minden más felületprogramozási nyelvekhez hasonlóan -- a \textit{GTK} is eseményvezérelt (\textit{event-driven}). De mit is jelent ez?  Azt, hogy felhasználói interakciók híján -- figyelmen kívül hagyva az ütemezett eseményeket és néhány késõbbi részekben részletezendõ funkciót -- a \textit{GTK} a \textit{main loop}ban áll és várakozik valamiféle eseményre (\textit{event}), mint az egér megmozdítása, vagy egy kattintás, esetleg egy billentyûleütés. A \textit{main loop}ba történõ belépésre szolgál \textit{GTK+} esetén a \texttt{gtk\_main()}, míg \textit{gtkmm} esetén a \texttt{Gtk::Main::run()} függvény. Ha az említett akciók közül valamelyik bekövetkezik, az addig várakozó ciklus úgymond ``felébred'', majd a bekövetkezett eseményt propagálja -- kvázi üzenetet küld -- a megelelõ \textit{widget}(ek) felé.
+\subsection{KontÃ©nerek}
 
-\subsubsection{Signal}
+A \textit{widget}ek a felÃ¼leten tÃ¶rtÃ©nÅ‘ csoportokba csoportokba rendezÃ©se kontÃ©nerek (\textit{container}) segÃ­tsÃ©gÃ©vel valÃ³sul meg. Ezek olyan lÃ¡thatatlan \textit{widget}ek, melyekbe mÃ¡s \textit{widget}eket helyezhetÃ¼nk (\textit{pack}).
 
-Ez a közvetítõ üzenet (jel, jelzés) a szignál. Ilyen üzenetbõl számos létezik, hisz az egyes \textit{widget}típusokon különbözõ események lehetnek értelmezettek, gomb esetén a rá történõ kattintás, egy legördülõ menünél az egér menüelem fölé történõ mozgatása, míg egy \textit{widget}nél annak átméretezése. Minden ilyen eseménynek megvan a saját neve, mellyel hivatkozni lehet rá (pl.: ``button-pressed'', ``enter-notify-event``, ''size-request``). Itt érdemes megjegyezni, hogy a \textit{szignál}ok örklõdnek, azaz egy specifikus \textit{widget}, mint amilyen mondjuk egy \textit{RadioButton}, vagy egy \textit{CheckButton}, minden olyan szignállal rendelkezik, amivel õse a \textit{Button}, vagy akár annak az õse az a \textit{Widget} típus. A \textit{szignál}ok egyrészrõl arra szolgálnak, hogy a \textit{GTK} rendszerén belül az egyes \textit{widget}ek egymással kommunikálhassanak. Ha például egy gombot lenyomunk, akkor azt (illetve annak részeit) újra kell rajzolni, ha egy menüelemet kiválasztunk, azt át kell színezni, illetve az esetleges almenüpontokat ki kell rajzolni, míg átméretezésnél az egyes \textit{widget}ek helyigényét újra kell számolni. Másfelõl ha a program írói valamely esemény bekövetkezésérõl értesülni szeretnének, megadhatnánk eseménykezelõ függvényeket, melyek ezen esetekben meghívódnak.
+A \texttt{GtkContainer}, avagy \texttt{Gtk::Container} egy Ã¶nmagÃ¡ban nem hasznÃ¡lhatÃ³ absztrakt osztÃ¡ly, mely csupÃ¡n Å‘sÃ¼l szolgÃ¡l minden olyan szÃ¡rmaztatott osztÃ¡lynak, melyet widgetek tÃ¡rolÃ¡sÃ¡ra akarunk hasznÃ¡lni.
 
-\subsubsection{Callback}
+AlapvetÅ‘en kÃ©t ilyen leszÃ¡rmazott osztÃ¡lytÃ­pussal talÃ¡lkozhatunk a kÃ©sÅ‘bbiekben. Ezek a \textit{bin} Ã©s \textit{box} Å‘sosztÃ¡lyok, melyek maguk is absztraktak Ã©s abban kÃ¼lÃ¶nbÃ¶znek egymÃ¡stÃ³l, hogy hÃ¡ny elem tÃ¡rolÃ¡sÃ¡ra alkalmasak. ElÅ‘bbiek Ã¶sszesen egyÃ©re, mÃ­g az utÃ³bbiak akÃ¡rhÃ¡nyÃ©ra.
 
-Ezen függvények elnevezése a \textit{GTK+} terminológiában \textit{callback}. Az egyes konkrét prototípusok a \textit{szignál} fajtájától függenek. A \textit{C} nyelvû változat esetén elsõ paraméterük jellemzõen az a \textit{Widget} -- pontosabban szólva \textit{Object}, hiszen a \textit{szignál}kezelés ezen a szinten került implementásra a \textit{Glib}-ben -- melyen az esemény kiváltódott. Ezt a paramétert követik a \textit{szignál}hoz kapcsolódó egyéb jellemzõk, az utolsó pedig a szignál bekötésekor megadott, úgynevezett \textit{user data}, amirõl a példaprogram kapcsán részletesebben szólunk. Elöljáróban csak annyit, hogy ez egy meglehetõsen kényelmetlen és gyakorta nehézkesen használható megoldás, melyre a \textit{C++} nyelvû változat remek alternatívát kínál.
+\subsubsection{Egy elemÅ± kontÃ©nerek}
 
-Ennyi bevezetõ után lássuk az ''ehavi`` példaprogramunkat, majd annak értelmezését.
+A \texttt{GtkBin} jelentÅ‘sÃ©ge a tovÃ¡bbi szÃ¡rmaztatÃ¡soknÃ¡l jelentkezik majd, hisz az olyan nÃ©lkÃ¼lÃ¶zhetetlen tÃ­pusoknak, mint az ablak (\texttt{GtkWindow}), a gomb (\texttt{GtkButton}), vagy a frame (\texttt{GtkFrame}) mind a \textit{GtkBin} az Å‘sosztÃ¡lya.
 
-\section{Szignálkezelés dióhéjban}
+\subsubsection{TÃ¶bb elemÅ± kontÃ©nerek}
 
-Az elõzõ szám módszertanától eltérve az alábbiak szerint elemezzük a kódokat:
+A felÃ¼leti elrendezÃ©s kialakÃ­tÃ¡sakor jÃ¡tszik fontos szerepet, hisz a benne talÃ¡lhatÃ³ \textit{widget}ek -- amit a \textit{GTK} kontÃ©ner gyerekeinek (\textit{children}) nevez -- elrendezÃ©sÃ©n tÃºl azok mÃ©retÃ©t Ã©s kontÃ©neren belÃ¼li pozÃ­ciÃ³jÃ¡t is meghatÃ¡rozza. Ilyen tÃ­pusok pÃ©ldÃ¡ul a horizontÃ¡lis, vagy vertikÃ¡lis rendezÃ©st biztosÃ­tÃ³ boxok (\texttt{GtkHBox}, \texttt{GtkVBox}), vagy a tÃ¡blÃ¡zatos megjelenÃ­tÃ©st szolgÃ¡lÃ³ \texttt{GtkTable}.
 
-\begin{itemize}
- \item külön-külön vesszük számba ez egyes nyelvi változatok sajátosságait, mivel ezen példaprogramok kódjának hasonlósági foka szerény
- \item elõször a \textit{C} nyelvû verziónak fogunk neki, hogy túl lehessünk a nehezén, azután meglátjuk mennyiben más a helyzet, ha \textit{gtkmm} használatára van módunk \textit{GTK+} helyett
- \item ezt követõen egy külön rész foglalkozik a két verzió összehasonlításával
- \item a kódot nem sorfolytonosan, hanem a futás logikája szerint követjük, lévén egy kicsit is bonyolultabb esetben -- mint amilyennek ez is mondható -- már ez a logikusabb
-\end{itemize}
+\subsection{MÃ©retezÃ©s}
 
-Az alábbi példaprogramok \textit{C/C++} nyelvû forrásfájljai, illetve azok eredetijei, a \textit{FLOSSzine}, valamint a \textit{GTK+}/\textit{gtkmm} oldalain az alábbi linkeken érhetõek el:
+A \texttt{GtkContainer} osztÃ¡ly legfontosabb funkcionalitÃ¡sa -- melyet minden szÃ¡rmaztatott osztÃ¡ly is felhasznÃ¡l -- az, hogy meg tudja hatÃ¡rozni a benne talÃ¡lhatÃ³ elemek mÃ©retÃ©t. Ezt persze nem teljesen Ã¶nÃ¡llÃ³an teszi, hanem megkÃ©rdezni a benne talÃ¡lhatÃ³ \textit{widget}eket, hogy mekkora helyre lenne szÃ¼ksÃ©gÃ¼k. Minden egyes \textit{widget} sajÃ¡t hatÃ¡skÃ¶rben Ã¡llapÃ­thatja meg, hogy mekkora az a vÃ­zszintes, illetve fÃ¼ggÅ‘leges kiterjedÃ©s, ami az igÃ©nyeinek legjobban megfelelne. Ezt az mÃ©retigÃ©nyt nevezi a \textit{GTK} \textit{size request}nek. Ez a mechanizmus fentrÅ‘l lefelÃ©, azaz a gyÃ¶kÃ©rtÅ‘l a levelek felÃ© terjed abban a fa hierarchiÃ¡ban, melynek gyÃ¶kere az ablak, kÃ¶zbÃ¼lsÅ‘ elemeit a kontÃ©nerek, leveleit pedig a widgetek alkotjÃ¡k.
+
+A legegyszerÅ±bb Ã©s legÃ¡ltalÃ¡nosabb eset tehÃ¡t az, hogy a kontÃ©nerek -- amilyen maga az balak is -- Ã¶sszeadjÃ¡k a gyermekeik (a fÃ¡ban kÃ¶zvetlenÃ¼l alattuk lÃ©vÅ‘ elemek) mÃ©retigÃ©nyÃ©t Ã©s azt sajÃ¡tjukkÃ©nt propagÃ¡ljÃ¡k. A valÃ³sÃ¡g azonban nem ilyen demokratikus. Minden kontÃ©nernek lehetÅ‘sÃ©ge van arra, hogy a benne lÃ©vÅ‘ elemek felÃ© -- egy az eredeti igÃ©nytÅ‘l esetlegesen eltÃ©rÅ‘ -- mÃ©retet (\textit{size allocation}) adjon vissza mellyel gazdÃ¡lkodniuk kell Ã©s amely rÃ¡juk nÃ©zve kÃ¶telezÅ‘ Ã©rvÃ©nyÅ±.
+
+\subsection{ElrendezÃ©s}
+
+NormÃ¡lis esetben egy ablak rendelkezÃ©sre bocsÃ¡jtja azt a terÃ¼letet, melyet a benne lÃ©vÅ‘ \textit{widget}ek igÃ©nyeltek. A kÃ©rdÃ©s nem is abban  Ã¡ll, hogy me legyen akkor ha pont annyi hely van amennyi kell, hanem sokkal inkÃ¡bb abban, mikÃ©nt jelenÃ­tse meg a kontÃ©ner a sajÃ¡t \textit{widget}jeit, ha tÃ¶bb a hely amennyire feltÃ©tlenÃ¼l szÃ¼ksÃ©g volna. Ilyen eset pÃ©ldÃ¡ul akkor Ã¡llhat elÅ‘, ha ez ablak Ã¡tmÃ©retezhetÅ‘ Ã©s azt a felhasznÃ¡lÃ³ nagyobbra nyÃºjtja, mint amekkora hely a benne lÃ©vÅ‘ widgetek kirajzolÃ¡sÃ¡hoz minimÃ¡lisan elÃ©gsÃ©ges.
+
+Ezt az esetet szabÃ¡lyozzÃ¡k azok a paramÃ©terek (pl: \textit{fill}, \textit{expand}, \textit{pack-type}, melyek tulajdonkÃ©ppen sem a kontÃ©nerhez, sem pedig a benne tÃ¡rolt \textit{widget}hez nem tartoznak, hisz a kettejÃ¼k viszonyÃ¡t hatÃ¡rozzÃ¡k meg. MegadÃ¡suk akkor tÃ¶rtÃ©nik, amikor egy \textit{widget}et szeretnÃ©nk egy kontÃ©nerben -- pÃ©ldÃ¡ul egy \textit{box}ban -- elhelyezni.
+
+A kontÃ©nereket Ã©s ezen belÃ¼l a \textit{box}okat leginkÃ¡bb Ãºgy kÃ©pzelhetjÃ¼k el, mint egy dobozt -- vagy ha programozÃ¡si szakszÃ³val akarunk Ã©lni vermet -- melynek mindkÃ©t vÃ©gÃ©re lehet pakolni. A verem hasonlat mÃ¡r csak azÃ©rt is helytÃ¡llÃ³, mert az egyes elemek verembe tÃ¶rtÃ©nÅ‘ elhelyezÃ©se csak egymÃ¡st kÃ¶vetÅ‘en, csak egymÃ¡sra lehetsÃ©ges. Annyiban viszont sÃ¡ntÃ­t a pÃ©lda, hogy a \textit{GTK} esetÃ©n rendkÃ­vÃ¼l ritka -- bÃ¡r egyÃ¡ltalÃ¡ban nem lehetetlen -- hogy elemeket vegyÃ¼nk ki egy kontÃ©nerbÅ‘l.
+
+\section{AlapmÅ±veletek}
+
+NyilvÃ¡nvalÃ³ igÃ©ny, hogy ha mÃ¡r vannak tÃ¡rolÃ³ink Ã©s azokhoz kapcsolÃ³dÃ³an \textit{widget}eink, akkor azokkal mÅ±veleteket lehessen vÃ©gezni. Az sem tÃºl meglepÅ‘, hogy ezt a kÃ¼lÃ¶nbÃ¶zÅ‘ tÃ­pusÃº kontÃ©nerek esetÃ©n mÃ¡skÃ©nt kell megtenni. Itt csak a legalapvetÅ‘bb mÅ±veleteket Ã©s tÃ­pusokat vesszÃ¼k sorra, azokat is csak abban a mÃ©rtÃ©kben mely a koncepciÃ³ megÃ©rtÃ©sÃ©hez szÃ¼ksÃ©ges.
+
+\subsection{LÃ©trehozÃ¡s}
+
+A \textit{GtkContainer}, \textit{GtkBin}, illetve a \textit{GtkBox} absztrakt osztÃ¡lyok, Ã­gy ebben a formÃ¡jukban nem, csak a szÃ¡rmaztatott osztÃ¡lyok rÃ©vÃ©n pÃ©ldÃ¡nyosÃ­thatÃ³ak. Ezek kÃ¶zÃ¼l ebben a rÃ©szben a vÃ­zszintes, illetve fÃ¼ggÅ‘leges elrendezÃ©sÅ± \textit{box}okat (\textit{GtkHBox}, \textit{GtkVBox}), illetve a tÃ¡blÃ¡zatot (\textit{GtkTable}) tÃ¡rgyaljuk.
+
+\subsubsection{\textit{GtkVBox} Ã©s \textit{GtkHBox}}
+
+FÃ¼ggetlenÃ¼l az irÃ¡nytÃ³l a lÃ©trehozÃ¡skor kÃ©t paramÃ©tert kell megadunk (\textit{homogeneous}, \textit{spacing}), ahol az egyik egyik egy \textit{bool}, melynek \textit{true} Ã©rtÃ©ke esetÃ©n minden egyes elem azonos helyet foglal majd el a kontÃ©nerben, mÃ­g a mÃ¡sik az egyes elem kÃ¶zÃ¶tt Ã¼resen hagyandÃ³ rÃ©szt adja meg pixelben.
+
+\subsubsection{\textit{Table}}
+
+LÃ©trehozÃ¡skor a tÃ¡blÃ¡zat sorainak, illetve oszlopainak kezdeti szÃ¡ma, valamint a korÃ¡bbrÃ³l ismert \textit{homogeneous} Ã©rtÃ©k adandÃ³ meg. MÃ­g a vÃ­zszintes elrendezÃ©sÅ± \textit{box}oknÃ¡l a \textit{widget}ek szÃ©lessÃ©ge, a fÃ¼ggÅ‘legeseknÃ©l a magassÃ¡ga, addig a tÃ¡blÃ¡zatoknÃ¡l mindkettÅ‘ azonos ha a \textit{homogeneous} paramÃ©ter \textit{true} Ã©rtÃ©kkÃ©nt adjuk meg.
+
+\subsection{Elem hozzÃ¡adÃ¡sa}
+
+Ezen fÃ¼ggvÃ©nyek kÃ¶zÃ¶s sajÃ¡tossÃ¡ga, hogy paramÃ©terkÃ©nt Ã¡tveszik azt a \textit{widget}et, melyet a kontÃ©nerbe kÃ­vÃ¡nunk helyezni. A korÃ¡bban emlÃ­tett fa hierarchiÃ¡bÃ³l kÃ¶vetkezik, hogy egy elem nem lehet tÃ¶bb szÃ¼lÅ‘nek gyermeke (kÃ¼lÃ¶nben erdÅ‘ szerkezetrÅ‘l beszÃ©lnÃ©nk), azaz egy \textit{widget}et Ã¶sszesen egy kontÃ©nerben helyezhetÃ¼nk el. Ha esetleg ezt mÃ¡sodszor is megprÃ³bÃ¡lnÃ¡nk -- mÃ©g mielÅ‘tt a korÃ¡bbi kontÃ©nerÃ©bÅ‘l eltÃ¡volÃ­tottuk volna -- akkor futÃ¡s idejÅ± hibaÃ¼zenetet kapunk.
+
+Ne feledjÃ¼k, ahogy arrÃ³l mÃ¡r emlÃ­tÃ©st tettÃ¼nk a \textit{GTK} rendelkezik referenciaszÃ¡mlÃ¡lÃ¡si metÃ³dussal, azaz minden egyes objektum (\texttt{GtkObject}) -- esetÃ¼nkben \texttt{GtkWidget} -- rendelkezik egy referenciaszÃ¡mmal. Ha egy \textit{widget}et egy kontÃ©nerbe helyezÃ¼nk, annak referenciÃ¡jÃ¡t a kontÃ©ner, annak rendje Ã©s mÃ³dja szerint, nÃ¶veli eggyel. Ez a referencia mindaddig megmarad, mÃ­g a \textit{widget}et el nem tÃ¡volÃ­tjuk, vagy a kontÃ©ner valamilyen oknÃ¡l fogva meg nem szÅ±nik, ami jellemzÅ‘en akkor kÃ¶vetkezik be ha az egÃ©sz ablakot megszÃ¼ntetjÃ¼k (\textit{destroy}).
+
+\subsubsection{\textit{Container}}
+
+Az \texttt{add} nevÅ± fÃ¼ggvÃ©ny egyetlen paramÃ©tert, az elhelyezni kÃ­vÃ¡nt \textit{widget}et veszi Ã¡t. RitkÃ¡n, leginkÃ¡bb csak -- ebben a tekintetben -- egyszerÅ± kontÃ©nereknÃ©l alkalmazott hÃ­vÃ¡s, lÃ©vÃ©n olyan alapÃ©rtelmezett paramÃ©terek hasznÃ¡l a \textit{widget} elhelyezÃ©sÃ©re, melyek a felhasznÃ¡lÃ³ cÃ©lnak a legtÃ¶bb esetben nem felelnek meg.
+
+HasznÃ¡lhatÃ³ ugyan a szÃ¡rmaztatott, bonyolultabb kontÃ©nerek esetÃ©n is (pl: \texttt{GtkBox}, \texttt{GtkTable}), de cÃ©lszerÅ±bb az azokhoz tartozÃ³, specifikus fÃ¼ggvÃ©nyt alkalmazni, lÃ©vÃ©n az sokkal rugalmasabban paramÃ©terezhetÅ‘.
+
+\subsubsection{\textit{Bin}}
+
+Ebbe a tÃ­pusba elemet csak a \texttt{GtkContainer} \texttt{add} fÃ¼ggvÃ©nyÃ©vel tehetÃ¼nk. Ha tÃ¶bbszÃ¶r hÃ­vjuk meg a fÃ¼ggvÃ©nyt anÃ©lkÃ¼l, hogy a \textit{GtkBin} gyerekÃ©t eltÃ¡volÃ­tanÃ¡nk futÃ¡si hibÃ¡t kapunk, hiszen a \textit{GtkBin} csak egyetlen elem tÃ¡rolÃ¡sÃ¡ra kÃ©pes.
+
+\subsubsection{\textit{Box}}
+
+Ahogy arrÃ³l a bevezetÅ‘ben szÃ³ volt a \textit{GtkBox} tÃ­pus olyan, mint egy kÃ©t bemenetÅ± verem. Ennek megfelelÅ‘en kÃ©t fÃ¼ggvÃ©ny van, amivel elemeket (egyet, vagy tÃ¶bbet) lehet helyezni a kontÃ©nerbe. A \texttt{pack\_start} fÃ¼ggÅ‘leges elrendezÃ©s (\textit{GtkVbox}) esetÃ©n felÃ¼lrÅ‘l lefelÃ© haladva tÃ¶lti meg a kontÃ©nert Ãºgy, hogy az egymÃ¡st utÃ¡n elhelyezett elemek egymÃ¡s alatt jelennek meg, mÃ­g a vÃ­zszintes elrendezÃ©st biztosÃ­tÃ³ vÃ¡ltozat (\textit{GtkHBox}) balrÃ³l jobbra haladva teszi ugyanezt. A \texttt{pack\_end} hÃ­vÃ¡s ezekkel ellentÃ©tesen mÅ±kÃ¶dik, tehÃ¡t alulrÃ³l, illetve jobbrÃ³l balra haladva helyez elemeket a tÃ¡rolÃ³ba.
+
+Ahogy a \textit{GtkContainer} esetÃ©n, itt is megadandÃ³ a \textit{widget}, de ezen tÃºl itt a kontÃ©neren belÃ¼li elhelyezkedÃ©st meghatÃ¡rozÃ³ Ã©rtÃ©kek is parammÃ©terek. Az \textit{expand} Ã©s \textit{fill} \textit{bool} tÃ­pusÃº paramÃ©terek, melyek a korÃ¡bban mÃ¡r emlÃ­tett ''felesleges'' hely kitÃ¶ltÃ©sÃ©re vonatkoznak. ElÅ‘bbi azt hatÃ¡rozza meg, hogy a \textit{widget} a kontÃ©neren belÃ¼l rendelkezÃ©sre Ã¡llÃ³ helyet kitÃ¶ltse-e, azaz ha van ilyen akkor az igÃ©nyelje-e magÃ¡nak (\textit{ture}), vagy lemondjon rÃ³la (\textit{false}) a tÃ¶bbi -- a kontÃ©nerben lÃ©vÅ‘ -- \textit{widget} javÃ¡ra. UtÃ³bbi paramÃ©ter annak beÃ¡llÃ­tÃ¡sÃ¡ra szolgÃ¡l, hogy a rendelkezÃ©sre Ã¡llÃ³ -- illetve az \textit{expand} okÃ¡n elnyert -- hellyel mi tÃ¶rtÃ©njÃ©k. Ha a paramÃ©ter Ã©rtÃ©ke \textit{true}, akkor a \textit{widget} maga tÃ¶lti ki ezt a helyet, azaz a feltÃ©tlenÃ¼l szÃ¼ksÃ©gesnÃ©l nagyobb helyen rajzolÃ³dik ki, mÃ­g ha az Ã©rtÃ©k \textit{false}, akkor csak a minimÃ¡lisan szÃ¼ksÃ©ges helyre rajzolÃ³dik Ã©s a maradÃ©k rÃ©szt Ãºgymond Ã¼resen hagyja. A \textit{pack} fÃ¼ggvÃ©nyek utolsÃ³ paramÃ©tere a \textit{padding}, mely a \textit{widget} kÃ¶rÃ¼l (\textit{GtkVBox} esetÃ©n felÃ¼l Ã©s alul, \textit{GtkHBox} esetÃ©n jobbrÃ³l Ã©s balrÃ³l) hagyandÃ³ Ã¼res hely Ã©rtÃ©kÃ©t adja meg pixelben.
+
+Ha elsÅ‘re nem is teljesen vilÃ¡gos, mit jelent ez a gyakorlatban, a kÃ¶vetkezÅ‘ fejezet illusztrÃ¡ciÃ³jÃ¡bÃ³l minden vilÃ¡gossÃ¡ vÃ¡lik.
+
+\subsubsection{\textit{Table}}
+
+Az \textit{attach} fÃ¼ggvÃ©ny -- mely a tÃ¡blÃ¡zatok esetÃ©n elem elhelyezÃ©sÃ©re szolgÃ¡l -- kissÃ© Ã¶sszetettebb, mint a korÃ¡bbiak, lÃ©vÃ©n egy tÃ¡blÃ¡zatnÃ¡l vÃ­zszintesen Ã©s fÃ¼ggÅ‘legesen egyarÃ¡nt szÃ¼ksÃ©ges megadni a \textit{fill}, illetve \textit{expand} paramÃ©tereket, melyek kiegÃ©szÃ¼lnek egy \textit{srink} opciÃ³val is, ez azonban mÃ¡r tÃºlmutat ennek a rÃ©sznek a keretein.
+
+\subsection{Elem eltÃ¡volÃ­tÃ¡sa}
+
+A szÃ¡rmaztatott tÃ­pusok, legalÃ¡bbis azok, amelyekkel ebben a rÃ©szben foglalkozunk (\textit{GtkTable}, \textit{GtkBin}, \textit{GtkBox}) nem igÃ©nyelnek az eltÃ¡volÃ­tÃ¡s sorÃ¡n semmilyen extra mÅ±veletet, Ã­gy a \textit{GtkContainer} funkcionalitÃ¡sÃ¡ra tÃ¡maszkodnak.
+
+\subsubsection{\textit{Container}}
+
+A \texttt{remove} fÃ¼ggvÃ©ny Ã©rtelemszerÅ±en az eltÃ¡volÃ­tani kÃ­vÃ¡nt \textit{widget}et vÃ¡rja paramÃ©terkÃ©nt Ã©s ahogy azt emlÃ­tettÃ¼k az Ã¡ltala tartott referenciÃ¡t meg is szÃ¼nteti. Ez jellemzÅ‘en (a referenciaszÃ¡mlÃ¡lÃ¡s \textit{GTK}-beli sajÃ¡tossÃ¡gairÃ³l egy kÃ©sÃ¶bbi rÃ©szben szÃ³lunk) azt is jeleni egyben, hogy az eltÃ¡volÃ­tott \textit{widget}re az utolsÃ³ (hisz tÃ¶bbnyire csak a kontÃ©nere tart referenciÃ¡t egy \textit{widgetre}) referencia Ã©s ezzel maga a \textit{widget} is megszÅ±nik.
+
+Ha ezt az esetet el akarjuk kerÃ¼lni, akkor mÃ©g az eltÃ¡volÃ­tÃ¡s elÅ‘tt a referenciaszÃ¡m nÃ¶velÃ©sÃ©rÅ‘l magunknak kell gondoskodnunk. Vagyis ha kÃ©t lÃ©pÃ©sben (\texttt{remove} Ã©s \texttt{add}) akarunk egy \textit{widget}et Ã¡thelyezni egyik kontÃ©nerbÅ‘l a mÃ¡sikba, akkor az eltÃ¡volÃ­tÃ¡s elÅ‘tt nÃ¶velnÃ¼nk, a hozzÃ¡adÃ¡s utÃ¡n pedig csÃ¶kkentenÃ¼nk kell a referenciÃ¡t. UtÃ³bbira azÃ©rt van szÃ¼ksÃ©g, mert az Ãºj szÃ¼lÅ‘elem maga is nÃ¶vel egyet a referenciÃ¡n, Ã­gy ha mi a magunk Ã¡ltal korÃ¡bban megnÃ¶velt referenciÃ¡t nem csÃ¶kkentenÃ©nk a widget soha nem szÅ±nne meg.
+
+HasonlÃ³an a \textit{GtkBin}hez itt sincs specifikus fÃ¼ggvÃ©ny az eltÃ¡volÃ­tÃ¡sra, hanem a \textit{GtkContainer} \texttt{remove} fÃ¼ggvÃ©nyÃ©t hÃ­vjuk.
+
+\section{Pa(c)koljunk}
+
+LÃ¡ssuk mire jÃ³ vÃ©gÃ¼l is ez a hÃ¡rom opciÃ³ (\textit{homogeneous}, \textit{expand}, \textit{fill}) Ã©s mikÃ©t fÃ¼ggenek Ã¶ssze egymÃ¡ssal.
+
+Azoknak, akik mÃ¡r jÃ¡rtasak valamilyen -- a \textit{GTK+}-tÃ³l eltÃ©rÅ‘ -- felÃ¼letprogramozÃ¡si nyelvben bizonyosan talÃ¡lkoztak mÃ¡r olyan eszkÃ¶zÃ¶kkel (pl: \textit{QtDesigner}, vagy jelen esetben a \textit{Glade}), melyek egy konkrÃ©t felÃ¼let elkÃ©szÃ­tÃ©sÃ©re alkalmasak. A koncepciÃ³k kÃ¼lÃ¶nbÃ¶zÅ‘ek ugyan, de mindegyiknÃ©l joggal merÃ¼lhet fel a kÃ©rdÃ©s, hogy miÃ©rt is nem lehet egÃ©sz egyszerÅ±en fix koordinÃ¡tÃ¡kkal megadni, hol legyenek az egyes widgetek. Nos lehet, sÅ‘t vannak is ilyen eszkÃ¶zÃ¶k, ugyanakkor az elsÅ‘re talÃ¡n kissÃ© zavarÃ³ egyveleg komoly flexibilitÃ¡st nyÃºjt.
+
+\subsection{HomogenitÃ¡s}
+
+Azaz egyenlÅ‘sÃ©g, abban az Ã©rtelemben, hogy minden egyes elem a kontÃ©nerben pontosan ugyanakkora helyet foglal el. A kÃ¶vetkezÅ‘ Ã¡bra azt szemlÃ©lteti, hogy mikÃ©nt vÃ¡ltoztatja meg ez az Ã©rtÃ©k -- a mÃ¡sik kettÅ‘ fÃ¼ggvÃ©nyÃ©ben (\textit{expand}, \textit{fill}) -- az elemek elhelyezkedÃ©sÃ©t a kontÃ©neren belÃ¼l.
+
+\vspace{12 pt}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[height=50mm]{packbox1.png}
+\end{center}
+\end{figure}
+
+Ahogy korÃ¡bban a kÃ³dsorokat, most a \textit{widget}sorokat vesszÃ¼k sorra a minÃ©l jobb megÃ©rtÃ©s kedvÃ©Ã©rt.
+
+\subsubsection{MÃ©retarÃ¡nyos elhelyezÃ©s}
+
+\begin{description}
+ \item[\textit{expand} = \textit{false}, \textit{fill} = \textit{false}] A kontÃ©nerben lÃ©vÅ‘ elemek -- ahogy fentiekben fogalmaztunk -- nem akarnak egymÃ¡s rovÃ¡sÃ¡ra helyet szerezni (\textit{epxand}), Ã­gy a rendelkezÃ©sre Ã¡llÃ³ vÃ­zszintes helyet nem is tÃ¶ltik ki, vagyis ezzel a megoldÃ¡ssal az egÃ©sz elemsorra nÃ©zve egyfajta balra (\textit{pack\_end} esetÃ©n jobbra) zÃ¡rtsÃ¡g alakÃ­thatÃ³ ki.
+
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] Az Ã¶sszkÃ©p -- az alatta talÃ¡lhatÃ³ sor miatt -- kissÃ© csalÃ³ka, mivel az elemek kissÃ© rendezetlennek tÅ±nnek, ugyanakkor arrÃ³l van szÃ³, hogy minden egyes elem megszerezte magÃ©nak -- a sajÃ¡t eredeti mÃ©retigÃ©nyÃ©nek arÃ¡nyÃ¡ban -- a rendelkezÃ©sre Ã¡llÃ³ plusz helyet Ã©s az Ã­gy allokÃ¡lt (\textit{size allocation}) tÃ©rrÃ©szen belÃ¼l kÃ¶zÃ©pen helyezkedik el.
+
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Az egyes elemek nem csak hogy kiterjeszkedtek (\textit{expand}) a korÃ¡bban fel nem hasznÃ¡lt terÃ¼letre, de ki is tÃ¶ltik (\textit{fill}) azt, azaz annak terjedelmÃ©ben rajzoljÃ©k meg magukat.
+\end{description}
+
+Ahogy az az Ã¡brÃ¡bÃ³l -- Ã©s talÃ¡n a magyarÃ¡zatbÃ³l is -- kitÅ±nik az \textit{fill} opciÃ³ Ã¡llÃ­tÃ¡sÃ¡nak semmi teteje anÃ©lkÃ¼l, hogy az \textit{expand} be ne lenne kapcsolva, hisz e nÃ©lkÃ¼l nincs semmilyen plusz terÃ¼lt, amire a \textit{widget} magÃ¡t megnagyobbÃ­tva rajzolhatnÃ¡.
+
+\subsubsection{HomogÃ©n elhelyezÃ©s}
+
+\begin{description}
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] A kontÃ©nerben lÃ©vÅ‘ elemek -- a mÃ¡r hasznÃ¡lt kifejezÃ©ssel Ã©lve -- nem akarnak egymÃ¡s rovÃ¡sÃ¡ra helyet szerezni (\textit{epxand}), Ã­gy a rendelkezÃ©sre Ã¡llÃ³ vÃ­zszintes helyet nem is tÃ¶ltik ki, vagyis ezzel a megoldÃ¡ssal az egÃ©sz elemsorra nÃ©zve egyfajta balra (\textit{pack\_end} esetÃ©n jobbra) zÃ¡rtsÃ¡g alakÃ­thatÃ³ ki.
+
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Az Ã¶sszkÃ©p -- az alatta talÃ¡lhatÃ³ sor miatt -- kissÃ© csalÃ³ka, mivel az elemek kissÃ© rendezetlennek tÅ±nnek, ugyanakkor arrÃ³l van szÃ³, hogy minden egyes elem megszerezte magÃ©nak -- a sajÃ¡t eredeti mÃ©retigÃ©nyÃ©nek arÃ¡nyÃ¡ban -- a rendelkezÃ©sre Ã¡llÃ³ plusz helyet Ã©s az Ã­gy allokÃ¡lt (\textit{size allocation}) tÃ©rrÃ©szen belÃ¼l kÃ¶zÃ©pen helyezkedik el.
+\end{description}
+
+\subsection{TÃ©rkÃ¶z}
+
+TÃ©rkÃ¶z megadÃ¡sÃ¡ra kÃ©t lehetÅ‘sÃ©g is kÃ­nÃ¡lkozik a ha elemeket szeretnÃ©nk elhelyezni egy \textit{box}ban. Az egyik, hogy magÃ¡nak a kontÃ©nernek Ã¡llÃ­tunk be lÃ©trehozÃ¡skor -- vagy akÃ¡r kÃ©sÅ‘bb -- \textit{spacing}et, vagy az egyes elemek hozzÃ¡adÃ¡sakor adunk meg \textit{padding}et. Hogy mi a kÃ¼lÃ¶nbsÃ©g a kÃ©t eset kÃ¶zÃ¶tt az alÃ¡bbi Ã¡bra -- ahol az fenti blokkban az elsÅ‘, mÃ­g az alsÃ³ blokkban a mÃ¡sodik esetre lÃ¡tunk pÃ©ldÃ¡t -- jÃ³l illusztrÃ¡lja.
+
+\vspace{12 pt}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[height=50mm]{packbox2.png}
+\end{center}
+\end{figure}
+
+\subsubsection{TÃ©r az elemek kÃ¶zÃ¶tt}
+
+\begin{description}
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] Ez a pÃ©lda nem illusztrÃ¡lj igazÃ¡n jÃ³l a helyzetet, ami pedig az, hogy ebben az esetben az elemek kÃ¶zÃ¶tt jelenik meg az a tÃ©rkÃ¶z, amit a kontÃ©ner lÃ©trehozÃ¡sakor megadtunk.
+
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Mivel itt mindkÃ©t Ã©rtÃ©k \textit{true}, a \textit{widget}ek a rendelkezÃ©sre Ã¡llÃ³ teret teljes egÃ©szÃ©ben kihasznÃ¡ljÃ¡k maguk megrajzolÃ¡sÃ¡ra, eltekintve termÃ©szetesen a kÃ¶zÃ¶ttÃ¼k megjelenÅ‘ 10 pixel \textit{spacing}tÅ‘l. Ã‰rdemes kÃ¼lÃ¶n megfigyelni a kÃ©t szÃ©lsÅ‘ elemet, azoknak is az ablak szÃ©lÃ©hez kÃ¶zelebb esÅ‘ rÃ©szÃ©t a mÃ¡sik megoldÃ¡ssal valÃ³ Ã¶sszehasonlÃ­tÃ¡shoz.
+\end{description}
+
+\subsubsection{TÃ©r az elemek kÃ¶rÃ¼l}
+
+\begin{description}
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] A \textit{padding} megadÃ¡sÃ¡val a tÃ©rkÃ¶z nem az elemek kÃ¶zÃ¶tt, hanem azok kÃ¶rÃ¼l jelenik meg. Ez azt jelenti, hogy minden elem jobb Ã©s bal oldalÃ¡n (\textit{GtkVBox} esetÃ©n felÃ¼l Ã©s alul) egyarÃ¡nt jelentkezik a megadott tÃ©rkÃ¶z, ennek okÃ¡n kÃ¶zÃ¶ttÃ¼k annak minimum (fÃ¼ggÅ‘en a \textit{fill} Ã©rtÃ©kÃ©tÅ‘l) a kÃ©tszerese.
+
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Ez az az eset amikor igazÃ¡n jÃ³l lÃ¡thatÃ³ a \textit{widget}ek kÃ¶zÃ¶tt Ã©s az azok mellett megjelenÅ‘ tÃ©rkÃ¶z 2:1 arÃ¡nya. Az elÅ‘bb -- a szÃ©lsÅ‘ widgetek elhelyezkedÃ©sÃ©nÃ©l megfigyelteket -- most hasznosÃ­thatjuk, ha Ã©szrevesszÃ¼k itt a szÃ©lsÅ‘ \textit{widget}ek nem tudnak a kontÃ©ner szÃ©lÃ©ig kiterjeszkedni, lÃ©vÃ©n kÃ©t oldalrÃ³l ki vannak pÃ¡rnÃ¡zva (\textit{pad}) 10-10 pixellel.
+\end{description}
+
+\section{A kÃ³d}
+
+A fenti pÃ©ldaprogramok forrÃ¡sa, illetve azok eredetijei, a \textit{FLOSSzine}, valamint a \textit{GTK+} oldalain az alÃ¡bbi linkeken Ã©rhetÅ‘ek el:
 \ \\\\
-\url{http://www.flosszine.org/sources/gtk_signal.c}\\
-\url{http://www.flosszine.org/sources/gtkmm_signal.cc}\\
-\url{http://library.gnome.org/devel/gtk-tutorial/stable/c39.html#SEC-HELLOWORLD}\\
+\url{http://www.flosszine.org/sources/gtk_packbox.c}\\
+\url{http://library.gnome.org/devel/gtk-tutorial/2.17/x387.html}\\
 
-\subsection{GTK+}
+\subsection{FordÃ­tÃ¡s Ã©s linkelÃ©s}
 
-\subsubsection{A kód}
-
-\vspace{16pt}
-\fontsize{6pt}{6pt}
-\begin{verbatim}
-  1 #include <gtk/gtk.h>
-  2
-  3 static void hello( GtkWidget *widget,
-  4                    gpointer   data )
-  5 {
-  6   g_print ("%s\n", (const char *) data);
-  7 }
-  8
-  9 static gboolean delete_event( GtkWidget *widget,
- 10                               GdkEvent  *event,
- 11                               gpointer   data )
- 12 {
- 13   g_print ("delete event occurred\n");
- 14
- 15   return TRUE;
- 16 }
- 17
- 18 static void destroy( GtkWidget *widget,
- 19                      gpointer   data )
- 20 {
- 21     gtk_main_quit ();
- 22 }
- 23
- 24 int main( int   argc,
- 25           char *argv[] )
- 26 {
- 27   GtkWidget *window;
- 28   GtkWidget *button;
- 29
- 30   gtk_init (&argc, &argv);
- 31
- 32   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
- 33
- 34   g_signal_connect (G_OBJECT (window), "delete_event",
- 35                     G_CALLBACK (delete_event), NULL);
- 36
- 37   g_signal_connect (G_OBJECT (window), "destroy",
- 38                     G_CALLBACK (destroy), NULL);
- 39
- 40   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
- 41
- 42   button = gtk_button_new_with_label ("Helló Világ");
- 43
- 44   g_signal_connect (G_OBJECT (button), "clicked",
- 45                     G_CALLBACK (hello), NULL);
- 46
- 47   g_signal_connect_swapped (G_OBJECT (button), "clicked",
- 48                             G_CALLBACK (gtk_widget_destroy),
- 49                             G_OBJECT (window));
- 50
- 51   gtk_container_add (GTK_CONTAINER (window), button);
- 52
- 53   gtk_widget_show (button);
- 54   gtk_widget_show (window);
- 55
- 56   gtk_main ();
- 57
- 58   return 0;
- 59 }
-\end{verbatim} 
-
-\subsubsection{Részletek sorról sorra}
-
-\begin{enumerate}
- \item[27-28] Annak szükségességérõl, hogy a változók egy függvény elején legyenek deklarálva az elõzõ részben esett szó, így erre itt nem térnünk ki. Ellenben fontos, hogy a változók típusa \texttt{GtkWidget}, a specifikusabb \textit{GtkWindow}, illetve \textit{GtkButton} helyett. Ennek megyarázata, hogy minden olyan függvény a \textit{GTK+}-ban mely egy új \textit{widget}et hozhatunk létre -- azaz a \texttt{\_new} végû metódusok -- egy \texttt{GtkWidget} típusú objektumra mutató pointerrel tér vissza. Ennek kényelmi okai vannak, jelesül, hogy elkerülhessük a folytonos típuskényszerítéseket, hisz legtöbbször olyan függvyéneket használunk, melyek \texttt{GtkWidget}eket kezelnek, tehát ilyen típusra mutatót vesznek át elsõ paraméterként. Ha egy specifikus -- mondjuk \texttt{GtkButton}-t kezelõ -- függvényt akarunk hívni, akkor vagy fordítási, vagy ami javasol, futás idejû típuskényszerítés alkalmazandó.
-
- \item[32] Fõablakunk létrehozása, ahogy eddig is.
-
- \item[34] Az elsõ szignálbekötés. Viszonylagos egyszerûsége ellenére számos apróságra érdemes figyelmet fordítani. Az elsõ maga a \texttt{g\_signal\_connect}, ami függvénynek tûnhet, pedig ugyanúgy, mint a \texttt{g\_signal\_connect\_swapped}, makró, melyek a \texttt{g\_sinal\_connect\_data} függvényt burkolják. A soron következõ érdekesség a \texttt{G\_OBJECT} makró, mely futás idejú típusellenõrzést hajt végre a neki megadott paraméteren, majd egy \texttt{GObject} típusra mutatóval tér vissza. A megrögzött \textit{C++} programozók joggal kérdezhetik, mi szükség erre, hisz egyfelõl majd elvégzi a típusellenõrzést a fordító, meg hát a \texttt{GtkWindow} típus úgy is leszármazottja a \textit{GObject} ''osztálynak``. Ez így is lenne, na de ez itt \textit{C}, tehát õs-, illetve származtatott osztályokról csak logikailag lehet szó, a típusellenõrzés tehát nem végezhetõ, sõt minden esetben a hívott függvénynek megfelelõ típuskényszerítõ makrót kell alkalmazni. A második paraméter a a szignál neve, jelen esetben, mellyel azt adjuk meg, hogy az elõzõ paraméterként megadott \textit{object} melyik szignáljára is szeretnénk \textit{callback}et kötni. Harmadik paraméter azon függvény címe, amelyik meghívódását ki szeretnénk váltani az esemény bekövetkezésekor. A függvénynevet itt is egy makró segítségével adjuk át, ami az elõzõekhez hasonlóan \textit{C} nyelvi hiányosságokra vezethetõ vissza. Mivel a meghívandó \textit{callback}ek prototípusai igen sokfélék lehetnek (ami magából a példából is látszik valamelyest és ezek mind külön típusnak minõsülnek a \textit{C} nyelvben ezért ahány féle \textit{callback} variáció létezik, annyiféle \textit{g\_signal\_connect} függvényre lenne szükség. Könnyen belátható, hogy a jogos lustaság más irányba vitte a \textit{GTK} fejlesztõit. A \texttt{G\_CALLBACK} tulajdonképpen egy fordítási idejû típuskényszerítés egy általános függvénytípusra, amivel ugyan egyre megoldottuk, hogy csak egyetlen \texttt{g\_signal\_connect\_data} függvényre legyen szükség, de elvesztettünk minden nemû típusbiztosságot. Ha például egy az adott szignálnak nem megfelelõ típusú függvényt adunk meg paraméterként, amit a példabeli függvénynevek felcserélésével könnyen megtehetünk, csúnya meglepetésekben lesz részünk, de csak futásidõben. Az utolsó paraméter az úgynevezett \textit{user data}, ami arra szolgál, hogy az eseménykezelõ függvényünknek, olyan adatokat adjunk át, melyek az esemény megtörténtébõl nem következnek. Ilyenek lehetnek például más \textit{widget}ek címe, ahogy azt látni is fogjuk. Ez esetben az átadott paraméter \texttt{NULL}, ami szintén egy makró mely egy jól nevelt \texttt{((void*) 0)} kifejezésre fejtõdik ki \textit{C} kód esetén. Zárszóként ehhez a sorhoz csak annyit, hogy a \texttt{delete\_event} eseményt az ablakkezelõ váltja ki, akkor, amikor az ablakot valamilyen módon (billentyûzet, menü, egér) bezárjuk.
-
- \item[9] Ez a \texttt{delete\_event} szignálkezelõ függvénye, aminek egy \textit{gboolean} érékkel kell visszatérnie. Ha ez az érték 0, akkor a \textit{GTK} folytatja a szignál kezelését, azaz meghívja a \texttt{gtk\_widget\_destroy} függvényt az ablakunkra. Ha azonban a visszaetérési érék nem 0, ahogy itt sem az, akkor ezzel arra utasítjuk a \textit{GTK}-t, hogy a szignál további feldolgozásától tekintsen el, aminek révén elérhetjük, hogy hiány nyomogatjuk a jobb felsõ sarokban a \textit{x}-et ennek hatására bizony szinte semmi nem történik. Itt érdemes felhívni a figyelmet arra, hogy mivel a \textit{C} nyelvben, a \textit{C++}-al ellentétben, nincs bool típus annak analógiájára definiálták a \texttt{gboolean} típust (ami tulajdonképpen egy \texttt{int}) és annak két értékét makróként (\texttt{TRUE}, \texttt{FALSE}).
-
- \item[37] Az elõzõhöz teljesen hasonló, annyi eltéréssel, hogy itt a \texttt{destroy} szignálra kötünk be eseménykezelõt, ami akkor hívodik meg, ha a \texttt{window} változóval meghívódik a \texttt{gtk\_widget\_destroy} függvényt. Ez több módon is lehetséges. Egyfelõl direkt módon egyszerû függvényhívással, amire ebben a kódban nincs példa, másrészrõl indirekt módon, amire viszont van, erre lesz jó a \textbf{47} sor. Illetve lenne még egy út, amit ebben a példakódban szintén elkerülünk.
-
- \item[18] A \textit{destroy} szignál kezelése általánosságban nézve ritka és itt is csak az a szerepe, hogy a program valamilyen módon ki tudjon lépni. Ha ez a függvény meghívódik, akkor az ablakunk épp megszûnõ félben van. Ha ez az eset áll is fenn a programunk futása annak ellenére sem érne véget, hogy az ablakunk bezáródik, hiszen a \textit{main loop}ból nem lépnénk ki. Ezen helyzet elkerülésére ebben az eseménykezelõ függvényben meghívjuk a \textit{main loop}ból való kilépésre szolgáló \textit{gtk\_main\_quit}-ot.
-
- \item[42] Egy nyomógom létrehozása.
-
- \item[44] Eseménykezelõ függvény bekötése a gomb \texttt{clicked} szignáljára, ami a gomb lenyomásakor hívódik meg.
-
- \item[47] A \textbf{44}. sortól csak a meghívandó eseménykezelõ függvényben, illetve az annak átadandó paraméterekben sorrendjében tér el. Ahogy az a függvény nevébõl (\texttt{g\_signal\_connect\_swapped}) következik, arról van szó, hogy a gomb lenyomásakor meghívandó \textit{callback} -- jelen esetben a \texttt{gtk\_widget\_destroy} -- paramétereiben a \textit{user\_data}, illetve az az object, amin az esemény kivátótik felcserélésre kerül. Kicsit konkrétabban fogalmazva a \textit{user\_data} lesz a \textit{callback} elsõ paramétere és a gomb a második. Mivel itt a \textit{callback} a \texttt{gtk\_widget\_destroy} függvény, ami paraméterként a destruálandó \textit{widget}et várja, a \textit{user\_data} pedig az ablakunk, nem nehéz kitalálni, hogy a gombra való kattintás eredményeként az ablak meg fog szûnni, de csak azután, hogy a \textit{Helló Világ} üzenet megjelent a konzolban.
-
- \item[3] A fenti állítás csak azért igaz, mert a \textit{hello} függvény, mint eseménykezelõ elõbb kerül felkötésre, mint a \texttt{gtk\_widget\_destroy}, valamint azért, mert az eseménykezelõk alapvetõen a felkötés sorrendjében kerülnek meghívásra. Fordított esetben elõbb hívódna meg a \textit{destroy} az ablakra, ami --sok egyéb mellett -- leköti az eseménykezelõ függvényeket.
-
- \item[51] A nyomógomb hozzáadása az ablakhoz.
-
- \item[53,54] A létrehozott \textit{widget}ek megjelenítése.
-
- \item[56] Belépés az eseményvezérelt szakaszba.
-
-\end{enumerate}
-
-Fentiek ismeretében nagy biztonsággal jósolhatjuk meg példaprogramunk mûködését. Az elindított alkalmazás egy ablakot jelenít meg, melyben egy \textit{Helló Világ} feliratú gomb lesz. Az ablak bezárásával hiába próbálkozunk egér, vagy billentyûzet segítségével, ezen kísérletek eredmény csupán egy-egy ''\textit{delete event occurred}`` sor a konzolban. Ha azonban le találnák nyomni gombunkat az ablak hirtelen eltûnik a konzolban egy ''\textit{Helló Világ}`` felirat jelenik meg és a program kilép. Lássuk, hogy érhetünk ehhez teljesen hasonló funkcionalitást \textit{C++}-ban.
-
-\subsection{gtkmm}
-
-\subsubsection{A kód}
-
-\vspace{16pt}
-\fontsize{6pt}{6pt}
-\begin{verbatim}
-  1 #include <gtkmm.h>
-  2 #include <iostream>
-  3 
-  4 static void hello(const Glib::ustring &hello_msg)
-  5 {
-  6   std::cout << hello_msg << std::endl;
-  7 }
-  8 
-  9 class MyWindow : public Gtk::Window
- 10 {
- 11 private:
- 12   Gtk::Button button;
- 13 
- 14 protected:
- 15   virtual bool on_delete_event(GdkEventAny *event)
- 16   {
- 17     std::cout << "delete event occurred" << std::endl;
- 18 
- 19     return true;
- 20   }
- 21 
- 22   void on_button_clicked()
- 23   {
- 24     Gtk::Main::quit();
- 25   }
- 26 
- 27 public:
- 28   MyWindow() :
- 29     button("Helló Világ")
- 30   {
- 31     button.signal_clicked().connect(sigc::bind(sigc::ptr_fun(hello), "Helló Világ"));
- 32     button.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked));
- 33 
- 34     add(button);
- 35 
- 36     button.show();
- 37   }
- 38 };
- 39 
- 40 int main(int argc,
- 41          char *argv[])
- 42 {
- 43   Gtk::Main kit(argc, argv);
- 44 
- 45   MyWindow window;
- 46 
- 47   Gtk::Main::run(window);
- 48 
- 49   return 0;
- 50 }
-\end{verbatim}
-
-\subsubsection{Részletek sorról sorra}
-
-\begin{enumerate}
- \item[43-47] Az korábbi számokban megjelent példaprogramokhoz képest egyetlen eltérést vehet észre a figyelmes olvasó. Mégpedig azt, hogy \texttt{Gtk::Window} helyett \texttt{MyWindow} típust használunk fõablakunk létrehozásához. Mivel azonban a \texttt{MyWindow} publikusan származik a \texttt{Gtk::Window} típusból ez a \textit{gtkmm } számára nem jelent különbséget. A \textit{C} változathoz képest a számaztatás itt nem csupán ''logikai'', vagyis minden a \textit{C++}-an megszokott elõny könnyedén realizálható. Erre példa, hogy a származtatás miatt nincs szükség semmilyen típuskényszerítésre mikor a \textit{Gtk::Main::run} hívjuk, ami pedig egy \textit{Gtk::Window} referenciát vesz át paraméterként.
-
- \item[28-37] Saját osztályunk konstruktorában megtehetjük mindazokat a lépéseket, melyeket a \textit{C} nyelvû változat esetén a \texttt{main} függvényben voltunk kénytelenek implementálni, úgy is mint a szignálok felkötése, a gomb hozzáadása az ablakhoz, a \textit{widget}ek megjelenítése. Az egységbezárás ezen elõnyén túl a származtatásból fakadó örömöket is élvezhetjük, ugyanakkor persze az ebbõl fakadó kötelességeknek is eleget kell tenni. Ez esetben ez a konstruktor meghívását jelenti, ami rejtett módon megy végbe. Az õsosztály konstruktorának explicit hívása hiányában a \texttt{Gtk::Window} azon konstruktora fut le, mely paraméterek nélkül is hívható. Másrészrõl viszont az adattagként tárolt \textit{button}t is inicializálnunk kell. Itt is lehetne közvetve implicit módon hívni a paraméter nélküli konstruktort, azonban kézenfekvõbb azt a változatot használni, amivel egyszerre a gomb feliratát (\textit{label}) is megadhatjuk, így egy hívás a késõbbiekben megspórolható. Külön szót érdemelnek a szignálok bekötései. Különösebb programozó géniusz nem kell, hogy felfedezzük a szignálok eléréséhez egy \textit{signal\_}\textit{szignálnév} nevû tagfüggvény meghívását használhatjuk fel. Az ilyen formájú függvények egy, a \texttt{Glib::SignalProxyBase}-bõl származó, osztályt adnak vissza, melyek \texttt{connect} nevû metódusai valósítják meg azt, amit a \textit{GTK+} esetén a \texttt{g\_signal\_connect} makró tett meg. Elõnye ennek a módszernek, hogy típusbiztos, azaz a \texttt{connect} paraméterként csak olyan függvényt (\textit{slot}) fogad el, aminek a típusa megfelel az adott szignál kezeléséhez. További elõny, hogy a \textit{slot}okhoz nem csupán egy \textit{user data} csatolható, hanem tetszés szerinti, s ezek típusa is ellenõrzésre kerül fordításkor. Amennyiben azonban sikerül csupán egy apróságot is félreírnunk a szignál bekötésénél, vagy a \textit{slot} típusának megadásánál, a \textit{C++}-is template-ekkel történt megvalósításnak hála akár több oldalas, nehezen kibogarászható hibaüzenetekkel találhatjuk magunkat szemben.
-
- \item[31-32] Lássuk akkor miként is érhetõ el ugyanaz \textit{gtkmm}-ben, mint ami korábban \textit{GTK+}-ban. Elsõ pillantásra is szembeszökõ, hogy mindkét sorban találunk olyan hívást, melyek nem a \texttt{Gtk} névtérben definiáltak. Ennek oka, hogy a \textit{gtkmm}-ben a szignálkezelést \textit{libsigc++} nevû függvénykönyvtárral valósították meg, bár az ilyen hívások jellemzõen csak a szignálok felkötésekor kerülnek elõ. A két tárgyalt sor közötti eltérés könnyen indokolható, ha figyelembe vesszük a megadott eseménykezelõ függvények típusát.
-
- \item[31] Ha a megadni kívánt függvény statikus -- függetlenül attól, hogy osztályhoz tartozik-e vagy azon kívül definiált, esetleg tisztán \textit{C} nyelvû kódból származik -- \textit{slot} létrehozásához a \textit{sigc::ptr\_fun} alkalmazandó. Ebben a konkrét esetben a \textit{slot} létrehozásán túl, paramétereket is hozzákapcsolunk a \textit{clicked} esemény bekövetkeztekor meghívandó függvényhez. Ennek eszköze a \textit{sigc::bind}, melynek elsõ paramétere egy \textit{slot}, a továbbiak pedig a csatolandó paraméterek. Itt csupán egy ilyen van, a gomb lenyomására kiírandó üzenet szövege. Ez persze kissé kényszeredett, hiszen a paraméter értéke soha nem változik, így ennek igazi hasznát ebbõl a példából nehéz belátni.
-
- \item[4-7] Statikus függvényük a lehetõ legegyszerûbb csupán azt szemlélteti miként is kell az átadott paraméterekez használni, ezesetben annak értékét a console-ra kiíratni, mûködését és funkcióját tekintve a \textit{C}-s változat azonos nevû függvényével analóg.
-
- \item[32] Ha a megadni kívánt eseménykezelõ egy osztály tagfüggvénye, akkor a \textit{sigc::mem\_fun} használható arra, hogy \textit{slot}ot hosszunk létre belõle, azzal a különbséggel, hogy az osztály példányának címe lesz az elsõ paraméter és csak ezt követi a függvény címe. Fontos, hogy a függvényt teljes névtérlistával együtt kell megadni. Természetesen a korábban megismert \texttt{sigc::bind} it is alkalmazható.
-
- \item[22-25] Ez a függvény sem több csupán, mint egy egyszerû példa, ugyanazt a célt szolgálja, mint a \textit{GTK+}-os verzió azonos nevû függvénye.
-
- \item[15-20] Ezen függvény megértésének kulcsa a \texttt{virtual} kulcsszóban rejlik. Minden szignálhoz tartozik ugyanis egy -- az adott \textit{widget} által implementált -- kezelõ függvény, mely alkalmasint felülbírálható (ovverride). Ha ezt megtesszük, azzal a szignál kezelésének teljes folyamatát mi irányítjuk, ami mellett komoly érvek szólhatnak, de nem árt körültekintõnek lenni. Ebben az esetben a cél pont annak demonstráljuk, szabad kezet ad a \textit{gtkmm} abban, hogy egy származtatott \textit{widget} miként kívánja kezelni az õsosztály eseményeit. A visszatérési érték szerepe ugyan az, mint az elõzõ példában.
-\end{enumerate}
-
-A szignálkezelésrõl összegzésképpen annyit, hogy alapvetõen két lehetõség kínálkozik arra,. hogy az egyes \textit{widget}ek eseményei kezeljük:
-
-\begin{itemize}
- \item \textit{Callback}eket kapcsolni azon \textit{widget}ek azon eseményihez, melyek számunkra érdekesek és ezekben megtenni a megfelelõ lépéseket
-
- \item Felülbírálni a \textit{widget} saját eseménykezelõjét az öröklõdés mechanizmusai útján. Erre mindkét változat esetén van lehetõség, ám a \textit{GTK+} megoldása kissé körülményes és nehezebben megérthetõ, így annak ismertetése valmely késõbbi részre marad. A \textit{C++} nyelvi eszközeit kihasználva a \textit{gtkmm} viszont ezt oly könnyedén oldja meg, hogy kár lett volna kihagyni a bemutatást annak ellenére is, hogy a módszerre ritkán van szükség, hiszen többnyire arról van szó, hogy a különbözõ \textit{widget}példányok azonos szignáljainak kiváltódásakor más-más irányba szeretnénk terelni a program futását. A felülbírálás révén viszont arra nyílik lehetõség, hogy a szignál kezelésének módját változtassuk meg. Ha nem kívánunk egyebet tenni, mint ami amúgy is történne, hívjuk meg a felülbírált függvény szülõosztálybeli változatát. Ha azonban  ez elõtt, vagy után még valami mást is tenni szeretnénk, megtehetjük, hogy csak a függvény közepérõl hívjuk a szülõ metódusát, vagy akár el is hagyhatjuk az ha tudjuk mit és fõként hogyan szeretnénk kezelni.
-\end{itemize}
-
-\subsection{Egy "nyomkodható" ablak}
-
-\subsubsection{Fordítás és linkelés}
-
-A korábbiakhoz hasonlóan az alábbi parancssorok segítségével fordíthatóak e\-lem\-zett programjaink:
+A korÃ¡bbiakhoz hasonlÃ³an az alÃ¡bbi parancssorok segÃ­tsÃ©gÃ©vel fordÃ­thatÃ³ak elemzett programjaink:
 
 \fontsize{8pt}{8pt}
 \ \\
-\texttt{gcc gtk\_signal.c -o gtk\_signal \`{}pkg-config {-}-cflags {-}-libs gtk+-2.0}
-\ \\
-\texttt{g++ gtkmm\_signal.cc -o gtkmm\_signal \`{}pkg-config gtkmm-2.4 {-}-cflags {-}-libs\`{}}
-\ \\
+\texttt{gcc gtk\_packbox.c -o gtk\_packbox \`{}pkg-config {-}-cflags {-}-libs gtk+-2.0}
 
-\subsubsection{Futtatás}
+\subsection{FuttatÃ¡s}
 
-Próbálkozzunk ezúttal is a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsokkal abban a könyvtárban, ahol a fordítást elkövettük.
+PrÃ³bÃ¡ljuk ezÃºttal a \texttt{./gtk\_packbox 1|2|3}, illetve a \texttt{./gtkmm\_packbox 1|2|3} parancsokkal abban a kÃ¶nyvtÃ¡rban, ahol a fordÃ­tÃ¡st elkÃ¶vettÃ¼k, ahol a paramÃ©ter a teszt sorszÃ¡ma, abban a sorrendben, ahogy azokat itt is ismertettÃ¼k (a 3. termÃ©szetesen rÃ¡adÃ¡s).
 
-\subsubsection{Eredmény}
+\subsection{EredmÃ©ny}
 
-Bármily hihetetlen ezúttal sem történik semmi egyéb, mint az elõzõ alkalommal. Remélhetõleg azonban a különbség mégis érzékelhetõ annyiban, hogy legutóbb a meglepetéssel teli borzongást ablakunk váratlan felbukkanása, míg most a bennünk szikraként felvillanó megértés okozza.
+Ha netÃ¡n Ãºgy Ã©rezzÃ¼k mÃ©gsem vilÃ¡gos mi is tÃ¶rtÃ©nik, mikor Ã©s miÃ©rt a kontÃ©nerekbe pakolÃ¡s kapcsÃ¡n ne adjuk fel. ElsÅ‘re talÃ¡n az egÃ©sz mechanizmus jelentÅ‘sÃ©ge sem szembetÅ±nÅ‘, ugyanakkor Ã©rdemes prÃ³bÃ¡lkozni, azaz venni a forrÃ¡st Ã©s jÃ¡tszani a kÃ¼lÃ¶nbÃ¶zÅ‘ Ã©rtÃ©kekkel (\textit{fill}, \textit{expand}, \textit{spacing}, \textit{padding}), illetve a lÃ©trehozott ablak Ã¡tmÃ©retezÃ©sÃ©vel.
 
 \nocite{gtktut}
 \nocite{gtkmmtut}
 \nocite{ggad}
 \nocite{gtktutmagy}
 
-\addcontentsline{toc}{section}{Hivatkozások}
+\addcontentsline{toc}{section}{HivatkozÃ¡sok}
 \bibliography{1}
 \bibliographystyle{plain}
 
