@@ -1,14 +1,14 @@
 \documentclass[a4paper,10pt]{article}
 
-\usepackage[latin2]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[hungarian]{babel}
 \usepackage{t1enc}
 \usepackage{listings}
 \usepackage{textcomp}
 
 %opening
-\title{Hello Window! - GTK+/gtkmm programozás GNU/Linux alatt}
-\author{Pfeiffer Szilárd}
+\title{Hello Window! - GTK+/gtkmm programozÃ¡s GNU/Linux alatt}
+\author{Pfeiffer SzilÃ¡rd}
 \date{2008. szeptember 10.}
 
 \begin{document}
@@ -16,29 +16,29 @@
 \maketitle
 
 \begin{abstract}
-A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven --ám objektum-orientált meg\-kö\-ze\-lí\-tés\-sel-- íródott, grafikus felhasználói felületek (\textit{GUI}) létrehozására használatos al\-kal\-ma\-zás-programozási interfész. A \textit{gtkmm} nem más, mint ennek a függvénykönyvtának a \textit{C++} változata, pontosabban foglamazva \textit{wrapper}e. Mindkét terjesztése \textit{LGPL} licensz alatt történik, így bátran felhasználható mind szabad/ingyenes, mind kereskedelmi szoftevrek létrehozására.
+A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven --Ã¡m objektum-orientÃ¡lt meg\-kÃ¶\-ze\-lÃ­\-tÃ©s\-sel-- Ã­rÃ³dott, grafikus felhasznÃ¡lÃ³i felÃ¼letek (\textit{GUI}) lÃ©trehozÃ¡sÃ¡ra hasznÃ¡latos al\-kal\-ma\-zÃ¡s-programozÃ¡si interfÃ©sz. A \textit{gtkmm} nem mÃ¡s, mint ennek a fÃ¼ggvÃ©nykÃ¶nyvtÃ¡nak a \textit{C++} vÃ¡ltozata, pontosabban foglamazva \textit{wrapper}e. MindkÃ©t terjesztÃ©se \textit{LGPL} licensz alatt tÃ¶rtÃ©nik, Ã­gy bÃ¡tran felhasznÃ¡lhatÃ³ mind szabad/ingyenes, mind kereskedelmi szoftevrek lÃ©trehozÃ¡sÃ¡ra.
 
-A most kezdõdõ sorozat célja az abszólút kezdetektõl indulva bemutatni a \textit{GTK+} és a \textit{gtkmm} hasonlóságait, különbözõségeit, sajátosságait eljutva egy olyan szintre, ahol remélhetõleg a több éves tapasztalattal rendelkezõ fejlesztõk is találnak hasznos, megfontolásra érdemes ötleteket, információkat.
+A most kezdÅ‘dÅ‘ sorozat cÃ©lja az abszÃ³lÃºt kezdetektÅ‘l indulva bemutatni a \textit{GTK+} Ã©s a \textit{gtkmm} hasonlÃ³sÃ¡gait, kÃ¼lÃ¶nbÃ¶zÅ‘sÃ©geit, sajÃ¡tossÃ¡gait eljutva egy olyan szintre, ahol remÃ©lhetÅ‘leg a tÃ¶bb Ã©ves tapasztalattal rendelkezÅ‘ fejlesztÅ‘k is talÃ¡lnak hasznos, megfontolÃ¡sra Ã©rdemes Ã¶tleteket, informÃ¡ciÃ³kat.
 \end{abstract}
 
 \newpage
 
-\section{Bevezetés}
+\section{BevezetÃ©s}
 
-A cikksorozat ezen elsõ részében a \textit{GTK+}/\textit{gtkmm} programozás szempontjából teljesen az alapokról indulunk, de feltételezünk némi jártassságot a \textit{C}, illetve \textit{C++} nyelvû programozás, illetve a \textit{Linux} alatti fejlesztés terén. Utóbbiak tekintetében javasolt Vomberg István, Programozás Linux környezetben címû cikksorozatának tanulmányozása, hisz számos területet érintünk az ott tárgyaltak közül anélkül, hogy itt részletekbe menõ kifejtésük megtörténne.
+A cikksorozat ezen elsÅ‘ rÃ©szÃ©ben a \textit{GTK+}/\textit{gtkmm} programozÃ¡s szempontjÃ¡bÃ³l teljesen az alapokrÃ³l indulunk, de feltÃ©telezÃ¼nk nÃ©mi jÃ¡rtasssÃ¡got a \textit{C}, illetve \textit{C++} nyelvÅ± programozÃ¡s, illetve a \textit{Linux} alatti fejlesztÃ©s terÃ©n. UtÃ³bbiak tekintetÃ©ben javasolt Vomberg IstvÃ¡n, ProgramozÃ¡s Linux kÃ¶rnyezetben cÃ­mÅ± cikksorozatÃ¡nak tanulmÃ¡nyozÃ¡sa, hisz szÃ¡mos terÃ¼letet Ã©rintÃ¼nk az ott tÃ¡rgyaltak kÃ¶zÃ¼l anÃ©lkÃ¼l, hogy itt rÃ©szletekbe menÅ‘ kifejtÃ©sÃ¼k megtÃ¶rtÃ©nne.
 
-\section{Összehasonlítás}
+\section{Ã–sszehasonlÃ­tÃ¡s}
 
-Mielõtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid kitérõt a tisztánlátás érdekében és hasonlítsuk össze a két felületprogramozási nyelv alapvetõ tulajdonságait:\vspace{16pt}
+MielÅ‘tt a kÃ³dolÃ¡s technikai rÃ©szleteire rÃ¡tÃ©rnÃ©nk, tegyÃ¼nk egy rÃ¶vid kitÃ©rÅ‘t a tisztÃ¡nlÃ¡tÃ¡s Ã©rdekÃ©ben Ã©s hasonlÃ­tsuk Ã¶ssze a kÃ©t felÃ¼letprogramozÃ¡si nyelv alapvetÅ‘ tulajdonsÃ¡gait:\vspace{16pt}
 
 \begin{tabular}[t]{l c c}
                                        & \textit{GTK+}                     & \textit{gtkmm}   \\\\
-\textbf{Felhasználási terület:}        & GUI fejlesztés                    & GUI fejlesztés   \\\\
-\textbf{Implementáció nyelve:}         & C                                 & C++              \\\\
-\textbf{Implementáció módja:}          & natív                             & wrapper          \\\\
-\textbf{Objektumorinentált}            &                                   &                  \\
-\textbf{technikák használata:}         & közvetett                         & natív            \\\\
-\textbf{Típusellenõrzés:}              & futási idõben                     & fordításai dõben \\\\
+\textbf{FelhasznÃ¡lÃ¡si terÃ¼let:}        & GUI fejlesztÃ©s                    & GUI fejlesztÃ©s   \\\\
+\textbf{ImplementÃ¡ciÃ³ nyelve:}         & C                                 & C++              \\\\
+\textbf{ImplementÃ¡ciÃ³ mÃ³dja:}          & natÃ­v                             & wrapper          \\\\
+\textbf{ObjektumorinentÃ¡lt}            &                                   &                  \\
+\textbf{technikÃ¡k hasznÃ¡lata:}         & kÃ¶zvetett                         & natÃ­v            \\\\
+\textbf{TÃ­pusellenÅ‘rzÃ©s:}              & futÃ¡si idÅ‘ben                     & fordÃ­tÃ¡sai dÅ‘ben \\\\
 \textbf{Licenc:}                       & LGPL                              & LGPL             \\\\
 \textbf{Ismertebb projektek:}          & GNOME,                            & GNOME            \\
                                        & Evolution, Firefox, Gimp          &                  \\
@@ -46,29 +46,29 @@ Mielõtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid kitérõt a t
 
 
 \subsection{GTK+ vs. gtkmm}
-Ahogy az a fentiekbõ is látszik a a \textit{C++} nyelvû változatnak megvannak a maga komoly elõnyei. Ezek közül talán a legfontosabb, hogy a nyelv nyújtotta módszereket, mint például az örököltetés, itt közvetlenül használhatjuk ki. Ez természetesen nem jelenti azt, hogy a \textit{GTK+} esetén erre ne lenne lehetõségünk, ugyanakkor meg kell jegyezni, hogy míg a \textit{gtkmm} esetén ez jétszi könnyedséggel megtehetõ, addig az eredeti változat alkalmazásával ez kissé körülményes. Egy másik megfontolandó érv a típusbiztosság, melynek elõnyeit nem lehet eléggé hangsúlyozni, hiszen hosszú órák hibakeresésétõl óvhat meg minket. A \textit{GTK+} a \textit{GObject} révén --melyre egy késõbbi részben részletesebben is foglalkozunk majd-- rendelkezik egy frappáns mechanizmussal, mely lehetõvé teszi a futásidejû típusellenõrzést a \textit{widget}ek esetén, de nem vetekedhet a \textit{C++} nyújtotta fordítási idejû hibaüzenetekkel.
+Ahogy az a fentiekbÅ‘ is lÃ¡tszik a a \textit{C++} nyelvÅ± vÃ¡ltozatnak megvannak a maga komoly elÅ‘nyei. Ezek kÃ¶zÃ¼l talÃ¡n a legfontosabb, hogy a nyelv nyÃºjtotta mÃ³dszereket, mint pÃ©ldÃ¡ul az Ã¶rÃ¶kÃ¶ltetÃ©s, itt kÃ¶zvetlenÃ¼l hasznÃ¡lhatjuk ki. Ez termÃ©szetesen nem jelenti azt, hogy a \textit{GTK+} esetÃ©n erre ne lenne lehetÅ‘sÃ©gÃ¼nk, ugyanakkor meg kell jegyezni, hogy mÃ­g a \textit{gtkmm} esetÃ©n ez jÃ©tszi kÃ¶nnyedsÃ©ggel megtehetÅ‘, addig az eredeti vÃ¡ltozat alkalmazÃ¡sÃ¡val ez kissÃ© kÃ¶rÃ¼lmÃ©nyes. Egy mÃ¡sik megfontolandÃ³ Ã©rv a tÃ­pusbiztossÃ¡g, melynek elÅ‘nyeit nem lehet elÃ©ggÃ© hangsÃºlyozni, hiszen hosszÃº Ã³rÃ¡k hibakeresÃ©sÃ©tÅ‘l Ã³vhat meg minket. A \textit{GTK+} a \textit{GObject} rÃ©vÃ©n --melyre egy kÃ©sÅ‘bbi rÃ©szben rÃ©szletesebben is foglalkozunk majd-- rendelkezik egy frappÃ¡ns mechanizmussal, mely lehetÅ‘vÃ© teszi a futÃ¡sidejÅ± tÃ­pusellenÅ‘rzÃ©st a \textit{widget}ek esetÃ©n, de nem vetekedhet a \textit{C++} nyÃºjtotta fordÃ­tÃ¡si idejÅ± hibaÃ¼zenetekkel.
 
-Megfeledkezni azonban nem lehet a tényrõl, hogy a \textit{C++} fordító közel sem olyan gyakran áll rendelkezésre, mint azt gondolnánk. Számos olyan terület létezik ugyanis, melyek esetén alapvetõ megkötés a \textit{C} nyelv. Megemlítendõ továbbá, hogy a \textit{gtkmm} nem az egyetlen port, hiszen létezik többek között \textit{python} (\textit{pyGTK}), \textit{perl} (gtk2-perl), \textit{ruby}, \textit{java} nyelvû változat is.
+Megfeledkezni azonban nem lehet a tÃ©nyrÅ‘l, hogy a \textit{C++} fordÃ­tÃ³ kÃ¶zel sem olyan gyakran Ã¡ll rendelkezÃ©sre, mint azt gondolnÃ¡nk. SzÃ¡mos olyan terÃ¼let lÃ©tezik ugyanis, melyek esetÃ©n alapvetÅ‘ megkÃ¶tÃ©s a \textit{C} nyelv. MegemlÃ­tendÅ‘ tovÃ¡bbÃ¡, hogy a \textit{gtkmm} nem az egyetlen port, hiszen lÃ©tezik tÃ¶bbek kÃ¶zÃ¶tt \textit{python} (\textit{pyGTK}), \textit{perl} (gtk2-perl), \textit{ruby}, \textit{java} nyelvÅ± vÃ¡ltozat is.
 
-\subsection{Kódszervezés}
-Elöljáróban fontos lehet még tudni a nyelvet megvalósító implementáció szervezésérõl, hogy példaértéküen választja szét a funkcinalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elõsegíti a rugalmasságot és a portabilitást. A \textit{GDK} (\textit{GIMP Drawing Kit}) felelõs a rajzolási primitívek megvalóításáér, tulajdonképpen nem egyéb, mint egy wrapper az ablakozó rendszer köré. Hasznossága abban áll, hogy amennyiben sikerül portolni azt egy új grafikus környezetre, akkor a \textit{GTK+} máris mûködõképessé válhat. A \textit{GObject}, mely a \textit{GLib} része minden widget ``õsosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetõvé tesz referenciaszálálást, futásidejû típusellenõrzést, tulajdonságok hozzárendelését és azok értékének futásidõben történõ változtatását.
+\subsection{KÃ³dszervezÃ©s}
+ElÃ¶ljÃ¡rÃ³ban fontos lehet mÃ©g tudni a nyelvet megvalÃ³sÃ­tÃ³ implementÃ¡ciÃ³ szervezÃ©sÃ©rÅ‘l, hogy pÃ©ldaÃ©rtÃ©kÃ¼en vÃ¡lasztja szÃ©t a funkcinalitÃ¡s egyes elemeit tÃ¶bb kÃ¼lÃ¶nÃ¡llÃ³, jÃ³l elhatÃ¡rolt rÃ©szegysÃ©gre, melyek ugyan tÃ¡maszkodnak egymÃ¡sra, de a megoldÃ¡s nagyban elÅ‘segÃ­ti a rugalmassÃ¡got Ã©s a portabilitÃ¡st. A \textit{GDK} (\textit{GIMP Drawing Kit}) felelÅ‘s a rajzolÃ¡si primitÃ­vek megvalÃ³Ã­tÃ¡sÃ¡Ã©r, tulajdonkÃ©ppen nem egyÃ©b, mint egy wrapper az ablakozÃ³ rendszer kÃ¶rÃ©. HasznossÃ¡ga abban Ã¡ll, hogy amennyiben sikerÃ¼l portolni azt egy Ãºj grafikus kÃ¶rnyezetre, akkor a \textit{GTK+} mÃ¡ris mÅ±kÃ¶dÅ‘kÃ©pessÃ© vÃ¡lhat. A \textit{GObject}, mely a \textit{GLib} rÃ©sze minden widget ``Å‘sosztÃ¡lya'', ugyanakkor sajÃ¡t eszkÃ¶zÃ¶k alapkÃ¶vÃ©vÃ© is thetjÃ¼k, hisz egyebek mellett lehetÅ‘vÃ© tesz referenciaszÃ¡lÃ¡lÃ¡st, futÃ¡sidejÅ± tÃ­pusellenÅ‘rzÃ©st, tulajdonsÃ¡gok hozzÃ¡rendelÃ©sÃ©t Ã©s azok Ã©rtÃ©kÃ©nek futÃ¡sidÅ‘ben tÃ¶rtÃ©nÅ‘ vÃ¡ltoztatÃ¡sÃ¡t.
 
 \subsection{GLib}
-A GLib maga egy önálló függvénykönyvtár, mely számos hasznos --a \textit{C} nyelv elemeként nem létezõ-- programozói segldeszközt tartalmaz. Ezek közül a leggyakrabban hasznátak az alábbiak:
+A GLib maga egy Ã¶nÃ¡llÃ³ fÃ¼ggvÃ©nykÃ¶nyvtÃ¡r, mely szÃ¡mos hasznos --a \textit{C} nyelv elemekÃ©nt nem lÃ©tezÅ‘-- programozÃ³i segldeszkÃ¶zt tartalmaz. Ezek kÃ¶zÃ¼l a leggyakrabban hasznÃ¡tak az alÃ¡bbiak:
 
 \begin{description}
- \item[Alkalmazásfejlsztési támogatás] szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintû logolás
- \item[Fejlesztõi segédeszközök] sztring-, dátum-, idõkezelés, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmar fájlok feldolgozása, idõzítõk, reguláris kifejezések
- \item[Adattípusok] láncolt listák, fák, asszociatív tömbök, szekvenciák, sorok, dinamikusan méretezhetõ tömbök
+ \item[AlkalmazÃ¡sfejlsztÃ©si tÃ¡mogatÃ¡s] szÃ¡lak, aszinkron kommunikÃ¡ciÃ³ a szÃ¡lak kÃ¶zÃ¶tt, dinamikus modulbetÃ¶ltÃ©s, memÃ³ria-, pipe-, socket-, fÃ¡jlkezelÃ©s, tÃ¶bbszintÅ± logolÃ¡s
+ \item[FejlesztÅ‘i segÃ©deszkÃ¶zÃ¶k] sztring-, dÃ¡tum-, idÅ‘kezelÃ©s, karakterkonverziÃ³s eszkÃ¶zÃ¶k, parancssori paramÃ©terek, XML, .ini, bookmar fÃ¡jlok feldolgozÃ¡sa, idÅ‘zÃ­tÅ‘k, regulÃ¡ris kifejezÃ©sek
+ \item[AdattÃ­pusok] lÃ¡ncolt listÃ¡k, fÃ¡k, asszociatÃ­v tÃ¶mbÃ¶k, szekvenciÃ¡k, sorok, dinamikusan mÃ©retezhetÅ‘ tÃ¶mbÃ¶k
 \end{description}
 
-Itt is létezik \textit{C++} nyelvû változat, ahogy a \textit{GTK+} esetén is, ám itt a wrapper csak akkor készül el, ha a C++ standard könyvtára nem tartalmaz azonos funkcionalitású eszközt.
+Itt is lÃ©tezik \textit{C++} nyelvÅ± vÃ¡ltozat, ahogy a \textit{GTK+} esetÃ©n is, Ã¡m itt a wrapper csak akkor kÃ©szÃ¼l el, ha a C++ standard kÃ¶nyvtÃ¡ra nem tartalmaz azonos funkcionalitÃ¡sÃº eszkÃ¶zt.
 
-\section{Elsõ ablakunk}
+\section{ElsÅ‘ ablakunk}
 
-Ennyi bevezetés után épp ideje már némi kódot látnunk és azt górcsõ alá vennünk némiképp. Rögvest célszerû hozzátenni, hogy az alabbi --amúgy a gyakorlatban nem túl komoly hasznosságú-- példa teljes részletességel történõ kommentálása önmagában is egy cikksorozat témája lehetne. Szoritkozzunk most ennek okán csak a lényegre:
+Ennyi bevezetÃ©s utÃ¡n Ã©pp ideje mÃ¡r nÃ©mi kÃ³dot lÃ¡tnunk Ã©s azt gÃ³rcsÅ‘ alÃ¡ vennÃ¼nk nÃ©mikÃ©pp. RÃ¶gvest cÃ©lszerÅ± hozzÃ¡tenni, hogy az alabbi --amÃºgy a gyakorlatban nem tÃºl komoly hasznossÃ¡gÃº-- pÃ©lda teljes rÃ©szletessÃ©gel tÃ¶rtÃ©nÅ‘ kommentÃ¡lÃ¡sa Ã¶nmagÃ¡ban is egy cikksorozat tÃ©mÃ¡ja lehetne. Szoritkozzunk most ennek okÃ¡n csak a lÃ©nyegre:
 
-\subsection{A kód}
+\subsection{A kÃ³d}
 
 \vspace{16pt}
 \fontsize{8pt}{8pt}
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])                 int main(int argc, char *argv[]
 }                                                }
 \end{verbatim} 
 
-A fenti példaprogramok forrásfájljai és azok \textit{GTK+}/\textit{gtkmm} weblapjáról, az alábbi linkeken:
+A fenti pÃ©ldaprogramok forrÃ¡sfÃ¡jljai Ã©s azok \textit{GTK+}/\textit{gtkmm} weblapjÃ¡rÃ³l, az alÃ¡bbi linkeken:
 
 \begin{verbatim}
 http://www.flosszine.org/
@@ -98,32 +98,32 @@ http://library.gnome.org/devel/gtk-tutorial/stable/c39.html
 http://www.gtkmm.org/docs/gtkmm-2.4/docs/tutorial/html/chapter-basics.html
 \end{verbatim}
 
-\subsection{Némi magyarázat}
+\subsection{NÃ©mi magyarÃ¡zat}
 
-A lefordított programok természetesen ugyanazt az eredményt adják, de errõl egy picikét késõbb. Vegyük most szemügyre közelebbrõl a forráskódot amit a nagyfokó hasonlóság ellenére mutat eltéréseket is.
+A lefordÃ­tott programok termÃ©szetesen ugyanazt az eredmÃ©nyt adjÃ¡k, de errÅ‘l egy picikÃ©t kÃ©sÅ‘bb. VegyÃ¼k most szemÃ¼gyre kÃ¶zelebbrÅ‘l a forrÃ¡skÃ³dot amit a nagyfokÃ³ hasonlÃ³sÃ¡g ellenÃ©re mutat eltÃ©rÃ©seket is.
 
-\subsubsection{Projektek különbözõségébõl adódó eltérések}
+\subsubsection{Projektek kÃ¼lÃ¶nbÃ¶zÅ‘sÃ©gÃ©bÅ‘l adÃ³dÃ³ eltÃ©rÃ©sek}
 
-A legtöbb nyílt forrású projekt esetén igaz, hogy a kódolás és kódszervezés során egy meghatározott konvenciót követnek, ám amint ez a korábbi példából is látszik, egy olyan méretû projekt esetén, mint a \textit{GNOME} az egyes részterületeken lehetnek eltérések.
+A legtÃ¶bb nyÃ­lt forrÃ¡sÃº projekt esetÃ©n igaz, hogy a kÃ³dolÃ¡s Ã©s kÃ³dszervezÃ©s sorÃ¡n egy meghatÃ¡rozott konvenciÃ³t kÃ¶vetnek, Ã¡m amint ez a korÃ¡bbi pÃ©ldÃ¡bÃ³l is lÃ¡tszik, egy olyan mÃ©retÅ± projekt esetÃ©n, mint a \textit{GNOME} az egyes rÃ©szterÃ¼leteken lehetnek eltÃ©rÃ©sek.
 
 \begin{description}
- \item[Forráskód formázása] A \textit{GTK+} fejlesztõi a \textit{GNU coding standard} irányelveit alkalmazzák, míg a \textit{gktmmm} ettõl minimális mértékben eltérõ változat az alkalmaz.
+ \item[ForrÃ¡skÃ³d formÃ¡zÃ¡sa] A \textit{GTK+} fejlesztÅ‘i a \textit{GNU coding standard} irÃ¡nyelveit alkalmazzÃ¡k, mÃ­g a \textit{gktmmm} ettÅ‘l minimÃ¡lis mÃ©rtÃ©kben eltÃ©rÅ‘ vÃ¡ltozat az alkalmaz.
 
- \item[Fejécfájlok helye] Mint az késõbbiekben megfigyelhetõ lesz a \textit{GTK+} \textit{header}ek esetén a fájloknak van egy \textit{gtk} prefixe, ugynakkor a \textit{gtkmm}-nél eznem használatos. Ez egyébiránt illeszkedig a nevezéktannál tapsztaltakkal.
+ \item[FejÃ©cfÃ¡jlok helye] Mint az kÃ©sÅ‘bbiekben megfigyelhetÅ‘ lesz a \textit{GTK+} \textit{header}ek esetÃ©n a fÃ¡jloknak van egy \textit{gtk} prefixe, ugynakkor a \textit{gtkmm}-nÃ©l eznem hasznÃ¡latos. Ez egyÃ©birÃ¡nt illeszkedig a nevezÃ©ktannÃ¡l tapsztaltakkal.
  \end{description}
 
-\subsubsection{Programozási nyelv okozta sajátosságok}
+\subsubsection{ProgramozÃ¡si nyelv okozta sajÃ¡tossÃ¡gok}
 
 \begin{description}
- \item[Nevezéktan] A \textit{GTK+} minden saját makrót/függvényt \texttt{GTK}/\texttt{gtk} prefixszel lát el (\textit{GLib} esetén ez pusztán csak egy kis/nagy \texttt{g} betû), sõt egy adott részterület --például egy \textit{widget}-- saját ``névterülettel'' is rendelkezhet, azaz újabb prefixet vezethet be. Ezeket egymástól, illetve a ``valódi'' funkciót jelölõ nevektõl \texttt{\_} (aláhuzás) jellel választják el. A C++ wrapper kódát olvasva láthatjuk, hogy kihasználva a kézenfekvõ nyelvi lehetõséget, a prefixek szerepét a névterek veszik át, annyi különbséggel, hogy ezek neveiben csak az elsõ betû nagy.
- \item[Nyelvhez kötõdõ módszerek] A minapéldában megfigyelhetõ (az azonos funkciójú sorok párbaállítása révén), hogy a \textit{C++} kód némileg egyszerûbb, hiszen az ablakunk létrehozásakor nem kell a window típusára (\textit{toplevel}) vonatkozó paramétert megadnunk, azonos helyen lehet a változó deklarációja és elsõ felhasználása. Külön is említésre méltó, bár a \textit{C++} prgramozók számára nem meglepõ, hogy a main függvénybõl való kilépéskor a \textit{gtkmm} változat windowja felszabadul, míg a \textit{GTK+} verzió esetén ez csak azért történik meg, mert magából a programból is kiléptünk egyúttal.
+ \item[NevezÃ©ktan] A \textit{GTK+} minden sajÃ¡t makrÃ³t/fÃ¼ggvÃ©nyt \texttt{GTK}/\texttt{gtk} prefixszel lÃ¡t el (\textit{GLib} esetÃ©n ez pusztÃ¡n csak egy kis/nagy \texttt{g} betÅ±), sÅ‘t egy adott rÃ©szterÃ¼let --pÃ©ldÃ¡ul egy \textit{widget}-- sajÃ¡t ``nÃ©vterÃ¼lettel'' is rendelkezhet, azaz Ãºjabb prefixet vezethet be. Ezeket egymÃ¡stÃ³l, illetve a ``valÃ³di'' funkciÃ³t jelÃ¶lÅ‘ nevektÅ‘l \texttt{\_} (alÃ¡huzÃ¡s) jellel vÃ¡lasztjÃ¡k el. A C++ wrapper kÃ³dÃ¡t olvasva lÃ¡thatjuk, hogy kihasznÃ¡lva a kÃ©zenfekvÅ‘ nyelvi lehetÅ‘sÃ©get, a prefixek szerepÃ©t a nÃ©vterek veszik Ã¡t, annyi kÃ¼lÃ¶nbsÃ©ggel, hogy ezek neveiben csak az elsÅ‘ betÅ± nagy.
+ \item[Nyelvhez kÃ¶tÅ‘dÅ‘ mÃ³dszerek] A minapÃ©ldÃ¡ban megfigyelhetÅ‘ (az azonos funkciÃ³jÃº sorok pÃ¡rbaÃ¡llÃ­tÃ¡sa rÃ©vÃ©n), hogy a \textit{C++} kÃ³d nÃ©mileg egyszerÅ±bb, hiszen az ablakunk lÃ©trehozÃ¡sakor nem kell a window tÃ­pusÃ¡ra (\textit{toplevel}) vonatkozÃ³ paramÃ©tert megadnunk, azonos helyen lehet a vÃ¡ltozÃ³ deklarÃ¡ciÃ³ja Ã©s elsÅ‘ felhasznÃ¡lÃ¡sa. KÃ¼lÃ¶n is emlÃ­tÃ©sre mÃ©ltÃ³, bÃ¡r a \textit{C++} prgramozÃ³k szÃ¡mÃ¡ra nem meglepÅ‘, hogy a main fÃ¼ggvÃ©nybÅ‘l valÃ³ kilÃ©pÃ©skor a \textit{gtkmm} vÃ¡ltozat windowja felszabadul, mÃ­g a \textit{GTK+} verziÃ³ esetÃ©n ez csak azÃ©rt tÃ¶rtÃ©nik meg, mert magÃ¡bÃ³l a programbÃ³l is kilÃ©ptÃ¼nk egyÃºttal.
 \end{description}
 
-\subsection{Vágyaink ablaka}
+\subsection{VÃ¡gyaink ablaka}
 
-\subsubsection{Fordítás és linkelés}
+\subsubsection{FordÃ­tÃ¡s Ã©s linkelÃ©s}
 
-Az alábbi parancssorok segítségével fordíthatóak elkészült programjaink:
+Az alÃ¡bbi parancssorok segÃ­tsÃ©gÃ©vel fordÃ­thatÃ³ak elkÃ©szÃ¼lt programjaink:
 
 \fontsize{8pt}{8pt}
 \ \\
@@ -132,14 +132,14 @@ Az alábbi parancssorok segítségével fordíthatóak elkészült programjaink:
 \texttt{g++ gtkmm\_window.cc -o gtkmm\_window \`{}pkg-config gtkmm-2.4 {-}-cflags {-}-libs\`{}}
 \\
 
-Segítségünkre a \texttt{pkg-config} parancs van, hogy a \textit{gcc}-nek a megfelelõ paramétereket meg tudjuk adni. A \texttt{--cflags} paraméter hatására a fordításhoz, míg a \texttt{--libs} eredményeképp a linkeléshez szükséges opciókat kapjuk vissza. A parancs két \texttt{\`} (backtick) közé zárt. aminek hatsára annak kimenete része lesz a fordító parancssorának, amivel pont az áhytott hatást érjük el.
+SegÃ­tsÃ©gÃ¼nkre a \texttt{pkg-config} parancs van, hogy a \textit{gcc}-nek a megfelelÅ‘ paramÃ©tereket meg tudjuk adni. A \texttt{--cflags} paramÃ©ter hatÃ¡sÃ¡ra a fordÃ­tÃ¡shoz, mÃ­g a \texttt{--libs} eredmÃ©nyekÃ©pp a linkelÃ©shez szÃ¼ksÃ©ges opciÃ³kat kapjuk vissza. A parancs kÃ©t \texttt{\`} (backtick) kÃ¶zÃ© zÃ¡rt. aminek hatsÃ¡ra annak kimenete rÃ©sze lesz a fordÃ­tÃ³ parancssorÃ¡nak, amivel pont az Ã¡hytott hatÃ¡st Ã©rjÃ¼k el.
 
-\subsubsection{Futtatás}
+\subsubsection{FuttatÃ¡s}
 
-Ezel után már csak az örömteli pillanat van hátra, mikor is két különbözõ nyelven és függvénykönyvtárral lekódolt teljesen azonos funkciójú programunkat lefuttatjuk a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsal.
+Ezel utÃ¡n mÃ¡r csak az Ã¶rÃ¶mteli pillanat van hÃ¡tra, mikor is kÃ©t kÃ¼lÃ¶nbÃ¶zÅ‘ nyelven Ã©s fÃ¼ggvÃ©nykÃ¶nyvtÃ¡rral lekÃ³dolt teljesen azonos funkciÃ³jÃº programunkat lefuttatjuk a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsal.
 
-\subsubsection{Eredmény}
+\subsubsection{EredmÃ©ny}
 
-\textit{Voil\`{a}!} Túlvagyunk két ablak --vagyis egy Windows-- lekódolásán. Ami eddi is közismert volt, újabb bizonyságot nyert, a Windows kódja lehet, hogy elegáns és egyszerû. ám az eredmény mégis hasznavehetetlen. Az utóbbin fogunk segíteni a következõ részekben.
+\textit{Voil\`{a}!} TÃºlvagyunk kÃ©t ablak --vagyis egy Windows-- lekÃ³dolÃ¡sÃ¡n. Ami eddi is kÃ¶zismert volt, Ãºjabb bizonysÃ¡got nyert, a Windows kÃ³dja lehet, hogy elegÃ¡ns Ã©s egyszerÅ±. Ã¡m az eredmÃ©ny mÃ©gis hasznavehetetlen. Az utÃ³bbin fogunk segÃ­teni a kÃ¶vetkezÅ‘ rÃ©szekben.
 
 \end{document}
