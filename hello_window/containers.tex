@@ -58,6 +58,7 @@ Alapvetően két ilyen leszármazott osztálytípussal találkozhatunk a későb
 
 \subsubsection{Egy elemű konténerek}
 
+\label{sec:bin}
 \index{\texttt{Gtk::Bin}}
 A \texttt{GtkBin} jelentősége a további származtatásoknál jelentkezik majd, hisz az olyan nélkülözhetetlen típusoknak, mint az ablak (\texttt{GtkWindow}), a gomb (\texttt{GtkButton}), vagy a frame (\texttt{GtkFrame}) mind a \textit{GtkBin} az ősosztálya.
 
@@ -72,9 +73,11 @@ A felületi elrendezés kialakításakor játszik fontos szerepet, hisz a benne 
 \subsection{Méretezés}
 
 \index{\textit{size request}}
+\label{par:widgetsizerequest}
 A \texttt{GtkContainer} osztály legfontosabb funkcionalitása -- melyet minden származtatott osztály is felhasznál -- az, hogy meg tudja határozni a benne található elemek méretét. Ezt persze nem teljesen önállóan teszi, hanem megkérdezni a benne található \textit{widget}eket, hogy mekkora helyre lenne szükségük. Minden egyes \textit{widget} saját hatáskörben állapíthatja meg, hogy mekkora az a vízszintes, illetve függőleges kiterjedés, ami az igényeinek legjobban megfelelne. Ezt az méretigényt nevezi a \textit{GTK} \textit{size request}nek. Ez a mechanizmus fentről lefelé, azaz a gyökértől a levelek felé terjed abban a fa hierarchiában, melynek gyökere az ablak, közbülső elemeit a konténerek, leveleit pedig a widgetek alkotják.
 
 \index{\textit{size allocation}}
+\label{par:widgetsizeallocation}
 A legegyszerűbb és legáltalánosabb eset tehát az, hogy a konténerek -- amilyen maga az balak is -- összeadják a gyermekeik (a fában közvetlenül alattuk lévő elemek) méretigényét és azt sajátjukként propagálják. A valóság azonban nem ilyen demokratikus. Minden konténernek lehetősége van arra, hogy a benne lévő elemek felé -- egy az eredeti igénytől esetlegesen eltérő -- méretet (\textit{size allocation}) adjon vissza mellyel gazdálkodniuk kell és amely rájuk nézve kötelező érvényű.
 
 \subsection{Elrendezés}
@@ -152,6 +155,7 @@ Ha ezt az esetet el akarjuk kerülni, akkor még az eltávolítás előtt a refe
 Hasonlóan a \textit{GtkBin}hez itt sincs specifikus függvény az eltávolításra, hanem a \textit{GtkContainer} \texttt{remove} függvényét hívjuk.
 
 \section{Pa(c)koljunk}
+\label{sec:packing}
 
 Lássuk mire jó végül is ez a három opció (\textit{homogeneous}, \textit{expand}, \textit{fill}) és mikét függenek össze egymással.
 
