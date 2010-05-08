@@ -78,15 +78,16 @@ framexleftmargin=5mm
 \end{minipage}
 }
 
-\newcommand{\lstinputsourcesappendix}[4][numbers=none]{
+\newcommand{\lstinputsourcesappendix}[5][]{
 \noindent
 \begin{center}
 \begin{minipage}[t][\height][l]{0.57\linewidth}
-\lstinputlisting[language=C, #1]{#2}
+\lstinputlisting[numbers=none, #1]{#2}
 \end{minipage}
 \begin{minipage}[t][\height][r]{0.39\linewidth}
-\lstinputlisting[language=C++, #1]{#3}
+\lstinputlisting[numbers=none, #1]{#3}
 \end{minipage}
+\lstinputlisting[nolol=false, showlines=false, caption={#4}, label=#5]{sources/null}
 \end{center}
 }
 
@@ -112,23 +113,24 @@ A most kezdődő sorozat célja az abszolút kezdetektől indulva bemutatni a \t
 
 \newpage
 \appendix
+\addcontentsline{toc}{section}{Függelék}
 
 \lstset{columns=fixed, basewidth={0.40em, 0.38em}}
 
-\section{\textit{Widget} származtatás}
-
-\subsection{\textit{Widget} származtatása \textit{gtkmm} esetén}
+\section{\textit{Window} \texttt{delete-event} eseményének blokkolása származtatással}
 
 \lstinputsourcesappendix
+[language=C]
 {sources/mywindow.hpp}
 {sources/mywindow.cc}
+{\textit{Window} \texttt{delete-event} eseményének blokkolása származtatással \textit{GTK+} esetén}
 {lst:mywindowgtkmm}
 
-\subsection{\textit{Widget} származtatása \textit{GTK+} esetén}
-
 \lstinputsourcesappendix
+[language=C++]
 {sources/mywindow.h}
 {sources/mywindow.c}
+{\textit{Window} \texttt{delete-event} eseményének blokkolása származtatással \textit{gtkmm} esetén}
 {lst:mywindowgtk}
 
 \newpage
