@@ -1,0 +1,93 @@
+\documentclass[a4paper, titlepage]{report}
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose, tmargin=2.0cm, bmargin=2.0cm, lmargin=2.0cm, rmargin=2.0cm}
+
+%hyper references pdf attributes
+\usepackage{hyperref}
+\hypersetup{
+pdftitle={Hello Window!},
+pdfauthor={Szilárd Pfeiffer},
+pdfsubject={GTK+ and gtkmm programming},
+pdfkeywords={szilárd pfeiffer, gtk, gtk+, gtkmm, gnome, hig, linux},
+bookmarks={true},
+unicode={true},
+colorlinks={false},
+hyperfigures={true},
+a4paper={true}
+}
+
+\input{common_preamble}
+
+\author{
+\href{http://pfeifferszilard.hu}{Szilárd Pfeiffer}
+}
+\title{Hello Window!}
+
+\begin{document}
+
+\maketitle
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\chapter{Bevezetés}
+
+\input{article_window_content}
+
+\appendix
+
+\chapter{Licencelési feltételek}
+
+Ez a mű a Creative Commons \textit{Nevezd meg!-Így add tovább!} licencének hatálya alatt áll.
+
+\paragraph{A következőket teheted a művel:}
+
+\begin{itemize}
+ \item szabadon másolhatod
+ \item terjesztheted
+ \item bemutathatod és előadhatod a művet 
+ \item származékos műveket (feldolgozásokat) hozhatsz létre
+\end{itemize}
+
+\paragraph{Az alábbi feltételekkel:}
+
+\begin{description}
+ \item[Nevezd meg!] A szerző vagy a jogosult által meghatározott módon fel kell tüntetned a műhöz kapcsolódó információkat (pl. a szerző nevét vagy álnevét, a Mű címét).
+ \item[Így add tovább!] Ha megváltoztatod, átalakítod, feldolgozod ezt a művet, az így létrejött alkotást csak a jelenlegivel megegyező licenc alatt terjesztheted.
+\end{description}
+
+\paragraph{Az alábbi figyelembevételével:}
+
+\begin{description}
+ \item[Elengedés] A szerzői jogok tulajdonosának engedélyével bármelyik fenti feltételtől \href{http://creativecommons.org/licenses/by-sa/2.5/hu/#}{eltérhetsz}.
+ \item[Más jogok] A következő jogokat a licenc semmiben nem befolyásolja:
+ \begin{itemize}
+  \item A fentiek nem befolyásolják \href{http://wiki.creativecommons.org/Frequently_Asked_Questions#Do_Creative_Commons_licenses_affect_fair_use.2C_fair_dealing_or_other_exceptions_to_copyright.3F}{a szabad felhasználáshoz fűződő}, illetve az egyéb jogokat.
+  \item A szerző \href{http://wiki.creativecommons.org/Frequently_Asked_Questions#I_don.E2.80.99t_like_the_way_a_person_has_used_my_work_in_a_derivative_work_or_included_it_in_a_collective_work.3B_what_can_I_do.3F}{személyhez fűződő} jogai
+  \item Más személyeknek a művet vagy a mű használatát érintő jogai, mint például a \href{http://wiki.creativecommons.org/Frequently_Asked_Questions#When_are_publicity_rights_relevant.3F}{személyiségi jogok} vagy az adatvédelmi jogok.
+ \end{itemize}
+ \item[Jelzés] Bármilyen felhasználás vagy terjesztés esetén egyértelműen jelezned kell mások felé ezen mű licencfeltételeit. 
+\end{description}
+
+Ez a Legal Code (jogi változat, vagyis a teljes licenc) szövegének közérthető nyelven megfogalmazott kivonata, teljes változata a Creative Commons \href{http://creativecommons.org/licenses/by-sa/2.5/hu/legalcode}{oldalán} érhető el.
+
+\addcontentsline{toc}{chapter}{Tartalomjegyzék}
+\printindex
+
+\addcontentsline{toc}{chapter}{Táblázatok jegyzéke}
+\listoftables
+
+\addcontentsline{toc}{chapter}{Ábrák jegyzéke}
+\listoffigures
+
+\addcontentsline{toc}{section}{\lstlistlistingname}
+\lstlistoflistings
+
+\addcontentsline{toc}{chapter}{Bibliográfia}
+\bibliography{book}
+\bibliographystyle{plain}
+
+\end{document}

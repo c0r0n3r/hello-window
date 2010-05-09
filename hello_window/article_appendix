@@ -1,0 +1,7 @@
+\newpage
+\appendix
+\addcontentsline{toc}{section}{Függelék}
+
+\lstset{columns=fixed, basewidth={0.40em, 0.38em}}
+
+\section{\textit{Window} \texttt{delete-event} eseményének blokkolása származtatással}

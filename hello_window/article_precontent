@@ -1,0 +1,17 @@
+\pagenumbering{roman}
+
+\begin{titlepage}
+
+\maketitle
+
+\begin{abstract}
+A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven -- ám objektum-orientált megközelítéssel -- íródott, grafikus felhasználói felületek (\textit{GUI}) létrehozására használatos alkalmazás-programozási interfész. A \textit{gtkmm} nem más, mint ennek a függvénykönyvtárnak a \textit{C++} változata, pontosabban fogalmazva \textit{wrapper}e. Mindkét függvénykönyvtár terjesztése \textit{LGPL} licenc alatt történik, így bátran felhasználható mind szabad/ingyenes, mind kereskedelmi szoftverek létrehozására.
+
+A most kezdődő sorozat célja az abszolút kezdetektől indulva bemutatni a \textit{GTK+} és a \textit{gtkmm} hasonlóságait, különbözőségeit, sajátosságait eljutva egy olyan szintre, ahol remélhetőleg a több éves tapasztalattal rendelkező fejlesztők is találnak hasznos, megfontolásra érdemes ötleteket, információkat.
+\end{abstract}
+
+\tableofcontents
+
+\end{titlepage}
+
+\pagenumbering{arabic}

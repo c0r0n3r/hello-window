@@ -1,0 +1,20 @@
+\newpage
+\addcontentsline{toc}{section}{Ábrák jegyzéke}
+\listoffigures
+
+\newpage
+\addcontentsline{toc}{section}{\lstlistlistingname}
+\lstlistoflistings
+
+\newpage
+\addcontentsline{toc}{section}{Tárgymutató}
+\printindex
+
+\nocite{gtktut}
+\nocite{gtkmmtut}
+\nocite{ggad}
+\nocite{gtktutmagy}
+
+\addcontentsline{toc}{section}{Hivatkozások}
+\bibliography{book}
+\bibliographystyle{plain}
