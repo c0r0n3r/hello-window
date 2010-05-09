@@ -1,33 +1,3 @@
-\documentclass[a4paper,10pt]{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[hungarian]{babel}
-\usepackage{t1enc}
-\usepackage{listings}
-\usepackage{textcomp}
-\usepackage{url}
-
-%opening
-\title{Hello Window! - GTK+/gtkmm programozás GNU/Linux alatt}
-\author{Pfeiffer Szilárd}
-\date{2009. február 18.}
-
-\begin{document}
-
-\maketitle
-
-\begin{abstract}
-A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven --ám objektum-orientált meg\-kö\-ze\-lí\-tés\-sel-- íródott, grafikus felhasználói felületek (\textit{GUI}) létrehozására használatos al\-kal\-ma\-zás-programozási interfész. A \textit{gtkmm} nem más, mint ennek a függvénykönyvtárnak a \textit{C++} változata, pontosabban fogalmazva \textit{wrapper}e. Mindkét terjesztése \textit{LGPL} licenc alatt történik, így bátran felhasználható mind szabad/ingyenes, mind kereskedelmi szoftverek létrehozására.
-
-A most kezdődő sorozat célja az abszolút kezdetektől indulva bemutatni a \textit{GTK+} és a \textit{gtkmm} hasonlóságait, különbözőségeit, sajátosságait eljutva egy olyan szintre, ahol remélhetőleg a több éves tapasztalattal rendelkező fejlesztők is találnak hasznos, megfontolásra érdemes ötleteket, információkat.
-\end{abstract}
-
-\newpage
-
-\tableofcontents
-
-\newpage
-
 \section{Bevezetés}
 
 Jelen rész a \textit{GTK+} . Ehhez egy új példprogramot veszünk górcső alá, mely forráskódját tekintve némiképp ugyan bonyolultabb az előző részben tárgyalttól, működésére nézve azonban nem sokban különbözik tőle.
@@ -275,16 +245,3 @@ Próbálkozzunk ezúttal is a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\
 \subsubsection{Eredmény}
 
 Bármily hihetetlen ezúttal sem történik semmi egyéb, mint az előző alkalommal. Remélhetőleg azonban a különbség mégis érzékelhető annyiban, hogy legutóbb a meglepetéssel teli borzongást ablakunk váratlan felbukkanása, míg most a bennünk szikraként felvillanó megértés okozza.
-
-\nocite{gtktut}
-\nocite{gtkmmtut}
-\nocite{ggad}
-\nocite{gtktutmagy}
-
-\addcontentsline{toc}{section}{Hivatkozások}
-\bibliography{basics}
-\bibliographystyle{plain}
-
-
-\end{document}
-

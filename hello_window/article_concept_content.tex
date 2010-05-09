@@ -1,33 +1,3 @@
-\documentclass[a4paper,10pt]{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[hungarian]{babel}
-\usepackage{t1enc}
-\usepackage{listings}
-\usepackage{textcomp}
-\usepackage{url}
-
-%opening
-\title{Hello Window! - GTK+/gtkmm programozás GNU/Linux alatt}
-\author{Pfeiffer Szilárd}
-\date{\today}
-
-\begin{document}
-
-\maketitle
-
-\begin{abstract}
-A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven -- ám objektum-orientált megközelítéssel -- íródott, grafikus felhasználói felületek (\textit{GUI}) létrehozására használatos alkalmazás-programozási interfész. A \textit{gtkmm} nem más, mint ennek a függvénykönyvtárnak a \textit{C++} változata, pontosabban fogalmazva \textit{wrapper}e. Mindkét függvénykönyvtár terjesztése \textit{LGPL} licenc alatt történik, így bátran felhasználható mind szabad/ingyenes, mind kereskedelmi szoftverek létrehozására.
-
-A most kezdődő sorozat célja az abszolút kezdetektől indulva bemutatni a \textit{GTK+} és a \textit{gtkmm} hasonlóságait, különbözőségeit, sajátosságait eljutva egy olyan szintre, ahol remélhetőleg a több éves tapasztalattal rendelkező fejlesztők is találnak hasznos, megfontolásra érdemes ötleteket, információkat.
-\end{abstract}
-
-\newpage
-
-\tableofcontents
-
-\newpage
-
 \section{Bevezetés}
 
 A cikksorozat második részében az első alkalommal már bemutatott példaprogramokat újra felhasználva a \textit{GTK+}/\textit{gtkmm} programozás azon területeit vesszük sorra, melyek nélkül rövid távon el lehet boldogulni, de nélkülözhetetlenek az alapos megértést igénylő feladatok megoldásához.
@@ -150,16 +120,3 @@ Próbálkozzunk ezúttal is a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\
 \subsubsection{Eredmény}
 
 Bármily hihetetlen ezúttal sem történik semmi egyéb, mint az előző alkalommal. Remélhetőleg azonban a különbség mégis érzékelhető annyiban, hogy legutóbb a meglepetéssel teli borzongást ablakunk váratlan felbukkanása, míg most a bennünk szikraként felvillanó megértés okozza.
-
-\nocite{gtktut}
-\nocite{gtkmmtut}
-\nocite{ggad}
-\nocite{gtktutmagy}
-
-\addcontentsline{toc}{section}{Hivatkozások}
-\bibliography{concept}
-\bibliographystyle{plain}
-
-
-\end{document}
- 
