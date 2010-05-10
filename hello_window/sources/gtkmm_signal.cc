@@ -26,10 +26,12 @@ protected:
 
 public:
   MyWindow() :
-    button("Helló Világ")
+    button("Hello Window")
   {
-    button.signal_clicked().connect(sigc::bind(sigc::ptr_fun(hello), "Helló Világ"));
-    button.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::destroy));
+    button.signal_clicked().connect(
+    sigc::bind(sigc::ptr_fun(hello), "Hello Window"));
+    button.signal_clicked().connect(
+    sigc::mem_fun(*this, &MyWindow::destroy));
 
     add(button);
 

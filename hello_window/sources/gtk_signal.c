@@ -39,10 +39,10 @@ int main( int   argc,
   
   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
   
-  button = gtk_button_new_with_label ("Helló Világ");
+  button = gtk_button_new_with_label ("Hello Window");
   
   g_signal_connect (G_OBJECT (button), "clicked",
-                    G_CALLBACK (hello), "Helló Világ");
+                    G_CALLBACK (hello), "Hello Window");
   
   g_signal_connect_swapped (G_OBJECT (button), "clicked",
                             G_CALLBACK (gtk_widget_destroy),

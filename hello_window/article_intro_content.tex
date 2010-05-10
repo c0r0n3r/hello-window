@@ -6,6 +6,7 @@ A cikksorozat ezen első részében a \textit{GTK+}/\textit{gtkmm} programozás 
 
 Mielőtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid kitérőt a tisztánlátás érdekében és hasonlítsuk össze a két felületprogramozási nyelv alapvető tulajdonságait:\vspace{16pt}
 
+\begin{center}
 \begin{tabular}[t]{l c c}
                                        & \textit{GTK+}                     & \textit{gtkmm}   \\\\
 \textbf{Felhasználási terület:}        & GUI fejlesztés                    & GUI fejlesztés   \\\\
@@ -18,6 +19,7 @@ Mielőtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid ki
 \textbf{Ismertebb projektek:}          & GNOME,                            & GNOME            \\
                                        & Evolution, Firefox, Gimp          &                  \\
 \end{tabular}
+\end{center}
 
 
 \subsection{GTK+ vs. gtkmm}
@@ -45,25 +47,12 @@ Ennyi bevezetés után épp ideje már némi kódot látnunk és azt górcső al
 
 \subsection{A kód}
 
-\vspace{16pt}
-\fontsize{8pt}{8pt}
-\begin{verbatim}
-#include <gtkmm.h>                               #include <gtk/gtk.h>
+\lstinputsources
+{sources/window_minimal.c}
+{sources/window_minimal.cc}
+{Minimálisan szükséges kód \textit{GTK+}/\textit{gtkmm} használatához}
+{lst:windowminimal}
 
-int main(int argc, char *argv[])                 int main(int argc, char *argv[])
-{                                                {
-  GtkWidget *window;
-
-  gtk_init (&argc, &argv);                         Gtk::Main kit(argc, argv);
-
-  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);   Gtk::Window window;
-  gtk_widget_show  (window);
-
-  gtk_main ();                                     Gtk::Main::run(window);
-
-  return 0;                                        return 0;
-}                                                }
-\end{verbatim} 
 
 A fenti példaprogramok forrásfájljai és azok \textit{GTK+}/\textit{gtkmm} weblapjáról, az alábbi linkeken:
 

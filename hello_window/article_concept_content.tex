@@ -52,25 +52,11 @@ Az előző fejezetekben olvasható metodikák és módszerek közül a \textit{G
 
 Az ismétlés kedvéért -- no meg persze, hogy kéznél legyen -- lássuk most az előző számban már bemutatott példaprogramokat.
 
-\vspace{16pt}
-\fontsize{8pt}{8pt}
-\begin{verbatim}
-1  #include <gtk/gtk.h>                             #include <gtkmm.h>
-2
-3  int main(int argc, char *argv[])                 int main(int argc, char *argv[])
-4  {                                                {
-5    GtkWidget *window;
-6
-7    gtk_init (&argc, &argv);                         Gtk::Main kit(argc, argv);
-8
-9    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);   Gtk::Window window;
-10   gtk_widget_show  (window);
-11
-12   gtk_main ();                                     Gtk::Main::run(window);
-13
-14   return 0;                                        return 0;
-15 }                                                }
-\end{verbatim} 
+\lstinputsources
+{sources/window_minimal.c}
+{sources/window_minimal.cc}
+{Minimálisan szükséges kód \textit{GTK+}/\textit{gtkmm} használatához}
+{lst:windowminimal}
 
 A fenti példaprogramok \textit{C/C++} nyelvű forrásfájljai, illetve azok eredetijei, a \textit{FLOSSzine}, valamint a \textit{GTK+}/\textit{gtkmm} oldalain az alábbi linkeken érhetőek el:
 \ \\\\
