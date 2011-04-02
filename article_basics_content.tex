@@ -42,13 +42,13 @@ Az alábbi példaprogramok \textit{C/C++} nyelvű forrásfájljai, illetve azok 
 \lstinputsources
 {sources/gtk_signal.c}
 {sources/gtkmm_signal.cc}
-{Minimál példa \textit{GtkWindow}hoz}
+{Minimál példa \texttt{GtkWindow}hoz}
 {lst:gtksignal}
 
 \subsubsection{\textit{GTK+} részletek sorról sorra}
 
 \begin{enumerate}
- \item[27-28] Annak szükségességéről, hogy a változók egy függvény elején legyenek deklarálva az előző részben esett szó, így erre itt nem térnünk ki. Ellenben fontos, hogy a változók típusa \texttt{GtkWidget}, a specifikusabb \textit{GtkWindow}, illetve \textit{GtkButton} helyett. Ennek megyarázata, hogy minden olyan függvény a \textit{GTK+}-ban mely egy új \textit{widget}et hozhatunk létre -- azaz a \texttt{\_new} végű metódusok -- egy \texttt{GtkWidget} típusú objektumra mutató pointerrel tér vissza. Ennek kényelmi okai vannak, jelesül, hogy elkerülhessük a folytonos típuskényszerítéseket, hisz legtöbbször olyan függvyéneket használunk, melyek \texttt{GtkWidget}eket kezelnek, tehát ilyen típusra mutatót vesznek át első paraméterként. Ha egy specifikus -- mondjuk \texttt{GtkButton}-t kezelő -- függvényt akarunk hívni, akkor vagy fordítási, vagy ami javasol, futás idejű típuskényszerítés alkalmazandó.
+ \item[27-28] Annak szükségességéről, hogy a változók egy függvény elején legyenek deklarálva az előző részben esett szó, így erre itt nem térnünk ki. Ellenben fontos, hogy a változók típusa \texttt{GtkWidget}, a specifikusabb \texttt{GtkWindow}, illetve \texttt{GtkButton} helyett. Ennek megyarázata, hogy minden olyan függvény a \textit{GTK+}-ban mely egy új \textit{widget}et hozhatunk létre -- azaz a \texttt{\_new} végű metódusok -- egy \texttt{GtkWidget} típusú objektumra mutató pointerrel tér vissza. Ennek kényelmi okai vannak, jelesül, hogy elkerülhessük a folytonos típuskényszerítéseket, hisz legtöbbször olyan függvyéneket használunk, melyek \texttt{GtkWidget}eket kezelnek, tehát ilyen típusra mutatót vesznek át első paraméterként. Ha egy specifikus -- mondjuk \texttt{GtkButton}-t kezelő -- függvényt akarunk hívni, akkor vagy fordítási, vagy ami javasol, futás idejű típuskényszerítés alkalmazandó.
 
  \item[32] Főablakunk létrehozása, ahogy eddig is.
 

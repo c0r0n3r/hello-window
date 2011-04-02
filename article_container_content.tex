@@ -11,34 +11,34 @@ A korábbiakhoz hasonlóan itt is érdemes először tisztázni néhány alapfog
 
 A \textit{widget}ek a felületen történő csoportokba csoportokba rendezése konténerek (\textit{container}) segítségével valósul meg. Ezek olyan láthatatlan \textit{widget}ek, melyekbe más \textit{widget}eket helyezhetünk (\textit{pack}).
 
-\index{\texttt{Gtk::Container}}
+\index{GtkContainer@\texttt{GtkContainer}}
 A \texttt{GtkContainer}, avagy \texttt{Gtk::Container} egy önmagában nem használható absztrakt osztály, mely csupán ősül szolgál minden olyan származtatott osztálynak, melyet widgetek tárolására lehet használni.
 
-\index{\texttt{Gtk::Bin}}
-\index{\texttt{Gtk::Box}}
+\index{GtkBin@\texttt{GtkBin}}
+\index{GtkBox@\texttt{GtkBox}}
 Alapvetően két ilyen leszármazott osztálytípussal találkozhatunk a későbbiekben. Ezek a \textit{bin} és \textit{box} ősosztályok, melyek maguk is absztraktak és abban különböznek egymástól, hogy hány elem tárolására alkalmasak. Előbbiek összesen egyére, míg az utóbbiak akárhányéra.
 
 \subsubsection{Egy elemű konténerek}
 
 \label{sec:bin}
-\index{\texttt{Gtk::Bin}}
-A \texttt{GtkBin} jelentősége a további származtatásoknál jelentkezik majd, hisz az olyan nélkülözhetetlen típusoknak, mint az ablak (\texttt{GtkWindow}), a gomb (\texttt{GtkButton}), vagy a frame (\texttt{GtkFrame}) mind a \textit{GtkBin} az ősosztálya.
+\index{GtkBin@\texttt{GtkBin}}
+A \texttt{GtkBin} jelentősége a további származtatásoknál jelentkezik majd, hisz az olyan nélkülözhetetlen típusoknak, mint az ablak (\texttt{GtkWindow}), a gomb (\texttt{GtkButton}), vagy a frame (\texttt{GtkFrame}) mind a \texttt{GtkBin} az ősosztálya.
 
 \subsubsection{Több elemű konténerek}
 
-\index{\texttt{Gtk::Box}}
-\index{\texttt{Gtk::HBox}}
-\index{\texttt{Gtk::VBox}}
-\index{\texttt{Gtk::Table}}
+\index{GtkBox@\texttt{GtkBox}}
+\index{GtkHBox@\texttt{GtkHBox}}
+\index{GtkVBox@\texttt{GtkVBox}}
+\index{GtkTable@\texttt{GtkTable}}
 A felületi elrendezés kialakításakor játszik fontos szerepet, hisz a benne található \textit{widget}ek -- amit a \textit{GTK} konténer gyerekeinek (\textit{children}) nevez -- elrendezésén túl azok méretét és konténeren belüli pozícióját is meghatározza. Ilyen típusok például a horizontális, vagy vertikális rendezést biztosító boxok (\texttt{GtkHBox}, \texttt{GtkVBox}), vagy a táblázatos megjelenítést szolgáló \texttt{GtkTable}.
 
 \subsection{Méretezés}
 
-\index{\textit{size request}}
+\index{konténer!size request@\textit{size request}}
 \label{par:widgetsizerequest}
 A \texttt{GtkContainer} osztály legfontosabb funkcionalitása -- melyet minden származtatott osztály is felhasznál -- az, hogy meg tudja határozni a benne található elemek méretét. Ezt persze nem teljesen önállóan teszi, hanem megkérdezni a benne található \textit{widget}eket, hogy mekkora helyre lenne szükségük. Minden egyes \textit{widget} saját hatáskörben állapíthatja meg, hogy mekkora az a vízszintes, illetve függőleges kiterjedés, ami az igényeinek legjobban megfelelne. Ezt az méretigényt nevezi a \textit{GTK} \textit{size request}nek. Ez a mechanizmus fentről lefelé, azaz a gyökértől a levelek felé terjed abban a fa hierarchiában, melynek gyökere az ablak, közbülső elemeit a konténerek, leveleit pedig a widgetek alkotják.
 
-\index{\textit{size allocation}}
+\index{konténer!size allocation@\textit{size allocation}}
 \label{par:widgetsizeallocation}
 A legegyszerűbb és legáltalánosabb eset tehát az, hogy a konténerek -- amilyen maga az balak is -- összeadják a gyermekeik (a fában közvetlenül alattuk lévő elemek) méretigényét és azt sajátjukként propagálják. A valóság azonban nem ilyen demokratikus. Minden konténernek lehetősége van arra, hogy a benne lévő elemek felé -- egy az eredeti igénytől esetlegesen eltérő -- méretet (\textit{size allocation}) adjon vissza mellyel gazdálkodniuk kell és amely rájuk nézve kötelező érvényű.
 
@@ -46,9 +46,9 @@ A legegyszerűbb és legáltalánosabb eset tehát az, hogy a konténerek -- ami
 
 Normális esetben egy ablak rendelkezésre bocsájtja azt a területet, melyet a benne lévő \textit{widget}ek igényeltek. A kérdés nem is abban  áll, hogy mi legyen akkor ha pont annyi hely van amennyi kell, hanem sokkal inkább abban, miként jelenítse meg a konténer a saját \textit{widget}jeit, ha több a hely, mint amennyire feltétlenül szükség volna. Ilyen eset például akkor állhat elő, ha ez ablak átméretezhető és azt a felhasználó nagyobbra nyújtja, mint amekkora hely a benne lévő widgetek kirajzolásához minimálisan elégséges.
 
-\index{\textit{fill}}
-\index{\textit{expand}}
-\index{\textit{pack-type}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!expand@\texttt{expand}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!fill@\texttt{fill}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!pack-type@\texttt{pack-type}}
 Ezt az esetet szabályozzák azok a paraméterek (pl: \textit{fill}, \textit{expand}, \textit{pack-type}, melyek tulajdonképpen sem a konténerhez, sem pedig a benne tárolt \textit{widget}hez nem tartoznak, hisz a kettejük viszonyát határozzák meg. Megadásuk akkor történik, amikor egy \textit{widget}et szeretnénk egy konténerben -- például egy \textit{box}ban -- elhelyezni.
 
 A konténereket és ezen belül a \textit{box}okat leginkább úgy képzelhetjük el, mint egy dobozt -- vagy ha programozási szakszóval akarunk élni vermet -- melynek mindkét végére lehet pakolni. A verem hasonlat már csak azért is helytálló, mert az egyes elemek verembe történő elhelyezése csak egymást követően, csak egymásra lehetséges. Annyiban viszont sántít a példa, hogy a \textit{GTK} esetén rendkívül ritka -- bár egyáltalában nem lehetetlen -- hogy elemeket vegyünk ki egy konténerből.
@@ -59,12 +59,12 @@ Nyilvánvaló igény, hogy ha már vannak tárolóink és azokhoz kapcsolódóan
 
 \subsection{Létrehozás}
 
-A \textit{GtkContainer}, \textit{GtkBin}, illetve a \textit{GtkBox} absztrakt osztályok, így ebben a formájukban nem, csak a származtatott osztályok révén példányosíthatóak. Ezek közül ebben a részben a vízszintes, illetve függőleges elrendezésű \textit{box}okat (\textit{GtkHBox}, \textit{GtkVBox}), illetve a táblázatot (\textit{GtkTable}) tárgyaljuk.
+A \texttt{GtkContainer}, \texttt{GtkBin}, illetve a \texttt{GtkBox} absztrakt osztályok, így ebben a formájukban nem, csak a származtatott osztályok révén példányosíthatóak. Ezek közül ebben a részben a vízszintes, illetve függőleges elrendezésű \textit{box}okat (\texttt{GtkHBox}, \texttt{GtkVBox}), illetve a táblázatot (\texttt{GtkTable}) tárgyaljuk.
 
-\subsubsection{\textit{GtkVBox} és \textit{GtkHBox}}
+\subsubsection{\texttt{GtkVBox} és \texttt{GtkHBox}}
 
-\index{\textit{homogeneous}}
-\index{\textit{spacing}}
+\index{GtkBox@\texttt{GtkBox}!tulajdonságok!homogeneous@\texttt{homogeneous}}
+\index{GtkBox@\texttt{GtkBox}!tulajdonságok!spacing@\texttt{spacing}}
 Függetlenül az iránytól a létrehozáskor két paramétert kell megadunk (\textit{homogeneous}, \textit{spacing}), ahol az egyik egyik egy \textit{bool}, melynek \textit{true} értéke esetén minden egyes elem azonos helyet foglal majd el a konténerben, míg a másik az egyes elemek között üresen hagyandó részt adja meg pixelben.
 
 \subsubsection{\textit{Table}}
@@ -86,16 +86,16 @@ Használható ugyan a származtatott, bonyolultabb konténerek esetén is (pl: \
 
 \subsubsection{\textit{Bin}}
 
-Ebbe a típusba elemet csak a \texttt{GtkContainer} \texttt{add} függvényével tehetünk. Ha többször hívjuk meg a függvényt anélkül, hogy a \textit{GtkBin} gyerekét eltávolítanánk futási hibát kapunk, hiszen a \textit{GtkBin} csak egyetlen elem tárolására képes.
+Ebbe a típusba elemet csak a \texttt{GtkContainer} \texttt{add} függvényével tehetünk. Ha többször hívjuk meg a függvényt anélkül, hogy a \texttt{GtkBin} gyerekét eltávolítanánk futási hibát kapunk, hiszen a \texttt{GtkBin} csak egyetlen elem tárolására képes.
 
 \subsubsection{\textit{Box}}
 
-Ahogy arról a bevezetőben szó volt a \textit{GtkBox} típus olyan, mint egy két bemenetű verem. Ennek megfelelően két függvény van, amivel elemeket (egyet, vagy többet) lehet helyezni a konténerbe. A \texttt{pack\_start} függőleges elrendezés (\textit{GtkVBox}) esetén felülről lefelé haladva tölti meg a konténert úgy, hogy az egymást után elhelyezett elemek egymás alatt jelennek meg, míg a vízszintes elrendezést biztosító változat (\textit{GtkHBox}) balról jobbra haladva teszi ugyanezt. A \texttt{pack\_end} hívás ezekkel ellentétesen működik, tehát alulról, illetve jobbról balra haladva helyez elemeket a tárolóba.
+Ahogy arról a bevezetőben szó volt a \texttt{GtkBox} típus olyan, mint egy két bemenetű verem. Ennek megfelelően két függvény van, amivel elemeket (egyet, vagy többet) lehet helyezni a konténerbe. A \texttt{pack\_start} függőleges elrendezés (\texttt{GtkVBox}) esetén felülről lefelé haladva tölti meg a konténert úgy, hogy az egymást után elhelyezett elemek egymás alatt jelennek meg, míg a vízszintes elrendezést biztosító változat (\texttt{GtkHBox}) balról jobbra haladva teszi ugyanezt. A \texttt{pack\_end} hívás ezekkel ellentétesen működik, tehát alulról, illetve jobbról balra haladva helyez elemeket a tárolóba.
 
-\index{\textit{fill}}
-\index{\textit{expand}}
-\index{\textit{padding}}
-Ahogy a \textit{GtkContainer} esetén, itt is megadandó a \textit{widget}, de ezen túl itt a konténeren belüli elhelyezkedést meghatározó értékek is paramméterek. Az \textit{expand} és \textit{fill} \textit{bool} típusú paraméterek, melyek a korábban már említett ''felesleges'' hely kitöltésére vonatkoznak. Előbbi azt határozza meg, hogy a \textit{widget} a konténeren belül rendelkezésre álló helyet kitöltse-e, azaz ha van ilyen akkor az igényelje-e magának (\textit{ture}), vagy lemondjon róla (\textit{false}) a többi -- a konténerben lévő -- \textit{widget} javára. Utóbbi paraméter annak beállítására szolgál, hogy a rendelkezésre álló -- illetve az \textit{expand} okán elnyert -- hellyel mi történjék. Ha a paraméter értéke \textit{true}, akkor a \textit{widget} maga tölti ki ezt a helyet, azaz a feltétlenül szükségesnél nagyobb helyen rajzolódik ki, míg ha az érték \textit{false}, akkor csak a minimálisan szükséges helyre rajzolódik és a maradék részt úgymond üresen hagyja. A \textit{pack} függvények utolsó paramétere a \textit{padding}, mely a \textit{widget} körül (\textit{GtkVBox} esetén felül és alul, \textit{GtkHBox} esetén jobbról és balról) hagyandó üres hely értékét adja meg pixelben.
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!expand@\texttt{expand}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!fill@\texttt{fill}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!padding@\texttt{padding}}
+Ahogy a \texttt{GtkContainer} esetén, itt is megadandó a \textit{widget}, de ezen túl itt a konténeren belüli elhelyezkedést meghatározó értékek is paramméterek. Az \textit{expand} és \textit{fill} \textit{bool} típusú paraméterek, melyek a korábban már említett ''felesleges'' hely kitöltésére vonatkoznak. Előbbi azt határozza meg, hogy a \textit{widget} a konténeren belül rendelkezésre álló helyet kitöltse-e, azaz ha van ilyen akkor az igényelje-e magának (\textit{ture}), vagy lemondjon róla (\textit{false}) a többi -- a konténerben lévő -- \textit{widget} javára. Utóbbi paraméter annak beállítására szolgál, hogy a rendelkezésre álló -- illetve az \textit{expand} okán elnyert -- hellyel mi történjék. Ha a paraméter értéke \textit{true}, akkor a \textit{widget} maga tölti ki ezt a helyet, azaz a feltétlenül szükségesnél nagyobb helyen rajzolódik ki, míg ha az érték \textit{false}, akkor csak a minimálisan szükséges helyre rajzolódik és a maradék részt úgymond üresen hagyja. A \textit{pack} függvények utolsó paramétere a \textit{padding}, mely a \textit{widget} körül (\texttt{GtkVBox} esetén felül és alul, \texttt{GtkHBox} esetén jobbról és balról) hagyandó üres hely értékét adja meg pixelben.
 
 Ha elsőre nem is teljesen világos, mit jelent ez a gyakorlatban, a következő fejezet illusztrációjából minden világossá válik.
 
@@ -105,7 +105,7 @@ Az \textit{attach} függvény -- mely a táblázatok esetén elem elhelyezésér
 
 \subsection{Elem eltávolítása}
 
-A származtatott típusok, legalábbis azok, amelyekkel ebben a részben foglalkozunk (\textit{GtkTable}, \textit{GtkBin}, \textit{GtkBox}) nem igényelnek az eltávolítás során semmilyen extra műveletet, így a \textit{GtkContainer} funkcionalitására támaszkodnak.
+A származtatott típusok, legalábbis azok, amelyekkel ebben a részben foglalkozunk (\texttt{GtkTable}, \texttt{GtkBin}, \texttt{GtkBox}) nem igényelnek az eltávolítás során semmilyen extra műveletet, így a \texttt{GtkContainer} funkcionalitására támaszkodnak.
 
 \subsubsection{\textit{Container}}
 
@@ -114,7 +114,7 @@ A \texttt{remove} függvény értelemszerűen az eltávolítani kívánt \textit
 
 Ha ezt az esetet el akarjuk kerülni, akkor még az eltávolítás előtt a referenciaszám növeléséről magunknak kell gondoskodnunk. Vagyis, ha két lépésben (\texttt{remove} és \texttt{add}) akarunk egy \textit{widget}et áthelyezni egyik konténerből a másikba, akkor az eltávolítás előtt növelnünk, a hozzáadás után pedig csökkentenünk kell a referenciát. Utóbbira azért van szükség, mert az új szülőelem maga is növel egyet a referencián, így ha mi, a magunk által korábban megnövelt referenciát nem csökkentenénk, a widget soha nem szűnne meg.
 
-Hasonlóan a \textit{GtkBin}hez itt sincs specifikus függvény az eltávolításra, hanem a \textit{GtkContainer} \texttt{remove} függvényét hívjuk.
+Hasonlóan a \texttt{GtkBin}hez itt sincs specifikus függvény az eltávolításra, hanem a \texttt{GtkContainer} \texttt{remove} függvényét hívjuk.
 
 \section{Pa(c)koljunk}
 \label{sec:packing}
@@ -124,9 +124,9 @@ Lássuk mire jó végül is ez a három opció (\textit{homogeneous}, \textit{ex
 Azoknak, akik már jártasak valamilyen -- a \textit{GTK+}-tól eltérő -- felületprogramozási nyelvben bizonyosan találkoztak már olyan eszközökkel (pl: \textit{QtDesigner}, vagy jelen esetben a \textit{Glade}), melyek egy konkrét felület elkészítésére alkalmasak. A koncepciók különbözőek ugyan, de mindegyiknél joggal merülhet fel a kérdés, hogy miért is nem lehet egész egyszerűen fix koordinátákkal megadni, hol legyenek az egyes widgetek. Nos lehet, sőt vannak is ilyen eszközök, ugyanakkor az elsőre talán kissé zavaró egyveleg komoly flexibilitást nyújt.
 
 \subsection{Homogenitás}
-\index{\textit{homogeneous}}
-\index{\textit{fill}}
-\index{\textit{expand}}
+\index{GtkBox@\texttt{GtkBox}!tulajdonságok!homogeneous@\texttt{homogeneous}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!fill@\texttt{fill}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!expand@\texttt{expand}}
 
 Azaz egyenlőség, abban az értelemben, hogy minden egyes elem a konténerben pontosan ugyanakkora helyet foglal el. A következő ábra azt szemlélteti, hogy miként változtatja meg ez az érték -- a másik kettő függvényében (\textit{expand}, \textit{fill}) -- az elemek elhelyezkedését a konténeren belül.
 
@@ -144,6 +144,7 @@ Ahogy korábban a kódsorokat, most a \textit{widget}sorokat vesszük sorra a mi
 \begin{description}
  \item[\textit{expand} = \textit{false}, \textit{fill} = \textit{false}] A konténerben lévő elemek -- ahogy fentiekben fogalmaztunk -- nem akarnak egymás rovására helyet szerezni (\textit{epxand}), így a rendelkezésre álló vízszintes helyet nem is töltik ki, vagyis ezzel a megoldással az egész elemsorra nézve egyfajta balra (\textit{pack\_end} esetén jobbra) zártság alakítható ki.
 
+\index{konténer!size allocation@\textit{size allocation}}
  \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] Az összkép -- az alatta található sor miatt -- kissé csalóka, mivel az elemek kissé rendezetlennek tűnnek, ugyanakkor arról van szó, hogy minden egyes elem megszerezte magénak -- a saját eredeti méretigényének arányában -- a rendelkezésre álló plusz helyet és az így allokált (\textit{size allocation}) térrészen belül középen helyezkedik el.
 
  \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Az egyes elemek nem csak hogy kiterjeszkedtek (\textit{expand}) a korábban fel nem használt területre, de ki is töltik (\textit{fill}) azt, azaz annak terjedelmében rajzolják meg magukat.
@@ -152,19 +153,20 @@ Ahogy korábban a kódsorokat, most a \textit{widget}sorokat vesszük sorra a mi
 Ahogy az az ábrából -- és talán a magyarázatból is -- kitűnik az \textit{fill} opció állításának semmi teteje anélkül, hogy az \textit{expand} be ne lenne kapcsolva, hisz e nélkül nincs semmilyen plusz terült, amire a \textit{widget} magát megnagyobbítva rajzolhatná.
 
 \subsubsection{Homogén elhelyezés}
-\index{\textit{homogeneous}}
-\index{\textit{fill}}
-\index{\textit{expand}}
+\index{GtkBox@\texttt{GtkBox}!tulajdonságok!homogeneous@\texttt{homogeneous}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!fill@\texttt{fill}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!expand@\texttt{expand}}
 
 \begin{description}
  \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] A konténerben lévő elemek -- a már használt kifejezéssel élve -- nem akarnak egymás rovására helyet szerezni (\textit{epxand}), így a rendelkezésre álló vízszintes helyet nem is töltik ki, vagyis ezzel a megoldással az egész elemsorra nézve egyfajta balra (\textit{pack\_end} esetén jobbra) zártság alakítható ki.
 
+\index{konténer!size allocation@\textit{size allocation}}
  \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Az összkép -- az alatta található sor miatt -- kissé csalóka, mivel az elemek kissé rendezetlennek tűnnek, ugyanakkor arról van szó, hogy minden egyes elem megszerezte magénak -- a saját eredeti méretigényének arányában -- a rendelkezésre álló plusz helyet és az így allokált (\textit{size allocation}) térrészen belül középen helyezkedik el.
 \end{description}
 
 \subsection{Térköz}
-\index{\textit{spacing}}
-\index{\textit{padding}}
+\index{GtkBox@\texttt{GtkBox}!tulajdonságok!spacing@\texttt{spacing}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!padding@\texttt{padding}}
 
 Térköz megadására két lehetőség is kínálkozik a ha elemeket szeretnénk elhelyezni egy \textit{box}ban. Az egyik, hogy magának a konténernek állítunk be létrehozáskor -- vagy akár később -- \textit{spacing}et, vagy az egyes elemek hozzáadásakor adunk meg \textit{padding}et. Hogy mi a különbség a két eset között az alábbi ábra -- ahol az fenti blokkban az első, míg az alsó blokkban a második esetre látunk példát -- jól illusztrálja.
 
@@ -176,7 +178,7 @@ Térköz megadására két lehetőség is kínálkozik a ha elemeket szeretnénk
 \end{figure}
 
 \subsubsection{Tér az elemek között}
-\index{\textit{spacing}}
+\index{GtkBox@\texttt{GtkBox}!tulajdonságok!spacing@\texttt{spacing}}
 
 \begin{description}
  \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] Ez a példa nem mutatja igazán jól meg azt, hogy az elemek között jelenik meg az a térköz, amit a konténer létrehozásakor megadtunk.
@@ -185,10 +187,10 @@ Térköz megadására két lehetőség is kínálkozik a ha elemeket szeretnénk
 \end{description}
 
 \subsubsection{Tér az elemek körül}
-\index{\textit{padding}}
+\index{GtkBox@\texttt{GtkBox}!gyerek tulajdonságok!padding@\texttt{padding}}
 
 \begin{description}
- \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] A \textit{padding} megadásával a térköz nem az elemek között, hanem azok körül jelenik meg. Ez azt jelenti, hogy minden elem jobb és bal oldalán (\textit{GtkVBox} esetén felül és alul) egyaránt jelentkezik a megadott térköz, ennek okán közöttük annak minimum (függően a \textit{fill} értékétől) a kétszerese.
+ \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{false}] A \textit{padding} megadásával a térköz nem az elemek között, hanem azok körül jelenik meg. Ez azt jelenti, hogy minden elem jobb és bal oldalán (\texttt{GtkVBox} esetén felül és alul) egyaránt jelentkezik a megadott térköz, ennek okán közöttük annak minimum (függően a \textit{fill} értékétől) a kétszerese.
 
  \item[\textit{expand} = \textit{true}, \textit{fill} = \textit{true}] Ez az az eset amikor igazán jól látható a \textit{widget}ek között és az azok mellett megjelenő térköz 2:1 aránya. Az előbb -- a szélső widgetek elhelyezkedésénél megfigyelteket -- most hasznosíthatjuk, ha észrevesszük itt a szélső \textit{widget}ek nem tudnak a konténer széléig kiterjeszkedni, lévén két oldalról ki vannak párnázva (\textit{pad}) 10-10 pixellel.
 \end{description}
