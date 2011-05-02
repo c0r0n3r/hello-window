@@ -1,0 +1,99 @@
+%FIXME: mi az, honnan jön, mire érhető el, ...
+
+\section{A függvénykönyvtár moduljai}
+
+Elöljáróban fontos lehet tudni a nyelvet megvalósító implementáció szervezéséről, hogy példaértékűen választja szét a funkcionalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elősegíti a rugalmasságot és a portabilitást. A \textit{GDK} (\textit{GIMP Drawing Kit}) felelős a rajzolási primitívek megvalóításáér, tulajdonképpen nem egyéb, mint egy wrapper az ablakozó rendszer köré. Hasznossága abban áll, hogy amennyiben sikerül portolni azt egy új grafikus környezetre, akkor a \textit{GTK+} máris működőképessé válhat. A \textit{GObject}, mely a \textit{GLib} része minden widget ``ősosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetővé tesz referenciaszálálást, futásidejű típusellenőrzést, tulajdonságok hozzárendelését és azok értékének futásidőben történő változtatását.
+
+\subsection{GLib}
+\index{GLib@\textit{GLib}}
+
+A GLib maga egy önálló függvénykönyvtár, mely számos hasznos --a \textit{C} nyelv elemeként nem létező-- programozói segldeszközt tartalmaz. Ezek közül a leggyakrabban hasznátak az alábbiak:
+
+\paragraph{Alkalmazásfejlsztési támogatás} Szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintű logolás.
+\paragraph{Fejlesztői segédeszközök} Sztring-, dátum-, időkezelés, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmar fájlok feldolgozása, időzítők, reguláris kifejezések.
+\paragraph{Adattípusok} Láncolt listák, fák, asszociatív tömbök, szekvenciák, sorok, dinamikusan méretezhető tömbök.
+
+\subsection{Glibmm}
+\index{glibmm@\textit{glibmm}}
+
+Itt is létezik \textit{C++} nyelvű változat, ahogy a \textit{GTK+} esetén is, ám itt a wrapper csak akkor készül el, ha a C++ standard könyvtára nem tartalmaz azonos funkcionalitású eszközt.
+
+\subsection{GDK}
+\index{GDK@\textit{GDK}}
+%FIXME
+
+\section{A megvalósítás koncepciója}
+
+Ebben a fejezetben arra próbálunk rávilágítani, hogy a \textit{GTK+} ugyan \textit{C} nyelven íródott, de számos -- az objektum-orientált -- nyelvek esetén megszokott terminológiát használ, sőt ezeket a nyelvi eszközök adta mértékben meg is valósítja. Az \textit{OOP} kifejezéseit ezért tudatosan használom az olyan esetekben is, ahol \textit{GTK+} nyelvű fejlesztésről esik szó.
+
+\subsection{Öröklődés}
+ \index{GObject@\texttt{GObject}}
+
+Annak ellenére, hogy a mechanizmust nyelvi szinten a \textit{C} nem, csak a \textit{C++} támogatja lehetséges objektum-orientált megközelítéssel élni az előbbi esetben is. Erre kitűnő példa -- egyebek mellett -- a \textit{GTK+}. Megoldott a \textit{widget}ek egymásból történő származtatása, sőt felhasználói widgetek is definiálhatóak a már meglévőekre támaszkodva. Jól mutatja ez, hogy a \texttt{GObject} osztály minden \textit{widget}, illetve más a \textit{GTK}-ban használt nem vizuális elem őse. Meg kell jegyezni, hogy a \textit{gtkmm} esetén -- lévén ott a nyelv \textit{C++} -- természetesen a származtatás egy nagyságrenddel egyszerűbb, de a letölthető példákat felhasználva némi rutinnal a \textit{GTK+} esetén sem igényel különösebb erőfeszítést.
+
+\subsection{Típusbiztosság}
+ \index{GObject@\texttt{GObject}}
+
+Hasonlóan az öröklődéshez -- pusztán nyelvi szinten -- ez az eszköz sem megvalósítható (\textit{C} esetén), ugyanakkor a \textit{GTK+} minden \textit{widget}típushoz -- mondhatni osztályhoz -- definiál egy-egy makrót, melyek segítségével, fordítási időben (compile time) ugyan nem, de futásidőben (run time) ellenőrizhető egy adott widget valódi típusa, hasonlóan ahhoz, mint amire a \textit{dynamic\_cast} használata jelent a \textit{C++}-ban. Azt a mechanizmust, melynek révén lehetővé válik a \textit{GTK+}-ban a futás idejű típusellenőrzés, a már említett \texttt{GoOject} osztály implementálja.
+
+\subsection{Signal}
+
+Ezen osztályon keresztül valósul meg a szignálkezelés, mely lehetővé teszi adott eseményekhez kezelőfüggvények (\textit{callback}) kapcsolását. Itt kell megjegyezni, hogy mivel az object nem csupán a \textit{widget}eknek őse, így olyan \textit{GTK}-s, vagy akár saját, elemeknek is lehetnek szignáljai, melyek közvetlenül nem láthatóak, mint az általunk létrehozott \textit{GUI} részei.
+
+\subsection{Referencia-számlálás}
+
+Minden \textit{object}ből származó osztály, így a widgetek is, rendelkeznek referencia-számmal, mely tulajdonképpen azt fejezi ki, hogy hányan hivatkoznak az adott elemre. A \textit{GTK}, pontosabban ez esetben a \textit{GLib} lebegő referenciát (\textit{floating reference}) alkalmaz, mely azt jelenti, hogy az objektum létrejöttekor annak referenciája 1 lesz, de ezt a referenciát úgymond nem birtokolja senki, azaz ha a \textit{widget}et egy konténer osztályba (melyekről részletesebben a következő rész szól majd) kívánjuk tenni, akkor -- az első ilyen alkalommal -- a refernciaszám nem nő, annak ellenére sem, hogy ez valójában hivatkozást jelent az adott elemre. A változatlanul hagyott referencia-érték jelenti a lebegő referencia elsüllyesztését (\textit{sink}). Minden azt követő esetben a konténerből történő eltávolítás csökkenti, ahoz való hozzáadás pedig növeli a referencia értékét. Érdemes felhívni a figyelmet arra, hogy az elmondottak alapján, ha hozzáadtuk \textit{widget}ünket egy \textit{container}hez, majd pedig eltávolítjuk belőle azt, akkor annak referenciája 0-ra csökken, ami maga után vonja a destruktor lefutását. Ezt elkerülhetjük, ha az eltávolítás előtt explicit módon növeljük a referenciát, amit aztán csökkentenünk kell, ha egy másik osztály ``birtokába'' adjuk a \textit{widget}et.
+
+\section{Programozási nyelv}
+
+%FIXME: python, perl, ... néhány mondat
+Megfeledkezni azonban nem lehet a tényről, hogy a \textit{C++} fordító közel sem olyan gyakran áll rendelkezésre, mint azt gondolnánk. Számos olyan terület létezik ugyanis, melyek esetén alapvető megkötés a \textit{C} nyelv. Megemlítendő továbbá, hogy a \textit{gtkmm} nem az egyetlen port, hiszen létezik többek között \textit{python} (\textit{pyGTK}), \textit{perl} (gtk2-perl), \textit{ruby}, \textit{java} nyelvű változat is.
+
+Mielőtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid kitérőt a tisztánlátás érdekében és hasonlítsuk össze a két felületprogramozási nyelv alapvető tulajdonságait:\vspace{16pt}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}[t]{l c c}
+                                       & \textbf{\textit{GTK+}}            & \textbf{\textit{gtkmm}}  \\\\
+\textbf{Felhasználási terület:}        & GUI fejlesztés                    & GUI fejlesztés           \\\\
+\textbf{Implementáció nyelve:}         & C                                 & C++                      \\\\
+\textbf{Implementáció módja:}          & natív                             & wrapper                  \\\\
+\textbf{Objektumorinentált}            &                                   &                          \\
+\textbf{technikák használata:}         & közvetett                         & natív                    \\\\
+\textbf{Típusellenőrzés:}              & futási időben                     & fordításai dőben         \\\\
+\textbf{Licenc:}                       & LGPL                              & LGPL                     \\\\
+\textbf{Ismertebb projektek:}          & GNOME,                            & GNOME,                   \\
+                                       & Evolution, Firefox, Gimp, \dots   & GParted, Inkscape, \dots \\
+\end{tabular}
+\caption{A \textit{GTK+} és \textit{gtkmm} tulajdonságainak összehasonlítása}
+\end{center}
+\end{table}
+%FIXME
+
+Ahogy az a fentiekbő is látszik a a \textit{C++} nyelvű változatnak megvannak a maga komoly előnyei. Ezek közül talán a legfontosabb, hogy a nyelv nyújtotta módszereket, mint például az örököltetés, itt közvetlenül használhatjuk ki. Ez természetesen nem jelenti azt, hogy a \textit{GTK+} esetén erre ne lenne lehetőségünk, ugyanakkor meg kell jegyezni, hogy míg a \textit{gtkmm} esetén ez jétszi könnyedséggel megtehető, addig az eredeti változat alkalmazásával ez kissé körülményes. Egy másik megfontolandó érv a típusbiztosság, melynek előnyeit nem lehet eléggé hangsúlyozni, hiszen hosszú órák hibakeresésétől óvhat meg minket. A \textit{GTK+} a \textit{GObject} révén --melyre egy későbbi részben részletesebben is foglalkozunk majd-- rendelkezik egy frappáns mechanizmussal, mely lehetővé teszi a futásidejű típusellenőrzést a \textit{widget}ek esetén, de nem vetekedhet a \textit{C++} nyújtotta fordítási idejű hibaüzenetekkel.
+
+\section{Fejlesztési sajátosságok}
+
+\subsection{Projektek különbözőségéből adódó eltérések}
+
+A legtöbb nyílt forrású projekt esetén igaz, hogy a kódolás és kódszervezés során egy meghatározott konvenciót követnek, ám amint ez a korábbi példából is látszik, egy olyan méretű projekt esetén, mint a \textit{GNOME} az egyes részterületeken lehetnek eltérések.
+
+\paragraph{Forráskód formázása}
+
+A \textit{GTK+} fejlesztői a \textit{GNU coding standard} irányelveit alkalmazzák, míg a \textit{gktmm} ettől minimális mértékben eltérő változat az alkalmaz.
+
+\paragraph{Fejlécfájlok helye}
+
+Mint az későbbiekben megfigyelhető lesz a \textit{GTK+} \textit{header}ek esetén a fájloknak van egy \textit{gtk} prefixe, ugyanakkor a \textit{gtkmm}-nél ez nem használatos. Ez egyébiránt illeszkedik a nevezéktannál tapasztaltakkal.
+
+\subsection{Programozási nyelv okozta sajátosságok}
+
+\paragraph{Nevezéktan}
+
+A \textit{GTK+} minden saját makrót/függvényt \texttt{GTK}/\texttt{gtk} prefixszel lát el (\textit{GLib} esetén ez pusztán csak egy kis/nagy \texttt{g} betű), sőt egy adott részterület --például egy \textit{widget}-- saját ``névterülettel'' is rendelkezhet, azaz újabb prefixet vezethet be. Ezeket egymástól, illetve a ``valódi'' funkciót jelölő nevektől \texttt{\_} (aláhúzás) jellel választják el. A C++ wrapper kódát olvasva láthatjuk, hogy kihasználva a kézenfekvő nyelvi lehetőséget, a prefixek szerepét a névterek veszik át, annyi különbséggel, hogy ezek neveiben csak az első betű nagy.
+
+\paragraph{Nyelvhez kötődő módszerek}
+
+A mintapéldában megfigyelhető (az azonos funkciójú sorok párba állítása révén), hogy a \textit{C++} kód némileg egyszerűbb, hiszen az ablakunk létrehozásakor nem kell a window típusára (\textit{toplevel}) vonatkozó paramétert megadnunk, azonos helyen lehet a változó deklarációja és első felhasználása. Külön is említésre méltó, bár a \textit{C++} programozók számára nem meglepő, hogy a main függvényből való kilépéskor a \textit{gtkmm} változat windowja felszabadul, míg a \textit{GTK+} verzió esetén ez csak azért történik meg, mert magából a programból is kiléptünk egyúttal.
+
+

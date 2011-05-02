@@ -1,0 +1,36 @@
+\section{\textit{Gimp Tool Kit}}
+
+\subsection{Beszerzése}
+%FIXME
+
+\subsection{Függőségei}
+%FIXME
+
+\subsection{Fordítása}
+%FIXME
+
+\subsection{Ellenőrzése}
+%FIXME
+
+\section{Saját alkalmazások}
+%FIXME
+
+\subsection{Fordítás és linkelés}
+%FIXME
+
+Az alábbi parancssorok segítségével fordíthatóak elkészült programjaink:
+
+\begin{lstlisting}[language=sh, numbers=none, basicstyle=\ttfamily, keywordsprefix=window, keywordstyle=\itshape, basewidth={0.5em, 0.4em}]
+gcc gtk_window.c -o gtk_binary `pkg-config --cflags --libs gtk+-2.0`
+g++ gtkmm_window.cc -o gtkmm_binary `pkg-config --cflags --libs gtkmm-2.4`
+\end{lstlisting}
+
+Segítségünkre a \texttt{pkg-config} parancs van, hogy a \textit{gcc}-nek a megfelelő paramétereket meg tudjuk adni. A \texttt{--cflags} paraméter hatására a fordításhoz, míg a \texttt{--libs} eredményeképp a linkeléshez szükséges opciókat kapjuk vissza. A parancs két \texttt{\`} (backtick) közé zárt. aminek hatsára annak kimenete része lesz a fordító parancssorának, amivel pont az áhytott hatást érjük el.
+
+\subsection{Futtatás}
+
+Ezel után már csak az örömteli pillanat van hátra, mikor is két különböző nyelven és függvénykönyvtárral lekódolt teljesen azonos funkciójú programunkat lefuttatjuk a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsal.
+
+\subsection{Eredmény}
+
+Voil\`{a}! Túlvagyunk két ablak --vagyis egy Windows-- lekódolásán. Ami eddi is közismert volt, újabb bizonyságot nyert, a Windows kódja lehet, hogy elegáns és egyszerű. ám az eredmény mégis hasznavehetetlen. Az utóbbin fogunk segíteni a következő részekben.

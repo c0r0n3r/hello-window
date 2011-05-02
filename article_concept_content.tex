@@ -1,52 +1,6 @@
-\section{Bevezetés}
+A lefordított programok természetesen ugyanazt az eredményt adják, de erről egy picikét később. Vegyük most szemügyre közelebbről a forráskódot amit a nagyfokú hasonlóság ellenére mutat eltéréseket is.
 
-A cikksorozat második részében az első alkalommal már bemutatott példaprogramokat újra felhasználva a \textit{GTK+}/\textit{gtkmm} programozás azon területeit vesszük sorra, melyek nélkül rövid távon el lehet boldogulni, de nélkülözhetetlenek az alapos megértést igénylő feladatok megoldásához.
-
-\subsection{Alapfogalmak}
-
-Még mielőtt ismertetnénk néhány alapfogalmat érdemes kitérni arra, hogy ezen túl a \textit{GTK} rövidítést akkor használjuk, ha a felületprogramozási nyelvről általánosságban szólunk, míg a \textit{GTK+} és \textit{gtkmm} kifejezések a konkrét \textit{C}, illetve \textit{C++} nyelvű implementációkat jelölik.
-
-\subsubsection{Objektum-orientált megközelítés}
-
-\begin{description}
- \item[Öröklődés] Annak ellenére, hogy a mechanizmust nyelvi szinten a \textit{C} nem, csak a \textit{C++} támogatja igen is lehetséges objektum-orientált megközelítéssel élni az első esetben is. Erre kitűnő példa -- egyebek mellett -- a \textit{GTK+}. Megoldott a \textit{widget}ek egymásból történő származtatása, sőt felhasználói widgetek is definiálhatóak a már meglévőekre támaszkodva. Meg kell jegyezni, hogy a \textit{gtkmm} esetén -- lévén ott a nyelv \textit{C++} -- természetesen a származtatás egy nagyságrenddel egyszerűbb, de a letölthető példákat felhasználva némi rutinnal a \textit{GTK+} esetén sem igényel különösebb erőfeszítést.
-
- \item[Típusbiztosság] Hasonlóan a korábbiakhoz pusztán nyelvi szinten ez az eszköz sem megvalósítható (\textit{C} esetén), ugyanakkor a \textit{GTK+} minden \textit{widget}típushoz -- mondhatni osztályhoz -- definiál egy-egy makrót, melyek segítségével, fordítási időben (compile time) ugyan nem, de futásidőben (run time) ellenőrizhető egy adott widget valódi típus, hasonlóan ahhoz, mint amire a \textit{dynamic\_cast} használata jelent a \textit{C++}-ban.
-\end{description}
-
-Fentieket figyelembe véve láthatjuk, hogy a \textit{GTK+} ugyan \textit{C} nyelven íródott, de számos -- az objektum-orientált -- nyelvek esetén megszokott terminológiát használ, sőt ezeket a nyelvi eszközök adta mértékben meg is valósítja. Az \textit{OOP} kifejezéseit ezért tudatosan használom az olyan esetekben is, ahol \textit{GTK+} nyelvű fejlesztésről esik szó.
-
-\subsubsection{Felületprogramozási kulcsszavak}
-
-\begin{description}
- \item[Widget] A kifejezést, mint gyűjtőfogalmat használjuk a \textit{GTK} programozás során a felhasználó felület egyes grafikai elemeinek megnevezésére. Az elnevezés egyébiránt az \textit{X} hagyományokból eredeztethető. A szó azonban nem csak erre szolgál, hanem annak az ősosztálynak a neve is -- még ha ez a fogalom \textit{C} nyelvben nem is létezik -- melyből minden egyes megjeleníthető elem -- gomb, menü, csúszka -- származik.
-
- \item[GTK Main Loop] Ez a \textit{GTK} tulajdonképpeni főciklusa, mely a \textit{Glib}ben implementál általános \textit{main loop}ot felhasználva csatlakozik a \textit{X} szerverhez. Mindezt a \textit{GDK}-n keresztül teszi, mely -- mint azt az előző részben is említettük -- egy burkoló réteg az ablakozó rendszer köré. Ezt azért fontos kiemelni, mert ezzel a módszerrel biztosítható, hogy a \textit{GTK} működőképes legyen különböző grafikus szerverek (\textit{X}, \textit{framebuffer}) és platformokon (\textit{GNU/Linux}, \textit{Windows}, \textit{Mac OS X}) futtatása mellett egyaránt. A \textit{main loop} tehát az aki az imént említett kapcsolaton át eljuttatja az ablakozó rendszer alacsony szintű eseményeit a \textit{GDK} által standardizált formában az egyes \textit{widget}ekhez.
-
- \item[Signal] A \textit{GTK}, és egyébiránt minden más felületprogramozási nyelv, egyik kulcsszava. Jelentése (jel, jelzés) jól tükrözi funkcióját. Minden \textit{widget}hez tartoz(hat)nak különböző események -- mint amilyen egy gomb esetén annak lenyomása (vagy éppen felengedése), egy beviteli mezőnél az abba történő írás -- melyekről a widgetek tudomást szereznek -- egyébként a \textit{main loop}on keresztül -- elvégzik a megfelelő műveleteket -- gomb lenyomásnál újrarajzolás, beviteli mezőbe írásnál a karakter megjelenítése -- majd értesítést küldenek a program többi része felé. Ezt az értesítést, avagy jelzést nevezzük \textit{signal}nek.
-
- \item[Callback] Amennyiben egy adott \textit{widget} által küldött meghatározott eseményről tudomást akarunk szerezni a program futása során, ezt megtehetjük azáltal, hogy a \textit{widget} megfelelő \textit{signal}jéhez egy \textit{callback}et, azaz eseménykezelő függvény társítunk. Itt minden olyan esemény elvégezhető, mely nem a \textit{widget}hez, hanem annak programunkban betöltött szerepéhez kötődik. A korábbi példánál maradva ez egy \textit{Szerkesztés} gomb lenyomásánál lehet egy dialógus ablak megjelenítése, egy beviteli mezőbe való írásnál -- amennyiben ez szükséges -- a tartalom ellenőrzése.
-\end{description}
-
-Az utóbbi két fogalom, mivel a \textit{GUI}-k fejlesztése tulajdonképpen eseményvezérelt programozás, kiemelt fontosságú. Ennek okán erről a következő részben részletesebben is kívánunk szólni. Elöljáróban csak annyit, hogy a \textit{GTK} lehetőséget ad a \textit{signal}ek \textit{widgetek}től teljesen független használatára is, azaz akár saját osztályainkhoz is rendelhetünk eseményeket. Ez azonban már túlmutat ennek a résznek a keretein...
-
-\subsubsection{A megvalósítás}
-
-Az előző fejezetekben olvasható metodikák és módszerek közül a \textit{GTK} \texttt{GObject}, avagy \texttt{Glib::Object} osztálya az alábbiakat valósítja meg:
-
-\begin{description}
- \item[Öröklődés] Az \textit{oject} osztály típus minden \textit{widget}, és egy más a \textit{GTK}-ban használt nem vizuális elem őse.
-
- \item[Típusbiztosság] Ez az osztály implementálja azt a mechanizmust, melynek segítségével lehetővé válik a \textit{GTK+}-ban a futás idejű típusellenőrzés.
-
- \item[Signal] Ezen osztályon keresztül valósul meg a szignálkezelés, mely lehetővé teszi adott eseményekhez kezelőfüggvények (\textit{callback}) kapcsolását. Itt kell megjegyezni, hogy mivel az object nem csupán a \textit{widget}eknek őse, így olyan \textit{GTK}-s, vagy akár saját, elemeknek is lehetnek szignáljai, melyek közvetlenül nem láthatóak, mint az általunk létrehozott \textit{GUI} részei.
-
- \item[Referencia-számlálás] Minden \textit{object}ből származó osztály, így a widgetek is, rendelkeznek referencia-számmal, mely tulajdonképpen azt fejezi ki, hogy hányan hivatkoznak az adott elemre. A \textit{GTK}, pontosabban ez esetben a \textit{GLib} lebegő referenciát (\textit{floating reference}) alkalmaz, mely azt jelenti, hogy az objektum létrejöttekor annak referenciája 1 lesz, de ezt a referenciát úgymond nem birtokolja senki, azaz ha a \textit{widget}et egy konténer osztályba (melyekről részletesebben a következő rész szól majd) kívánjuk tenni, akkor -- az első ilyen alkalommal -- a refernciaszám nem nő, annak ellenére sem, hogy ez valójában hivatkozást jelent az adott elemre. A változatlanul hagyott referencia-érték jelenti a lebegő referencia elsüllyesztését (\textit{sink}). Minden azt követő esetben a konténerből történő eltávolítás csökkenti, ahoz való hozzáadás pedig növeli a referencia értékét. Érdemes felhívni a figyelmet arra, hogy az elmondottak alapján, ha hozzáadtuk \textit{widget}ünket egy \textit{container}hez, majd pedig eltávolítjuk belőle azt, akkor annak referenciája 0-ra csökken, ami maga után vonja a destruktor lefutását. Ezt elkerülhetjük, ha az eltávolítás előtt explicit módon növeljük a referenciát, amit aztán csökkentenünk kell, ha egy másik osztály ``birtokába'' adjuk a \textit{widget}et.
-\end{description}
-
-\section{Első ablakunk háttere}
-
-\subsection{A kód}
+\section{A kód}
 \label{sec:gtkminimal}
 \label{sec:gtkmmminimal}
 
@@ -60,8 +14,6 @@ Az ismétlés kedvéért -- no meg persze, hogy kéznél legyen -- lássuk most 
 
 A fenti példaprogramok \textit{C/C++} nyelvű forrásfájljai, illetve azok eredetijei, a \textit{FLOSSzine}, valamint a \textit{GTK+}/\textit{gtkmm} oldalain az alábbi linkeken érhetőek el:
 \ \\\\
-\url{http://www.flosszine.org/sources/gtk_window.c}\\
-\url{http://www.flosszine.org/sources/gtkmm_window.cc}\\
 \url{http://library.gnome.org/devel/gtk-tutorial/stable/c39.html}\\
 \url{http://www.gtkmm.org/docs/gtkmm-2.4/docs/tutorial/html/chapter-basics.html}
 
@@ -87,9 +39,7 @@ Vegyük a példaprogramokat szó szerint sorról sorra górcső alá.
  \item[14] Visszatérési értékünk mindkét esetben 0, amivel rendszerint azt jelezzük a hívó félnek, hogy a futás rendben lezajlott.
 \end{enumerate}
 
-\subsection{Vágyaink ablaka}
-
-\subsubsection{Fordítás és linkelés}
+\subsection{Fordítás és linkelés}
 
 A korábbiakhoz hasonlóan az alábbi parancssorok segítségével fordíthatóak e\-lem\-zett programjaink:
 
@@ -99,10 +49,10 @@ A korábbiakhoz hasonlóan az alábbi parancssorok segítségével fordíthatóa
 \ \\
 \texttt{g++ gtkmm\_window.cc -o gtkmm\_window \`{}pkg-config gtkmm-2.4 {-}-cflags {-}-libs\`{}}
 
-\subsubsection{Futtatás}
+\subsection{Futtatás}
 
 Próbálkozzunk ezúttal is a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsokkal abban a könyvtárban, ahol a fordítást elkövettük.
 
-\subsubsection{Eredmény}
+\subsection{Eredmény}
 
 Bármily hihetetlen ezúttal sem történik semmi egyéb, mint az előző alkalommal. Remélhetőleg azonban a különbség mégis érzékelhető annyiban, hogy legutóbb a meglepetéssel teli borzongást ablakunk váratlan felbukkanása, míg most a bennünk szikraként felvillanó megértés okozza.

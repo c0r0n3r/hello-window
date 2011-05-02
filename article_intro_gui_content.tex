@@ -1,0 +1,34 @@
+\section{Felhasználói felületek tervezése}
+%FIXME
+
+\section{Felhasználói felületek fejlesztése}
+%FIXME
+
+\subsection{Felületprogramozási kulcsszavak}
+
+\paragraph{Widget}
+\index{Widget}
+
+A kifejezést, mint gyűjtőfogalmat használjuk a \textit{GTK} programozás során a felhasználó felület egyes grafikai elemeinek megnevezésére. Az elnevezés egyébiránt az \textit{X} hagyományokból eredeztethető. A szó azonban nem csak erre szolgál, hanem annak az ősosztálynak a neve is -- még ha ez a fogalom \textit{C} nyelvben nem is létezik -- melyből minden egyes megjeleníthető elem -- gomb, menü, csúszka -- származik.
+
+\paragraph{Main Loop}
+\index{Windows}
+\index{Mac OS X}
+\index{main loop}
+
+Ez a \textit{GTK} tulajdonképpeni főciklusa, mely a \textit{Glib}ben implementál általános \textit{main loop}ot felhasználva csatlakozik a \textit{X} szerverhez. Mindezt a \textit{GDK}-n keresztül teszi, mely -- mint azt az előző részben is említettük -- egy burkoló réteg az ablakozó rendszer köré. Ezt azért fontos kiemelni, mert ezzel a módszerrel biztosítható, hogy a \textit{GTK} működőképes legyen különböző grafikus szerverek (\textit{X}, \textit{framebuffer}) és platformokon (\textit{GNU/Linux}, \textit{Windows}, \textit{Mac OS X}) futtatása mellett egyaránt. A \textit{main loop} tehát az aki az imént említett kapcsolaton át eljuttatja az ablakozó rendszer alacsony szintű eseményeit a \textit{GDK} által standardizált formában az egyes \textit{widget}ekhez.
+
+\paragraph{Signal}
+\index{szignál}
+
+A \textit{GTK}, és egyébiránt minden más felületprogramozási nyelv, egyik kulcsszava. Jelentése (jel, jelzés) jól tükrözi funkcióját. Minden \textit{widget}hez tartoz(hat)nak különböző események -- mint amilyen egy gomb esetén annak lenyomása (vagy éppen felengedése), egy beviteli mezőnél az abba történő írás -- melyekről a widgetek tudomást szereznek -- egyébként a \textit{main loop}on keresztül -- elvégzik a megfelelő műveleteket -- gomb lenyomásnál újrarajzolás, beviteli mezőbe írásnál a karakter megjelenítése -- majd értesítést küldenek a program többi része felé. Ezt az értesítést, avagy jelzést nevezzük \textit{signal}nek.
+
+\paragraph{Callback}
+\index{callback}
+
+Amennyiben egy adott \textit{widget} által küldött meghatározott eseményről tudomást akarunk szerezni a program futása során, ezt megtehetjük azáltal, hogy a \textit{widget} megfelelő \textit{signal}jéhez egy \textit{callback}et, azaz eseménykezelő függvény társítunk. Itt minden olyan esemény elvégezhető, mely nem a \textit{widget}hez, hanem annak programunkban betöltött szerepéhez kötődik. A korábbi példánál maradva ez egy \textit{Szerkesztés} gomb lenyomásánál lehet egy dialógus ablak megjelenítése, egy beviteli mezőbe való írásnál -- amennyiben ez szükséges -- a tartalom ellenőrzése.
+
+Az utóbbi két fogalom, mivel a \textit{GUI}-k fejlesztése tulajdonképpen eseményvezérelt programozás, kiemelt fontosságú. Ennek okán erről a következő részben részletesebben is kívánunk szólni. Elöljáróban csak annyit, hogy a \textit{GTK} lehetőséget ad a \textit{signal}ek \textit{widgetek}től teljesen független használatára is, azaz akár saját osztályainkhoz is rendelhetünk eseményeket. Ez azonban már túlmutat ennek a résznek a keretein...
+
+\section{Felhasználói felületek tesztelése}
+%FIXME
