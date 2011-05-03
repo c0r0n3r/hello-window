@@ -1,20 +1,24 @@
 \newpage
-\addcontentsline{toc}{section}{Ábrák jegyzéke}
+\addcontentsline{toc}{chapter}{Tárgymutató}
+\printindex
+
+\newpage
+\addcontentsline{toc}{chapter}{Táblázatok jegyzéke}
+\listoftables
+
+\newpage
+\addcontentsline{toc}{chapter}{Ábrák jegyzéke}
 \listoffigures
 
 \newpage
-\addcontentsline{toc}{section}{\lstlistlistingname}
+\addcontentsline{toc}{chapter}{\lstlistlistingname}
 \lstlistoflistings
-
-\newpage
-\addcontentsline{toc}{section}{Tárgymutató}
-\printindex
 
 \nocite{gtktut}
 \nocite{gtkmmtut}
 \nocite{ggad}
 \nocite{gtktutmagy}
-
-\addcontentsline{toc}{section}{Hivatkozások}
+\newpage
+\addcontentsline{toc}{chapter}{Irodalomjegyzék}
 \bibliography{book}
 \bibliographystyle{plain}
