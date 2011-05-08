@@ -421,10 +421,9 @@ A fenti példaprogramok \textit{C}/\textit{C++} nyelvű forrásfájljai a \texti
 
 A korábbiakhoz hasonlóan az alábbi parancssorok segítségével fordíthatóak programjaink.
 
-\begin{lstlisting}[language=bash, numbers=none, basicstyle=\ttfamily, keywordsprefix=window, keywordstyle=\itshape, basewidth={0.5em, 0.4em}]
-gcc gtk_source_file.c -o gtk_binary `pkg-config --cflags --libs gtk+-2.0`
-g++ gtkmm_source_file.cc -o gtkmm_binary `pkg-config --cflags --libs gtkmm-2.4`
-\end{lstlisting}
+\lstcompiles
+{gtk_sourcefile.c}{gtk_binary}
+{gtkmm_sourcefile.cc}{gtkmm_binary}
 
 \subsection{Futtatás}
 

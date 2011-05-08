@@ -79,3 +79,20 @@ framexleftmargin=5mm
 \end{center}
 }
 
+\newcommand{\lstinputcommand}[1]{
+\lstinputlisting[numbers=none]{#1}
+}
+
+\newcommand{\lstccompile}[2]{
+\medskip \indent \lstinline[language=sh]{gcc #1 -o #2 `pkg-config --cflags --libs gtk+-2.0`}
+}
+
+\newcommand{\lstcppcompile}[2]{
+\medskip \indent \lstinline[language=sh]{g++ #1 -o #2 `pkg-config --cflags --libs gtkmm-2.4`}
+}
+
+\newcommand{\lstcompiles}[4]{
+\medskip \indent \lstinline[language=sh]{gcc #1 -o #2 `pkg-config --cflags --libs gtk+-2.0`}\\
+\medskip \indent \lstinline[language=sh]{g++ #3 -o #4 `pkg-config --cflags --libs gtkmm-2.4`}\medskip
+}
+

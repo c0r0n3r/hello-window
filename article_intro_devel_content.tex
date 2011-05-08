@@ -20,10 +20,9 @@
 
 Az alábbi parancssorok segítségével fordíthatóak elkészült programjaink:
 
-\begin{lstlisting}[language=sh, numbers=none, basicstyle=\ttfamily, keywordsprefix=window, keywordstyle=\itshape, basewidth={0.5em, 0.4em}]
-gcc gtk_window.c -o gtk_binary `pkg-config --cflags --libs gtk+-2.0`
-g++ gtkmm_window.cc -o gtkmm_binary `pkg-config --cflags --libs gtkmm-2.4`
-\end{lstlisting}
+\lstcompiles
+{gtk\_sourcefile.c}{gtk\_binary}
+{gtkmm\_sourcefile.cc}{gtkmm\_binary}
 
 Segítségünkre a \texttt{pkg-config} parancs van, hogy a \textit{gcc}-nek a megfelelő paramétereket meg tudjuk adni. A \texttt{--cflags} paraméter hatására a fordításhoz, míg a \texttt{--libs} eredményeképp a linkeléshez szükséges opciókat kapjuk vissza. A parancs két \texttt{\`} (backtick) közé zárt. aminek hatsára annak kimenete része lesz a fordító parancssorának, amivel pont az áhytott hatást érjük el.
 
