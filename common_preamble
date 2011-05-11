@@ -96,3 +96,6 @@ framexleftmargin=5mm
 \medskip \indent \lstinline[language=sh]{g++ #3 -o #4 `pkg-config --cflags --libs gtkmm-2.4`}\medskip
 }
 
+\newcommand{\lstcommand}[1]{
+\medskip\noindent\texttt{#1}
+}

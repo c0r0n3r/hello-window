@@ -1,7 +1,50 @@
 \section{\textit{Gimp Tool Kit}}
 
 \subsection{Beszerzése}
+\index{GTK}
 %FIXME
+
+A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik megoldás, hogy hagyatkozunk az általunk használt operációs rendszerre elérhető \textit{GTK+} változatra és azt telepítjük. A másik lehetőség, hogy letöltjük a \textit{GTK+} és a függőségek forráskódját és némi nehézséget vállalva ezeket fordítjuk le. Előbbi eset bőségesen megfelel amennyiben még csak most ismerkedünk a \textit{GTK+}-val, illetve nem akarunk túlságosan belebonyolódni az grafikus alkalmazások fejlesztésébe. Elkerülhetetlenül az utóbbi változatot kell választanunk, ha mélyebben is szeretnénk megismerkedni a \textit{GTK+} rejtelmeivel, ha komolyabb hibákat szeretnénk javítani, vagy szeretnénk változásokat szeretnénk eszközölni magán a grafikus függvénykönyvtáron.
+
+\subsubsection{Bináris változat}
+\index{Debian}
+\index{Linux}
+\index{Fedora}
+\index{Ubuntu}
+\index{GTK}
+
+A \textit{GTK} nyelv változatok beszerzése nem jelent különösebben nehéz feladatot amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már amúgy is használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez egyéb csomagokat telepítése is szükséges lesz, amit a disztribúciónktól függően az alábbi parancsokkal tehetünk meg:
+
+\lstcommand{%
+sudo apt-get install gtk-deb-package\linebreak
+sudo yum install gtk-rpm-package
+}
+
+\paragraph{GTK+}
+\index{GTK+}
+
+A \textit{GTK+} fejlécfájlokat és egyéb állományokat --melyekről a későbbiekben (\ref{sec:compilingandlinking}) még részletesebben is esik szó-- a \textit{Debian}/\textit{Ubuntu}, illetve \textit{Fedora} rendszereken a \texttt{libgtk-3-dev}, illetve a \texttt{libgtk3-devel} csomagok tartalmazzák.
+
+\paragraph{gtkmm}
+\index{gtkmm}
+
+A fenti csomagok természetesen csak a \textit{C} nyelvű változat --azaz a \textit{GTK+}-- használatához elegendőek, amennyiben a \textit{C++} nyelvet --ezzel együtt a \textit{gtkmm} függvénykönyvtárat-- kívánjuk használni, további csomagokra (\texttt{libgtk-3-dev}, vagy \texttt{libgtk3-devel}) is szert kell tennünk.
+
+\paragraph{PyGTK}
+\index{PyGTK}
+\index{Python}
+
+Amennyiben a \textit{GTK} alapú fejlesztéssel a \textit{Python} nyelv révén ismerkednénk a már említett fordított nyelvek helyett, akkor a fenti csomagokra nem, a \texttt{python-gtk2}, vagy a \texttt{pygtk2} csomagokat viszont be kell szereznünk.
+
+\paragraph{Dogtail}
+\index{Dogtail}
+\index{Python}
+
+Az automata tesztek készítéséhez szükséges \textit{Python} függvénykönyvtár --a \texttt{Dogtail}-- állományait az azonos nevű csomag tartalmazza, melyek installálása a fentiekhez hasonlóan történik.
+
+\subsubsection{Forráskód}
+
+
 
 \subsection{Függőségei}
 %FIXME
@@ -16,6 +59,7 @@
 %FIXME
 
 \subsection{Fordítás és linkelés}
+\label{sec:compilingandlinking}
 %FIXME
 
 Az alábbi parancssorok segítségével fordíthatóak elkészült programjaink:
