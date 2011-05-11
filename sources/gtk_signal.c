@@ -1,12 +1,13 @@
 #include <gtk/gtk.h>
 
+
 static void hello( GtkWidget *widget,
                    gpointer   data )
 {
   g_print ("%s\n", (const char *) data);
 }
 
-static gboolean delete_event( GtkWidget *widget,
+static gboolean on_delete_event( GtkWidget *widget,
                               GdkEvent  *event,
                               gpointer   data )
 {
@@ -32,7 +33,7 @@ int main( int   argc,
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   
   g_signal_connect (G_OBJECT (window), "delete_event",
-                    G_CALLBACK (delete_event), NULL);
+                    G_CALLBACK (on_delete_event), NULL);
   
   g_signal_connect (G_OBJECT (window), "destroy",
                     G_CALLBACK (destroy), NULL);

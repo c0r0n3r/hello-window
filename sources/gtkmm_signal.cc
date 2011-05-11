@@ -2,8 +2,24 @@
 #include <iostream>
 
 static void hello(const Glib::ustring &hello_msg)
+
 {
   std::cout << hello_msg << std::endl;
+}
+
+bool MyWindow::on_delete_event(GdkEventAny *event)
+
+
+{
+  std::cout << "delete event occurred" << std::endl;
+
+  return true;
+}
+
+void MyWindow::destroy()
+
+{
+  Gtk::Main::quit();
 }
 
 class MyWindow : public Gtk::Window
@@ -13,16 +29,7 @@ private:
 
 protected:
   virtual bool on_delete_event(GdkEventAny *event)
-  {
-    std::cout << "delete event occurred" << std::endl;
-  
-    return true;
-  }
-
-  void destroy()
-  {
-    Gtk::Main::quit();
-  }
+  void destroy();
 
 public:
   MyWindow() :
@@ -38,6 +45,7 @@ public:
     button.show();
   }
 };
+
 
 int main(int argc,
          char *argv[])
