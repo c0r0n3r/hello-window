@@ -2,15 +2,15 @@
 
 \section{A függvénykönyvtár moduljai}
 
-Elöljáróban fontos lehet tudni a nyelvet megvalósító implementáció szervezéséről, hogy példaértékűen választja szét a funkcionalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elősegíti a rugalmasságot és a portabilitást. A \textit{GDK} (\textit{GIMP Drawing Kit}) felelős a rajzolási primitívek megvalóításáér, tulajdonképpen nem egyéb, mint egy wrapper az ablakozó rendszer köré. Hasznossága abban áll, hogy amennyiben sikerül portolni azt egy új grafikus környezetre, akkor a \textit{GTK+} máris működőképessé válhat. A \textit{GObject}, mely a \textit{GLib} része minden widget ``ősosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetővé tesz referenciaszálálást, futásidejű típusellenőrzést, tulajdonságok hozzárendelését és azok értékének futásidőben történő változtatását.
+Elöljáróban fontos lehet tudni a nyelvet megvalósító implementáció szervezéséről, hogy példaértékűen választja szét a funkcionalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elősegíti a rugalmasságot és a portabilitást. A \textit{GDK} (\textit{GIMP Drawing Kit}) felelős a rajzolási primitívek megvalósításáért, tulajdonképpen nem egyéb, mint egy wrapper az ablakozó rendszer köré. Hasznossága abban áll, hogy amennyiben sikerül portolni azt egy új grafikus környezetre, akkor a \textit{GTK+} máris működőképessé válhat. A \textit{GObject}, mely a \textit{GLib} része minden widget ``ősosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetővé tesz referencia számlálást, futásidejű típusellenőrzést, tulajdonságok hozzárendelését és azok értékének futásidőben történő változtatását.
 
 \subsection{GLib}
 \index{GLib@\textit{GLib}}
 
-A GLib maga egy önálló függvénykönyvtár, mely számos hasznos --a \textit{C} nyelv elemeként nem létező-- programozói segldeszközt tartalmaz. Ezek közül a leggyakrabban hasznátak az alábbiak:
+A GLib maga egy önálló függvénykönyvtár, mely számos hasznos --a \textit{C} nyelvi elemként nem létező-- programozói segédeszközt tartalmaz. Ezek közül a leggyakrabban használtak az alábbiak:
 
-\paragraph{Alkalmazásfejlsztési támogatás} Szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintű logolás.
-\paragraph{Fejlesztői segédeszközök} Sztring-, dátum-, időkezelés, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmar fájlok feldolgozása, időzítők, reguláris kifejezések.
+\paragraph{Alkalmazásfejlwsztési támogatás} Szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintű logolás.
+\paragraph{Fejlesztői segédeszközök} Karakterlánc-, dátum-, időkezelés, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmark fájlok feldolgozása, időzítők, reguláris kifejezések.
 \paragraph{Adattípusok} Láncolt listák, fák, asszociatív tömbök, szekvenciák, sorok, dinamikusan méretezhető tömbök.
 
 \subsection{Glibmm}
@@ -70,7 +70,7 @@ Mielőtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid ki
 \end{table}
 %FIXME
 
-Ahogy az a fentiekbő is látszik a a \textit{C++} nyelvű változatnak megvannak a maga komoly előnyei. Ezek közül talán a legfontosabb, hogy a nyelv nyújtotta módszereket, mint például az örököltetés, itt közvetlenül használhatjuk ki. Ez természetesen nem jelenti azt, hogy a \textit{GTK+} esetén erre ne lenne lehetőségünk, ugyanakkor meg kell jegyezni, hogy míg a \textit{gtkmm} esetén ez jétszi könnyedséggel megtehető, addig az eredeti változat alkalmazásával ez kissé körülményes. Egy másik megfontolandó érv a típusbiztosság, melynek előnyeit nem lehet eléggé hangsúlyozni, hiszen hosszú órák hibakeresésétől óvhat meg minket. A \textit{GTK+} a \textit{GObject} révén --melyre egy későbbi részben részletesebben is foglalkozunk majd-- rendelkezik egy frappáns mechanizmussal, mely lehetővé teszi a futásidejű típusellenőrzést a \textit{widget}ek esetén, de nem vetekedhet a \textit{C++} nyújtotta fordítási idejű hibaüzenetekkel.
+Ahogy az a fentiekből is látszik a a \textit{C++} nyelvű változatnak megvannak a maga komoly előnyei. Ezek közül talán a legfontosabb, hogy a nyelv nyújtotta módszereket, mint például az örököltetés, itt közvetlenül használhatjuk ki. Ez természetesen nem jelenti azt, hogy a \textit{GTK+} esetén erre ne lenne lehetőségünk, ugyanakkor meg kell jegyezni, hogy míg a \textit{gtkmm} esetén ez játszi könnyedséggel megtehető, addig az eredeti változat alkalmazásával ez kissé körülményes. Egy másik megfontolandó érv a típusbiztosság, melynek előnyeit nem lehet eléggé hangsúlyozni, hiszen hosszú órákon át tartó hibakereséstől óvhat meg minket. A \textit{GTK+} a \textit{GObject} révén --melyre egy későbbi részben részletesebben is foglalkozunk majd-- rendelkezik egy frappáns mechanizmussal, mely lehetővé teszi a futásidejű típusellenőrzést a \textit{widget}ek esetén, de nem vetekedhet a \textit{C++} nyújtotta fordítási idejű hibaüzenetekkel.
 
 \section{Fejlesztési sajátosságok}
 
