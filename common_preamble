@@ -97,5 +97,15 @@ framexleftmargin=5mm
 }
 
 \newcommand{\lstcommand}[1]{
-\medskip\noindent\texttt{#1}
+\medskip \indent \lstinline[language=sh]{#1}
+}
+
+\newcommand{\lstinputfile}[4]{
+\renewcommand\lstlistingname{}
+
+\medskip
+\noindent
+\lstinputlisting[nolol=true, numbers=none, language=#1, caption={#2}, label=#3]{#4}
+
+\renewcommand\lstlistingname{Kódrészlet}
 }
