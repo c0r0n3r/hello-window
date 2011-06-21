@@ -1,6 +1,6 @@
 %l10n packages
 \usepackage[utf8]{inputenc}
-\usepackage[hungarian]{babel}
+\usepackage[english, hungarian]{babel}
 
 %font loading
 \usepackage[T1]{fontenc}
