@@ -7,13 +7,12 @@
 A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik megoldás, hogy hagyatkozunk az általunk használt operációs rendszerre elérhető \textit{GTK+} változatra és azt telepítjük. A másik lehetőség, hogy letöltjük a \textit{GTK+} és a függőségek forráskódját és némi nehézséget vállalva ezeket fordítjuk le. Előbbi eset bőségesen megfelel amennyiben még csak most ismerkedünk a \textit{GTK+}-val, illetve nem akarunk túlságosan belebonyolódni az grafikus alkalmazások fejlesztésébe. Elkerülhetetlenül az utóbbi változatot kell választanunk, ha mélyebben is szeretnénk megismerkedni a \textit{GTK+} rejtelmeivel, ha komolyabb hibákat szeretnénk javítani, vagy szeretnénk változásokat szeretnénk eszközölni magán a grafikus függvénykönyvtáron.
 
 \subsubsection{Bináris változat}
-\index{Debian}
-\index{Linux}
-\index{Fedora}
-\index{Ubuntu}
 \index{GTK}
+\index{deb}
+\index{rpm}
+\index{bináris csomag}
 
-A \textit{GTK} nyelv változatok beszerzése nem jelent különösebben nehéz feladatot amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már amúgy is használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez egyéb csomagokat telepítése is szükséges lesz, amit a disztribúciónktól függően az alábbi parancsokkal tehetünk meg:
+A \textit{GTK} nyelv változatok beszerzése nem jelent különösebben nehéz feladatot amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez a bináris változatokon túl fejlesztői csomagokra is szükséges lesz, amit \textit{rpm}, illetve \textit{deb} alapú disztribúciók esetén rendre az alábbi parancsok kiadásával tehetünk meg:
 
 \lstcommand{sudo yum install gtk-devel-package}\\
 \lstcommand{sudo apt-get install gtk-dev-package}
@@ -38,15 +37,26 @@ Amennyiben a \textit{GTK} alapú fejlesztéssel a \textit{Python} nyelv révén 
 \index{Dogtail}
 \index{Python}
 
-Az automata tesztek készítéséhez szükséges \textit{Python} függvénykönyvtár --a \texttt{Dogtail}-- állományait az azonos nevű csomag tartalmazza, melyek installálása a fentiekhez hasonlóan történik.
+Az automata tesztek készítéséhez szükséges \textit{Python} függvénykönyvtár --a \textit{Dogtail}-- állományait az azonos nevű csomag tartalmazza, melyek installálása a fentiekhez hasonlóan történik.
 
 \subsubsection{Forráskód}
 
+A \textit{GTK} forrásának beszerzésére több módszer is kínálkozik. Egyrészről az általunk használt \textit{Linux} disztribúció biztosít eszközöket forráscsomagok telepítésére. A korábbi \textit{deb}, illetve \textit{rpm} alapú rendszerek példájánál maradva ez rendre az alábbiak szerint történik.
+
+\lstcommand{apt-get source gtk-src-package}\\
+\lstcommand{yumloader --source gtk-src-package}\\
+
+Lehetőség van természetesen az egyes verziók letöltésére a \textit{GNOME} projekt weboldaláról is,
 
 \lstcommand{wget http://ftp.gnome.org/pub/gnome/sources/gtk+/major.minor/gtk+-major.minor.micro.tar.gz}\\
 \lstcommand{wget http://ftp.gnome.org/pub/gnome/sources/gtk+/major.minor/gtk+-major.minor.micro.tar.bz2}\\
 
+valamint rendelkezésre állnak az egyes projektek verziókelői is, ha szeretnénk mindig a legfrissebb forrás mellett dolgozni.
+
 \lstcommand{git clone git://git.gnome.org/gtk+}\\
+
+Ha azonban magunk szeretnénk a teljes \textit{GTK}-t fordítani --legyen szó a \textit{C}, vagy a \textit{C++} nyelvű változatról-- számolnunk kell azzal, hogy számos egyéb komponens (\textit{GLib}, \textit{Pango}, \textit{Cairo}, \textit{ATK}, \dots) fordítására, illetve az frissítéseket követő újrafordítására válik szükségessé, ami meglehetősen időigényes és fáradságos feladat, amit a \textit{Linux} disztribúción összeállítói már megtettek helyettünk. Így célszerű kezdetben ezt kihasználni és a saját fordításba csak akkor belekezdeni, ha arra feltétlenül szükségünk van.
+
 \subsection{Függőségei}
 %FIXME
 
