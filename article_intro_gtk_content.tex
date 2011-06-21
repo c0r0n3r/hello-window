@@ -2,24 +2,79 @@
 
 \section{A függvénykönyvtár moduljai}
 
-Elöljáróban fontos lehet tudni a nyelvet megvalósító implementáció szervezéséről, hogy példaértékűen választja szét a funkcionalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elősegíti a rugalmasságot és a portabilitást. A \textit{GDK} (\textit{GIMP Drawing Kit}) felelős a rajzolási primitívek megvalósításáért, tulajdonképpen nem egyéb, mint egy wrapper az ablakozó rendszer köré. Hasznossága abban áll, hogy amennyiben sikerül portolni azt egy új grafikus környezetre, akkor a \textit{GTK+} máris működőképessé válhat. A \textit{GObject}, mely a \textit{GLib} része minden widget ``ősosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetővé tesz referencia számlálást, futásidejű típusellenőrzést, tulajdonságok hozzárendelését és azok értékének futásidőben történő változtatását.
+\subsection{GTK+}
 
-\subsection{GLib}
+Elöljáróban fontos lehet tudni a nyelvet megvalósító implementáció szervezéséről, hogy példaértékűen választja szét a funkcionalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elősegíti a rugalmasságot és a portabilitást.
+
+\subsubsection{GLib}
 \index{GLib@\textit{GLib}}
 
-A GLib maga egy önálló függvénykönyvtár, mely számos hasznos --a \textit{C} nyelvi elemként nem létező-- programozói segédeszközt tartalmaz. Ezek közül a leggyakrabban használtak az alábbiak:
+A GLib maga egy önálló függvénykönyvtár, mely \textit{GTK}-tól független, de javarészt az által is használt hasznos --a \textit{C} nyelvi elemként nem létező-- programozói segédeszközt tartalmaz. Ezek közül a leggyakrabban használtakat említjük meg. Használatuk részleteiről a későbbi részekben esik majd szó.
 
-\paragraph{Alkalmazásfejlwsztési támogatás} Szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintű logolás.
-\paragraph{Fejlesztői segédeszközök} Karakterlánc-, dátum-, időkezelés, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmark fájlok feldolgozása, időzítők, reguláris kifejezések.
-\paragraph{Adattípusok} Láncolt listák, fák, asszociatív tömbök, szekvenciák, sorok, dinamikusan méretezhető tömbök.
+\paragraph{Alapvető eszközök}
 
-\subsection{Glibmm}
-\index{glibmm@\textit{glibmm}}
+Számos --a platformfüggetlen programozás szempontjából-- fontos eszközt bocsát a \textit{GLib} rendelkezésünkre, melyek jelentékeny részére amúgy is definiálnánk, így viszont készen apjuk őket.
 
-Itt is létezik \textit{C++} nyelvű változat, ahogy a \textit{GTK+} esetén is, ám itt a wrapper csak akkor készül el, ha a C++ standard könyvtára nem tartalmaz azonos funkcionalitású eszközt.
+\begin{description}
+ \item[protábilis típusdefiníciók] \texttt{guint32}, \texttt{guintptr}, \dots
+ \item[típusok határértékei] \texttt{G\_MININT32}, \texttt{G\_MAXDOUBLE}, \dots
+ \item[általános célú makrók] \texttt{MIN}/\texttt{MAX}, \texttt{TRUE}/\texttt{FALSE}, \texttt{G\_CONST\_RETURN}, \dots
+ \item[típuskonverziós makrók] \texttt{GPONITER\_TO\_INT}, \texttt{GSIZE\_TO\_POINTER}, \dots
+ \item[byte-order konvenciós makrók] \texttt{g\_htonl}, \texttt{GSIZE\_FROM\_BE}, \texttt{GUINT32\_SWAP\_BE\_LE}, \dots
+ \item[matematika konstansok] \texttt{G\_E}, \texttt{G\_LN2}, \texttt{G\_PI}, \dots
+ \item[fordítási opció makrók] \texttt{G\_GNUC\_NULL\_TERMINATED}, \texttt{G\_GNUC\_MALLOC}, \dots
+ \item[atomikus műveletek] \texttt{g\_atomic\_inc\_int}, \texttt{g\_atomic\_pointer\_or}, \dots
+\end{description}
 
-\subsection{GDK}
+\paragraph{Alkalmazásfejlesztési eszközök}
+%FIXME
+\paragraph{Hasznos segéseszközök}
+%FIXME
+\paragraph{Adattípusok}
+%FIXME
+
+%\paragraph{Alkalmazásfejlesztési támogatás} Szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintű logolás.
+%\paragraph{Konverziós eszközök} Karakterlánc-, dátum-, idő-, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmark fájlok feldolgozása, időzítők, reguláris kifejezések.
+%\paragraph{Adattípusok} Láncolt listák, fák, asszociatív tömbök, szekvenciák, sorok, dinamikusan méretezhető tömbök.
+%\paragraph{Objektum rendszer} A \textit{GObject}, mely a \textit{GLib} része minden widget ``ősosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetővé tesz referencia számlálást, futásidejű típusellenőrzést, tulajdonságok hozzárendelését és azok értékének futásidőben történő változtatását.
+
+\subsubsection{GDK}
 \index{GDK@\textit{GDK}}
+
+A \textit{GIMP Drawing Kit} (\textit{GDK}) az alacsony szintű rajzolási és ablakkezelési feladatok megvalósítására és egyszersmind elfedésére szolgáló függvénykönyvtár. Fontos szerepet tölt be a \textit{GTK} különböző platformok közötti hordozhatóságának megteremtésében., hiszen az általa nyújtotta viszonylag szűk körű funkcionalitást újraimplementálva a \textit{GTK} alkalmas lehet egy újabb grafikus környezetben való futásra, legalábbis amia rajzolási feladatokat illeti, az egyéb megoldandó problémák java részét a korábban mér említett \textit{GLib} oldja meg.
+
+Fentieknek köszönhető, hogy az eredetileg csak az \textit{X Window System} --ami a \textit{Linux} alapú rendszerek a \textit{GDK} születésének idejében kizárólagos grafikus szervere-- feletti működni képes \textit{GDK}, mára a \textit{Windows}, \textit{Mac OS X} rendszereken túl akár egy megfelelő webböngészőben is képes futni\footnote{ezen szolgáltatáshoz eléréséhez \textit{websocket} támogatásra van szükség a böngészőben, illetve a \textit{broadway} elnevezésű \textit{backend} bekapcsolására a \textit{GTK+} fordításakor}.
+
+\subsubsection{Cairo}
+\index{cairo@\textit{cairo}}
+
+A \textit{cairo} egy eszközfüggetlen kétdimenziós vektorgrafikai függvénykönyvtár, melyet kifejezetten a hardveres gyorsítókkal való együttműködésre terveztek, s mellyel a \textit{GDK} a rajzolási feladatait végzi. Érdemes megemlíteni, hogy a \textit{cairo} nem a \textit{GNOME}, hanem a \href{http://freedesktop.org}{\textit{freedesktop.org}} projekt része.
+
+\subsubsection{Pango}
+\index{Pango@\textit{Pango}}
+
+A \textit{Pango} szövegek képi formában történő előállításáért (\textit{rendering}) és megjelenítésért (\textit{lay out}) felelős a \textit{GTK}-n belül, de természetesen a \textit{GTK}-tól függetlenül is használható, lévén a függvénykönyvtár az előbbiekhez hasonlóan számos platformot támogat.
+
+
+\subsection{gtkmm}
+\index{gtkmm@\textit{gtkmm}}
+
+A \textit{gtkmm}, illetve annak függőségei adják a \textit{GTK} projekt \textit{C++} nyelvű változatát. Ezek a függvénykönyvtárak nem egyebek, mint wrapperek az eredeti \textit{C} változat fölött, az ebből fakadó előnyökkel és korlátokkal együtt. Ezen kódok jelentékeny része wrapper mivoltukból következően generált, ugyanakkor számos helyen --ahol ez funkcionalitáshoz a programozási nyelvhez leginkább illeszkedő megvalósításához szükséges-- eredeti kódot is tartalmaz.
+
+A \textit{C}, illetve \textit{C++} nyelvű változatok a lehető legkisebb mértékben térnek el egymástól. Ez egyben azt is jelenti, hogy az egyes nyelvi változatok nem tartalmaznak a többihez képest többlet funkcionalitást. Nem lehet azonban eltekinteni az egyes programozási nyelvek adta lehetőségek előnyeitől, hátrányaitól, melyek könnyebbé vagy nehezebbé teszik a \textit{GTK} adott nyelven való használatát.
+
+\subsubsection{Libsigc++}
+\index{libsigc++@\textit{libsigc++}}
+
+A \textit{gtkmm} implementációjánál használt függvénykönyvtár, ami lehetővé teszi a szignálkezelés típusbiztos megvalósítását, mely a \textit{C} változatnál --a nyelvi sajátosságokból fakadóan-- nem adott.
+
+\subsection{PyGTK}
+\index{PyGTK@\textit{PyGTK}}
+%FIXME
+
+
+\subsection{Dogtail}
+\index{dogtail@\textit{dogtail}}
 %FIXME
 
 \section{A megvalósítás koncepciója}
