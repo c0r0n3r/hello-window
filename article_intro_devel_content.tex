@@ -15,10 +15,8 @@ A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik 
 
 A \textit{GTK} nyelv változatok beszerzése nem jelent különösebben nehéz feladatot amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már amúgy is használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez egyéb csomagokat telepítése is szükséges lesz, amit a disztribúciónktól függően az alábbi parancsokkal tehetünk meg:
 
-\lstcommand{%
-sudo apt-get install gtk-deb-package\linebreak
-sudo yum install gtk-rpm-package
-}
+\lstcommand{sudo yum install gtk-devel-package}\\
+\lstcommand{sudo apt-get install gtk-dev-package}
 
 \paragraph{GTK+}
 \index{GTK+}
@@ -45,7 +43,10 @@ Az automata tesztek készítéséhez szükséges \textit{Python} függvényköny
 \subsubsection{Forráskód}
 
 
+\lstcommand{wget http://ftp.gnome.org/pub/gnome/sources/gtk+/major.minor/gtk+-major.minor.micro.tar.gz}\\
+\lstcommand{wget http://ftp.gnome.org/pub/gnome/sources/gtk+/major.minor/gtk+-major.minor.micro.tar.bz2}\\
 
+\lstcommand{git clone git://git.gnome.org/gtk+}\\
 \subsection{Függőségei}
 %FIXME
 
