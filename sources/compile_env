@@ -1,0 +1,12 @@
+prefix="$1"
+bindir="$prefix/bin"
+libdir="$prefix/lib"
+pyver=`python -V 2>&1 | sed 's%.*\([23]\.[0-9]\)[.0-9]*.*%\1%'`
+
+export PATH=$bindir:$PATH
+
+export LD_LIBRARY_PATH="$libdir"
+export PKG_CONFIG_PATH="$libdir/pkgconfig/:$libdir/gtk-3.0/modules/at-spi-corba/modules"
+export ACLOCAL_FLAGS="-I $prefix/share/aclocal/"
+
+export PYTHONPATH="$libdir/python$pyver/site-packages"
