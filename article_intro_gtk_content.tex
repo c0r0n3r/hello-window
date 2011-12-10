@@ -1,81 +1,193 @@
-%FIXME: mi az, honnan jön, mire érhető el, ...
+\section{Általánosságok}
 
-\section{A függvénykönyvtár moduljai}
+\subsection{Története}
+\index{GIMP@\textit{GIMP}}
+\index{Motif@\textit{Motif}}
+\index{GUI eszközkészlet@\textit{GUI} eszközkészlet}
+
+Mint megannyi is a szabad szoftverek több, mint negyedszázados történetében a \textit{GTK+} is felhasználó elégedetlenség eredményeként született. Peter Mattis és Spencer Kimball, a Kaliforniai Egyetem (Berkeley), hallgatói -- az azóta is a nyílt forrás szoftverek egyik zászlóshajójának számító képszerkesztő program, a \textit{GIMP}, fejlesztése közben -- szembesültek akkor időkben amúgy is csak kis számban rendelkezésre álló grafikus felhasználó felület készítő eszközök hiányosságival. Ezek leküzdésére döntöttek úgy -- egyébiránt a \textit{Motif} használata helyett --, hogy belekezdenek egy saját függvénykönyvtár fejlesztésébe.
+
+Az azóta nagykorúvá lett \textit{GTK+} több ízben is komoly átalakuláson ment keresztül. Ezek közül talán a legmeghatározóbb, hogy az eredetileg \textit{GUI} eszközkészletként indult projekt jócskán túllépett eredeti keretein. Ennek lehetőségét a moduláris felépítés teremtette meg, mely később még több ízben hasznára vált a projektnek. Azon részek, melyek nem közvetlenül függenek össze a grafikus felhasználói felületek fejlesztésével, vagy másutt is hasznosak lehetnek külön modulokban kaptak helyet, egy flexibilis eszközkészletet hozva így létre, melyből mindenki pontosan annyit és csak annyit használ fel, amennyire feltétlenül szüksége van.
+
+A legutóbbi főverzió -- vagyis a \textit{GTK+ 3} --, melyről a továbbiak szólnak majd, nem csupán a folytatja a hagyományokat, de igyekszik mindinkább kiszélesíteni a modularitás adta előnyok alkalmazási területeit.
+
+\subsection{Elérhetősége}
+\index{licenc!LGPL@\textit{LGPL}}
+\index{Git@\textit{Git}}
+
+A \textit{GTK+} többféle formában, többféle operációs rendszerre és grafikus szerverre is elérhető. A forma alatt ez esetben az értendő, hogy a függvénykönyvtár nem csupán forráskódként, hanem bináris  változatban is letölthető. Ez nyilván nem különösebb meglepetés. Előbbi már csak azért sem, mert nyílt forrású szoftverről van szó. Itt érdemes megjegyezni, hogy a licenc a \textit{GTK+} -- annak függőségei, illetve számos kapcsolódó függvénykönyvtár esetén -- a \href{http://www.gnu.org/licenses/lgpl-2.1.html}{GNU Lesser General Public License}, rövidítve az \textit{LGPL}, ami összefoglalva annyit tesz, hogy nyílt, illetve zárt forrású szoftverek egyaránt fejleszthetőek a \textit{GUI} eszközkészlet használatával, azzal a kitétellel, hogy a függvénykönyvtár általunk használt -- esetleges változtatásokat is tartalmazó -- változatának forrását ügyfeleinknek kérésre át kell adnunk. A szokásjog, illetve a saját érdekünk azt diktálja ugyanakkor, hogy a javítások mielőbb bekerüljenek a fejlesztők által karbantartott változatba. Visszatérve az elérhetőséghez a forráskód mind \href{http://git.gnome.org/browse/gtk+/}{verziókezelő rendszer}en (\textit{Git}) keresztül, mind \href{ftp://ftp.gtk.org/pub/gtk/}{archív állományok} formájában letölthető.
+
+\index{Linux@\textit{Linux}}
+\index{Windows@\textit{Windows}}
+\index{MAC OS X@\textit{MAC OS X}}
+\index{operációs rendszer!Linux@\textit{Linux}}
+\index{operációs rendszer!MAC OS X@\textit{MAC OS X}}
+\index{operációs rendszer!Windows@\textit{Windows}}
+A bináris változatok tekintetében elmondható, hogy mindaddig, amíg \textit{GNU}/\textit{Linux} alapú rendszereken dolgozunk különösebb nehézségekbe nem fogunk ütközni, hiszen nagy valószínűséggel az általunk használt disztribúció mind a fejlesztéshez (\textit{devel}), mind a hibajavításhoz (\textit{debug}) szükséges csomagokat tartalmazza. Ugyanakkor a \textit{GTK+} egy multiplatform eszköz, vagyis joggal várható el, hogy több operációs rendszeren is működjenek az általunk megírt kódok. A már említett \textit{GNU}/\textit{Linux} disztribúciókon túl -- amit a továbbiakban elsődlegesen, de közel sem kizárólagosan használunk majd -- a \textit{GTK+} mind a Microsoft \textit{Windows}, mind pedig az Apple \textit{MAC OS X} rendszerein elérhető.
+
+A használható grafikus szerverekről elöljáróban annyit érdemes megemlíteni, hogy a \textit{GTK+} portabilitásának két alappillérének egyike az a megoldás, mely a felhasználó felület építőköveinek -- a \textit{GTK+} által használt terminológiával élve \textit{widget} -- implementációját elválasztja az azok megjelenítésére szolgáló rajzoló primitívek megvalósításától. Ennek révén biztosítható, hogy a \textit{GTK+} forráskód túlnyomó részének változatlansága mellett -- csupán egy újabb, úgynevezett \textit{backend} hozzáadásával -- alkalmassá tehető egy újabb grafikus szerver, vagy alrendszer (pl: X11, frame buffer, HTML5, \dots) alá.
+
+\section{Részegységek}
+\index{GTK@\textit{GTK}}
+
+A \textit{GTK}\footnote{a \textit{GTK} rövidítés alatt a továbbiakban az általánosságban vett grafikus felhasználó felület fejlesztői eszközt, míg \textit{GTK+} alatt ennek \textit{C} nyelvű változatát értjük} szervezéséről fontos elöljáróban megemlíteni, hogy példaértékűen választja szét a funkcionalitás egyes elemeit, jól elhatárolt implementációs részegységre, melyek fejlesztése egymástól függetlenül, a \textit{GNOME} projekttel együttműködésben folyik.
+
+Ez a megoldás -- számos előnye mellett -- jár természetesen néhány nehézséggel is. A modulok csak publikus interfészeiken keresztül tudnak egymással kommunikálni. Ez egyrészről függetlenséget jelent a modulok belügynek tekinthető implementációs részleteinek terén, viszont komoly kötöttség a publikus felület oldalán, lévén annak változatlanságától nem csak a külső projektek, de az egyes \textit{GTK} modulok is függenek.
+
+A hosszan fenntartandó állandóságot hatásait jól példázza, hogy a \textit{GTK+} csak hat év után indított új főverziót (\texttt{3.x}), mely felszámolta a korábbi változattal való -- helyenként csaknem teljesen felesleges -- kompatibilitást. Az azóta eltelt időben\footnote{a \texttt{3.0.0} verzió megjelenése időpontja 2011. február} viszont vajmi kevés projekt döntött úgy, hogy átáll az új verzióra, még azzal együtt sem, hogy ez egyszerűbb alkalmazások tekintetében ez különösebben komoly erőforrást nem igényel. Célszerűen tehát ezek az inkompatibilis váltások nem lehetnek túl gyakoriak.
+
+A következőkben sorra vesszük mik azok a részegységek, melyek együtt a \textit{GTK} \textit{C} nyelvű változatát alkotják, s melyek természetesen a további nyelvi változatok alapjául szolgálnak.
 
 \subsection{GTK+}
+\index{GTK@\textit{GTK}!GTK+@\textit{GTK+}}
+\index{GUI}
 
-Elöljáróban fontos lehet tudni a nyelvet megvalósító implementáció szervezéséről, hogy példaértékűen választja szét a funkcionalitás egyes elemeit több különálló, jól elhatárolt részegységre, melyek ugyan támaszkodnak egymásra, de a megoldás nagyban elősegíti a rugalmasságot és a portabilitást.
+A \textit{GTK+} a grafikus felhasználó felületek (\textit{GUI}) fejlesztéséhez szükséges felületi elemek (beviteli mezők, rádiógombok, listák, dialógus ablakok, \dots), azaz \textit{widget}ek tárháza, vagyis a \textit{GTK} keretrendszer lelke. A függvénykönyvtár a korábban leírtaknak megfelelően csak a közvetlenül szükséges implementációt, vagyis a \textit{widget}ek kirajzolásához, interakcióinak, adattárolásának megvalósításához szükséges kódok összességét jelenti. Ettől persze némiképp többet, de erről később (\ref{sec:gail}) esik szó.
 
-\subsubsection{GLib}
-\index{GLib@\textit{GLib}}
+\subsection{GDK}
+\index{GTK@\textit{GTK}!GDK@\textit{GDK}}
 
-A GLib maga egy önálló függvénykönyvtár, mely \textit{GTK}-tól független, de javarészt az által is használt hasznos --a \textit{C} nyelvi elemként nem létező-- programozói segédeszközt tartalmaz. Ezek közül a leggyakrabban használtakat említjük meg. Használatuk részleteiről a későbbi részekben esik majd szó.
+A \textit{GIMP Drawing Kit} (\textit{GDK}) -- a \textit{GTK+} részeként terjesztett -- alacsony szintű rajzolási és ablakkezelési feladatok megvalósítására, egyszersmind a magasabb szintű rutinok elöl történő elfedésére szolgáló függvénykönyvtár. A \textit{GDK }fontos szerepet tölt be a \textit{GTK} különböző platformok közötti hordozhatóságának megteremtésében, lévén az általa nyújtotta -- viszonylag szűk körű -- funkcionalitást újraimplementálva a \textit{GTK+} alkalmas lehet egy újabb grafikus környezetben való futásra. Ezen funkciók alatt a már említett rajzolási primitíveken túl többek között rasztergrafikai feladatok, kurzor megjelenítése, illetve alacsony szintű ablakesemények implementálása értendő.
 
-\paragraph{Alapvető eszközök}
+\index{Linux@\textit{Linux}}
+\index{MAC OS X@\textit{MAC OS X}}
+\index{Windows@\textit{Windows}}
+\index{GDK backend@\textit{GDK} backend!Broadway@\textit{Broadway}}
+\index{GDK backend@\textit{GDK} backend!X11@\textit{X11}}
+\index{GDK backend@\textit{GDK} backend!Wayland@\textit{Wayland}}
+\index{grafikus szerver!X11@\textit{X11}}
+\index{grafikus szerver!Wayland@\textit{Wayland}}
+\index{operációs rendszer!Linux@\textit{Linux}}
+\index{operációs rendszer!MAC OS X@\textit{MAC OS X}}
+\index{operációs rendszer!Windows@\textit{Windows}}
+A fentieknek köszönhető, hogy az eredetileg csak az \textit{X Window System}\footnote{ami a \textit{Linux} alapú rendszerek, a \textit{GDK} születésének idejében, gyakorlatilag kizárólagos grafikus szervere} (\textit{X11}) felett működni képes \textit{GDK}, mára nemcsak egyéb \textit{Linux} alapú szerveren (\textit{Wayland}), de más operációs rendszereken (\textit{Windows}, \textit{Mac OS X}), sőt akár webböngészőben is működni képes\footnote{ezen szolgáltatáshoz eléréséhez \textit{websocket} támogatásra van szükség a böngészőben, illetve a \textit{Broadway} elnevezésű \textit{backend} bekapcsolására a \textit{GTK+} fordításakor}. A grafikus alrendszer portolása mellett felmerülő problémák jelentékeny részét a \textit{GLib} függvénykönyvtár oldja meg.
 
-Számos --a platformfüggetlen programozás szempontjából-- fontos eszközt bocsát a \textit{GLib} rendelkezésünkre, melyek jelentékeny részére amúgy is definiálnánk, így viszont készen apjuk őket.
+\subsection{GLib}
+\index{GTK@\textit{GTK}!GLib@\textit{GLib}}
 
-\begin{description}
- \item[protábilis típusdefiníciók] \texttt{guint32}, \texttt{guintptr}, \dots
- \item[típusok határértékei] \texttt{G\_MININT32}, \texttt{G\_MAXDOUBLE}, \dots
- \item[általános célú makrók] \texttt{MIN}/\texttt{MAX}, \texttt{TRUE}/\texttt{FALSE}, \texttt{G\_CONST\_RETURN}, \dots
- \item[típuskonverziós makrók] \texttt{GPONITER\_TO\_INT}, \texttt{GSIZE\_TO\_POINTER}, \dots
- \item[byte-order konvenciós makrók] \texttt{g\_htonl}, \texttt{GSIZE\_FROM\_BE}, \texttt{GUINT32\_SWAP\_BE\_LE}, \dots
- \item[matematika konstansok] \texttt{G\_E}, \texttt{G\_LN2}, \texttt{G\_PI}, \dots
- \item[fordítási opció makrók] \texttt{G\_GNUC\_NULL\_TERMINATED}, \texttt{G\_GNUC\_MALLOC}, \dots
- \item[atomikus műveletek] \texttt{g\_atomic\_inc\_int}, \texttt{g\_atomic\_pointer\_or}, \dots
-\end{description}
+A \textit{GLib} a \textit{GNOME} projekt egyik fundamentális eleme, mely történetileg ugyan kötődik a \textit{GTK+}-hoz, mára azonban teljesen önállóvá vált. Eredendően a \textit{GTK+} által használt, de attól függetlenül is létjogosultsággal bíró, platformfüggetlen kódok kiemelése egy külön függvénykönyvtárba, melyet számos -- a \textit{GNOME}, vagy a \textit{GTK} projektekhez akár nem is kapcsolódó -- szoftver\footnote{példának okáért a \textit{Compiz}, a \textit{Midnight Commander}, vagy a \textit{syslog-ng}} alkalmaz. A meglehetősen szerteágazó funkcionalitáscsomag melyet a \textit{Glib} megtestesít röviden a következőben foglalható össze; \textit{C} programozási nyelven írt standard függvénykönyvtárak nem, vagy csak részben elérhető, esetleg nehézkesen használható eszközök összessége.
 
-\paragraph{Alkalmazásfejlesztési eszközök}
-%FIXME
-\paragraph{Hasznos segéseszközök}
-%FIXME
-\paragraph{Adattípusok}
-%FIXME
+A teljesség igénye nélkül megemlítendőek a \textit{GLib} adattárolói (láncolt listák, fák, dinamikus tömbök, hash táblák, \dots), hordozható adattípusai (\texttt{guint32}, \texttt{gboolean}, \dots), memória allokációs függvényei (\texttt{g\_new}, \texttt{g\_allocator\_new}, \texttt{g\_slice\_alloc}, \dots), gyakran használt formátumok (dátum, idő, URI, fájl- és könyvtárnév, \dots) kezelésére szolgáló eszközei, konverziós algoritmusai (base64, endianness, karakterkódolás, \dots) széles körben alkalmazott módszerek implementációi (XML, Glob, Regex, \dots). Mindezeken túl a \textit{GLib} tartalmaz néhány külön is említésre méltó alrendszert.
 
-%\paragraph{Alkalmazásfejlesztési támogatás} Szálak, aszinkron kommunikáció a szálak között, dinamikus modulbetöltés, memória-, pipe-, socket-, fájlkezelés, többszintű logolás.
-%\paragraph{Konverziós eszközök} Karakterlánc-, dátum-, idő-, karakterkonverziós eszközök, parancssori paraméterek, XML, .ini, bookmark fájlok feldolgozása, időzítők, reguláris kifejezések.
-%\paragraph{Adattípusok} Láncolt listák, fák, asszociatív tömbök, szekvenciák, sorok, dinamikusan méretezhető tömbök.
-%\paragraph{Objektum rendszer} A \textit{GObject}, mely a \textit{GLib} része minden widget ``ősosztálya'', ugyanakkor saját eszközök alapkövévé is thetjük, hisz egyebek mellett lehetővé tesz referencia számlálást, futásidejű típusellenőrzést, tulajdonságok hozzárendelését és azok értékének futásidőben történő változtatását.
+\subsubsection{GObject}
+\index{GTK@\textit{GTK}!GLib@\textit{GLib}!GObject@\textit{GObject}}
 
-\subsubsection{GDK}
-\index{GDK@\textit{GDK}}
+A \textit{GLib Object System} egy \textit{C} nyelven írt objektumorientált keretrendszer, mely magvalósít számos olyan funkciót (származtatás, virtuális függvények, típus, objektumok memória menedzsmentje, \dots) melyeket például a \textit{C++}, vagy a \textit{Java} esetén nyelvi szinten adottak. A \texttt{GObject}, mint osztály szolgál például alapjául a \textit{GTK+} által implementált minden egyes \textit{widget}nek. A kép ezzel azonban még közel sem teljes.
 
-A \textit{GIMP Drawing Kit} (\textit{GDK}) az alacsony szintű rajzolási és ablakkezelési feladatok megvalósítására és egyszersmind elfedésére szolgáló függvénykönyvtár. Fontos szerepet tölt be a \textit{GTK} különböző platformok közötti hordozhatóságának megteremtésében., hiszen az általa nyújtotta viszonylag szűk körű funkcionalitást újraimplementálva a \textit{GTK} alkalmas lehet egy újabb grafikus környezetben való futásra, legalábbis amia rajzolási feladatokat illeti, az egyéb megoldandó problémák java részét a korábban mér említett \textit{GLib} oldja meg.
+A \textit{GObject} implementál számos alapvető fontosságú egyszerű (\texttt{gdouble}, \texttt{gint}, \dots) és összetett típus, illetve támogatja ezek felhasználását saját típusok létrehozásakor, illetve a \textit{GObject}-ből származó osztályokban adattagként való elhelyezését. Emellett megvalósít egy -- az objektumok állapotváltozásainak követésére szolgáló -- kommunikációs alrendszert (\textit{signal}).  Fentiek létrehozásakor kifejezett cél volt a rugalmas bővíthetőség és a könnyű adaptálhatóság más nyelvekre, mely utóbbi a később (\ref{sec:otherlanguages}) említésre kerülő nyelvi változatok egyszerű megvalósíthatóságának előfeltétele.
 
-Fentieknek köszönhető, hogy az eredetileg csak az \textit{X Window System} --ami a \textit{Linux} alapú rendszerek a \textit{GDK} születésének idejében kizárólagos grafikus szervere-- feletti működni képes \textit{GDK}, mára a \textit{Windows}, \textit{Mac OS X} rendszereken túl akár egy megfelelő webböngészőben is képes futni\footnote{ezen szolgáltatáshoz eléréséhez \textit{websocket} támogatásra van szükség a böngészőben, illetve a \textit{broadway} elnevezésű \textit{backend} bekapcsolására a \textit{GTK+} fordításakor}.
+\subsubsection{GModule}
+\index{GTK@\textit{GTK}!GLib@\textit{GLib}!GModule@\textit{GModule}}
+\index{dinamikus modulbetöltés}
 
-\subsubsection{Cairo}
-\index{cairo@\textit{cairo}}
+A \textit{GModule} egy dinamikus modulok betöltésére szolgáló függvénykönyvtár, mely rendelkezésre áll mindazon rendszereken, ahol a \textit{GLib} is, elfedve ez egyes operációs rendszer különbözőségeit ezen a területen.
 
-A \textit{cairo} egy eszközfüggetlen kétdimenziós vektorgrafikai függvénykönyvtár, melyet kifejezetten a hardveres gyorsítókkal való együttműködésre terveztek, s mellyel a \textit{GDK} a rajzolási feladatait végzi. Érdemes megemlíteni, hogy a \textit{cairo} nem a \textit{GNOME}, hanem a \href{http://freedesktop.org}{\textit{freedesktop.org}} projekt része.
+\subsubsection{GThread}
+\index{GTK@\textit{GTK}!GLib@\textit{GLib}!GThread@\textit{GThread}}
+\index{szálkezelés}
 
-\subsubsection{Pango}
+A \textit{GThread} célja erősen hasonlatos az imént említett \textit{GModule}-éhoz, vagyis biztosítani egy, a platformok sajátosságaitól független megoldást ezúttal nem a dinamikus modulbetöltés, hanem a szálkezelés tekintetében.
+
+\subsubsection{GIO}
+\index{GTK@\textit{GTK}!GLib@\textit{GLib}!GIO@\textit{GIO}}
+\index{GObject@\textit{GObject}}
+\index{POSIX}
+
+Az eddigieket folytatva a \textit{GIO} is egy, a multiplatformos programozás során gyakran felmerülő, probléma -- jelesül a fájlok, fájlrendszerek, meghajtók kezelése -- megoldására született. A megfelelő POSIX hívásokkal eddig is megvalósítható volt egy kvázi platformfüggetlen fájlkezelés, így ennek önmagában nem lenne számottevő haszna. A \textit{GIO} ugyanakkor több, mint egy egyszerű POSIX hívásokat burkoló függvényhalmaz. A \textit{GObject}-re támaszkodva egy magasabb szintű, dokumentumközpontú interfészt valósít meg.
+
+\subsection{Cairo}
+\index{Cairo@\textit{Cairo}}
+\index{GTK@\textit{GTK}!GDK@\textit{GDK}}
+
+A \textit{Cairo} egy eszközfüggetlen\footnote{értsd hardvereszközöktől független} kétdimenziós vektorgrafikai függvénykönyvtár, melyet kifejezetten a hardveres gyorsítókkal való együttműködésre terveztek, s mellyel a \textit{GDK} a kétdimenziós rajzolási feladatait végzi. Érdemes megemlíteni, hogy a \textit{Cairo} nem a \textit{GNOME}, hanem a \href{http://freedesktop.org}{\textit{freedesktop.org}} projekt része.
+
+\subsection{Pango}
 \index{Pango@\textit{Pango}}
 
 A \textit{Pango} szövegek képi formában történő előállításáért (\textit{rendering}) és megjelenítésért (\textit{lay out}) felelős a \textit{GTK}-n belül, de természetesen a \textit{GTK}-tól függetlenül is használható, lévén a függvénykönyvtár az előbbiekhez hasonlóan számos platformot támogat.
 
+\section{Nyelvi változatok}
+\label{sec:otherlanguages}
 
-\subsection{gtkmm}
+\subsection{GTK minus minus}
 \index{gtkmm@\textit{gtkmm}}
+\index{wrapper}
+\index{C++}
 
-A \textit{gtkmm}, illetve annak függőségei adják a \textit{GTK} projekt \textit{C++} nyelvű változatát. Ezek a függvénykönyvtárak nem egyebek, mint wrapperek az eredeti \textit{C} változat fölött, az ebből fakadó előnyökkel és korlátokkal együtt. Ezen kódok jelentékeny része wrapper mivoltukból következően generált, ugyanakkor számos helyen --ahol ez funkcionalitáshoz a programozási nyelvhez leginkább illeszkedő megvalósításához szükséges-- eredeti kódot is tartalmaz.
+A \textit{gtkmm}, illetve annak függőségei adják a \textit{GTK} projekt \textit{C++} nyelvű változatát. Ezek a függvénykönyvtárak wrapperek az eredeti \textit{C} változat fölött, az ebből fakadó előnyökkel és korlátokkal együtt. Ezen kódok jelentékeny része wrapper mivoltukból következően generált, ugyanakkor számos helyen -- ahol ez funkcionalitáshoz a programozási nyelvhez leginkább illeszkedő megvalósításához szükséges -- eredeti kódot is tartalmaz.
 
 A \textit{C}, illetve \textit{C++} nyelvű változatok a lehető legkisebb mértékben térnek el egymástól. Ez egyben azt is jelenti, hogy az egyes nyelvi változatok nem tartalmaznak a többihez képest többlet funkcionalitást. Nem lehet azonban eltekinteni az egyes programozási nyelvek adta lehetőségek előnyeitől, hátrányaitól, melyek könnyebbé vagy nehezebbé teszik a \textit{GTK} adott nyelven való használatát.
 
 \subsubsection{Libsigc++}
 \index{libsigc++@\textit{libsigc++}}
 
-A \textit{gtkmm} implementációjánál használt függvénykönyvtár, ami lehetővé teszi a szignálkezelés típusbiztos megvalósítását, mely a \textit{C} változatnál --a nyelvi sajátosságokból fakadóan-- nem adott.
+A \textit{gtkmm} implementációjánál használt függvénykönyvtár, ami lehetővé teszi a szignálkezelés típusbiztos megvalósítását, mely a \textit{C} változatnál -- a nyelvi sajátosságok okán -- nem adott.
 
-\subsection{PyGTK}
-\index{PyGTK@\textit{PyGTK}}
-%FIXME
+\subsection{PyGobject}
+\index{PyGObject@\textit{PyGObject}}
+\index{Python}
+\index{C}
 
+A \textit{Python} változat -- ahogy számos más egyéb nyelvi variáció is -- alapjai gyökeresen megváltoztak a \textit{GTK+} új főverziójának megjelenésével. A korábbi -- a \textit{gtkmm} által is alkalmazott -- módszer, az eredeti változatot rejti el, burkolja be (\textit{wrap}), vagy egy köztes réteget képez a \textit{C}, illetve cél nyelv -- esetünkben a \textit{Python} -- között. Ezen réteg többé-kevésbé természetesen automaták (pl: generátor szkriptek) révén jön létre ugyanakkor igaz az, hogy nem közvetlenül az eredeti kódbázist használja a burkoló réteg létrehozására. Következésképpen az \textit{GTK+} publikus felületében bekövetkező változásokat az egyes \textit{wrapper}eknek rendre követniük kell, holott a \textit{GTK+} kódjának írásakor is adottak azok a metaadatok, melyek mondjuk egy \textit{Perl}, vagy \textit{Python} elkészítéséhez szükségesek.
 
-\subsection{Dogtail}
-\index{dogtail@\textit{dogtail}}
-%FIXME
+\subsubsection{GObject Introspection}
+\index{GObject Introspection@\textit{GObject Introspection}}
+
+Az előbbi gondolatot tovább fűzve juthatunk el ahhoz a kézenfekvő kérdéshez, hogy miért nincsenek az említett metaadatok rögtön a \textit{GTK+} -- illetve a \textit{GLib}, \textit{Pango} és a többi függőség -- kódja mellett, ahonnan kinyerve azokat az egyes nyelvi változatokat egyszerűen generálni lehetne. A \textit{GObject Introspection} pontosan ezt célozza. Egy \textit{binding} elkészítéséhez szükséges adatok a \textit{C} nyelvű változatok -- kódjában egy erre a célra meghatározott formátumban -- megjegyzésként szerepelnek, a különböző nyelvű változatok pedig ezt felhasználva jönnek létre.
+
+\subsection{Összehasonlítás}
+
+Az egyes változatoknak megvannak a maguk -- jellemzően a programozási nyelv sajátosságaiból következő -- előnyei. Ilyenek lehetnek például a \textit{C} nyelv, illetve a fordítók széles körű elterjedtsége, a \textit{C++} azon sajátossága, hogy a nyelv nyújtotta módszereket, mint például az örököltetés, itt közvetlenül használhatjuk ki, vagy a \textit{Python} nyelvű fejlesztés sebessége. Míg mondjuk a \textit{C} nyelv esetében bizonyos funkciók kissé nehézkesen használhatóak, addig \textit{C++} objektumorientált megközelítése mellett ugyanez a funkció játszi könnyedséggel elérhető, vagy éppen a \textit{Python} nyújtotta szkript környezet ad könnyebb, rugalmasabb kezelhetőséget. Az említett három változat tekintetében a főbb ismérveket a \ref{tab:comparselanguages} táblázat tartalmazza.
+
+\begin{table}
+\begin{center}
+\begin{tabular}[t]{l c c c}
+                                & \textbf{\textit{GTK+}}          & \textbf{\textit{gtkmm}}  & \textbf{\textit{PyGObject}} \\\\
+\textbf{Nyelv:}                 & C                               & C++                      & Python                      \\\\
+\textbf{Implementáció módja:}   & natív                           & wrapper                  & binding                     \\\\
+\textbf{Objektumorinentált}     &                                 &                          &                             \\
+\textbf{technikák használata:}  & közvetett                       & natív                    & natív                       \\\\
+\textbf{Licenc:}                & LGPL                            & LGPL                     & LGPL                        \\\\
+\textbf{Ismertebb projektek:}   & Evolution, Firefox, Gimp, \dots & GParted, Inkscape, \dots & gedit                       \\
+
+\end{tabular}
+\caption{A \textit{GTK+}, \textit{gtkmm}, \textit{PyGObject} összehasonlítása}
+\label{tab:comparselanguages}
+\end{center}
+\end{table}
+
+\section{Kapcsolódó projektek}
+
+\subsection{Automata tesztelés}
+\index{automata tesztelés}
+
+A grafikus felületek kapcsán sajnálatosan elhanyagolt terület az automata tesztelés, azon nyilvánvaló tény ellenére is, hogy a felhasználó épp ezeken a felületeken keresztül éri el az érdemi funkcionalitást és nyeri első benyomásait a szoftverrel kapcsolatban, így ennek megjelenése, valamint helyes működése döntő az alkalmazás későbbi sikerességének tekintetében. Ezzel együtt igaz továbbá, hogy teljes körű (\textit{end-to-end}) megvalósított tesztelés mindenképpen a felhasználó felületről indított akcióval kell induljon és az ugyanott tapasztalt reakció ellenőrzésével kell végződjön.
+
+A \textit{GTK} felhasználásával fejlesztett felületek tesztelésénél rendelkezésünkre áll a megfelelő keretrendszer, mely lehetőséget teremt, hogy az elkészült felületi elemek működését automaták segítségével teszteljük. A későbbiek során bemutatásra kerülő mintapéldák esetén mindenütt kitérünk majd az azok kapcsán felmerülő tesztelési feladatok megoldásának mikéntjére. Most azonban lássuk nagy vonalakban hogyan is működik ez a tesztelési keretrendszer.
+
+\subsubsection{Accessibility Tool Kit}
+\index{ATK@\textit{ATK}}
+
+Elsőre talán egymástól távoli területnek tűnik a szoftverek akadálymentesítése (\textit{accessibility}), valamint a felhasználó felületek automata tesztelése, egyvalami mégis összeköti őket. Ez pedig az a követelmény, aminek a szoftver mindkét cél elérése érdekében eleget kell tegyen, ami nem mást, mint az alkalmazást vezérelhetősége bizonyos felhasználói interakciók kizárása mellett is. Az automata tesztelés esetén ez gyakorlatilag az összes eszköz (billentyűzet, egér, \dots) kizárását jelenti, hiszen a felhasználót ez esetben teljes egészében a tesztelést végző szoftver helyettesíti.
+
+A szoftverek akadálymentesítésének biztosítása egy speciális megközelítést igényel, mely a fogyatékossággal élő emberek szoftverekkel végzett munkájának megkönnyítését helyezi előtérbe. Ehhez az \textit{ATK} csupán annyit tesz, hogy definiál egy interfészt, amin keresztül az adott szoftvert el lehet érni. Indulva onnan, hogy egy adott alkalmazást ki lehet választani az összes aktuálisan futó alkalmazás közül, folytatva azzal, hogy le lehet kérdezni az általa megnyitott ablakokat, az abban lévő felületi elemeket (\textit{widget}), egészen odáig, hogy az általuk tárolt értékeket (egy beviteli mező szövege, folyamatindikátor értéke, \dots), illetve állapotokat (rádiógomb kiválasztott állapota, beviteli mező szerkeszthetősége, \dots) írni olvasni lehet, rajtuk akciókat (gomb lenyomása, menüelem kiválasztása) végezhetünk.
+
+\subsubsection{Gail}
+\index{ATK@\textit{ATK}}
+\index{Gail@\textit{Gail}}
+\label{sec:gail}
+
+Lévén az \textit{ATK} lényegében csak egy interfész definíció, ahhoz minden esetben\footnote{már amennyiben az adott grafikus felületfejlesztői rendszer -- mint amilyen a \textit{GTK+}, vagy mondjuk a \textit{Qt} -- biztosítani kívánja az \textit{ATK}-n keresztüli elérést} tartozik egy implementáció, ami az adott felületfejlesztői rendszer működését megfelelteti az \textit{ATK} által definiáltaknak. A \textit{GTK}  esetén ez az implementáció a \textit{Gail}.
+
+\subsubsection{Dogtail}
+\index{Dogtail@\textit{Dogtail}}
+
+A \textit{Dogtail} egy \textit{Python} nyelven írt és használható tesztautomatizációs eszköz, illetve keretrendszer. Segítségével létrehozhatók felhasználó felületek -- a mát említett \textit{ATK} interfészen keresztül -- tesztelő szkriptek, többféle formában és módon is. Ami módot illeti lehetőégünk van egyrészről effektíve forráskód -- azaz egy \textit{Python} szkript -- formájában létrehozni a tesztjeinket, vagy úgymond ''felvételt'' készíteni magáról a tesztelésről, majd az így rögzített eseményeket mint tesztet visszajátszani. Ha az előbbi módszernél maradunk -- amiről a további részekben is szó esik --, akkor is két lehetőség adódik, hiszen a \textit{Dogtail} rendelkezik egy procedurális, illetve egy objektumorientált megközelítésű API-val, melyek tetszés szerint használhatóak a tesztek elkészítésekor.
+
+\subsubsection{Accerciser}
+\index{Accerciser@\textit{Accerciser}}
+
+Mind az automata tesztelő szkriptek megírásakor, mind egy konkrét alkalmazás felületének feltérképezésére, mind pedig az \textit{ATK} interfésszel történő ismerkedésre alkalmas eszköz az \textit{Accerciser}, mely az akadálymentesített szoftverek feltérképezésére szolgáló eszköz és mint ilyen pontosan azon adatok megjelenítésére és módosítására, valamint azon akciók végrehajtására alkalmas, amire a \textit{Dogtail} szkriptek révén képesek vagyunk.
 
 \section{A megvalósítás koncepciója}
 
@@ -97,35 +209,7 @@ Ezen osztályon keresztül valósul meg a szignálkezelés, mely lehetővé tesz
 
 \subsection{Referencia-számlálás}
 
-Minden \textit{object}ből származó osztály, így a widgetek is, rendelkeznek referencia-számmal, mely tulajdonképpen azt fejezi ki, hogy hányan hivatkoznak az adott elemre. A \textit{GTK}, pontosabban ez esetben a \textit{GLib} lebegő referenciát (\textit{floating reference}) alkalmaz, mely azt jelenti, hogy az objektum létrejöttekor annak referenciája 1 lesz, de ezt a referenciát úgymond nem birtokolja senki, azaz ha a \textit{widget}et egy konténer osztályba (melyekről részletesebben a következő rész szól majd) kívánjuk tenni, akkor -- az első ilyen alkalommal -- a refernciaszám nem nő, annak ellenére sem, hogy ez valójában hivatkozást jelent az adott elemre. A változatlanul hagyott referencia-érték jelenti a lebegő referencia elsüllyesztését (\textit{sink}). Minden azt követő esetben a konténerből történő eltávolítás csökkenti, ahoz való hozzáadás pedig növeli a referencia értékét. Érdemes felhívni a figyelmet arra, hogy az elmondottak alapján, ha hozzáadtuk \textit{widget}ünket egy \textit{container}hez, majd pedig eltávolítjuk belőle azt, akkor annak referenciája 0-ra csökken, ami maga után vonja a destruktor lefutását. Ezt elkerülhetjük, ha az eltávolítás előtt explicit módon növeljük a referenciát, amit aztán csökkentenünk kell, ha egy másik osztály ``birtokába'' adjuk a \textit{widget}et.
-
-\section{Programozási nyelv}
-
-%FIXME: python, perl, ... néhány mondat
-Megfeledkezni azonban nem lehet a tényről, hogy a \textit{C++} fordító közel sem olyan gyakran áll rendelkezésre, mint azt gondolnánk. Számos olyan terület létezik ugyanis, melyek esetén alapvető megkötés a \textit{C} nyelv. Megemlítendő továbbá, hogy a \textit{gtkmm} nem az egyetlen port, hiszen létezik többek között \textit{python} (\textit{pyGTK}), \textit{perl} (gtk2-perl), \textit{ruby}, \textit{java} nyelvű változat is.
-
-Mielőtt a kódolás technikai részleteire rátérnénk, tegyünk egy rövid kitérőt a tisztánlátás érdekében és hasonlítsuk össze a két felületprogramozási nyelv alapvető tulajdonságait:\vspace{16pt}
-
-\begin{table}[H]
-\begin{center}
-\begin{tabular}[t]{l c c}
-                                       & \textbf{\textit{GTK+}}            & \textbf{\textit{gtkmm}}  \\\\
-\textbf{Felhasználási terület:}        & GUI fejlesztés                    & GUI fejlesztés           \\\\
-\textbf{Implementáció nyelve:}         & C                                 & C++                      \\\\
-\textbf{Implementáció módja:}          & natív                             & wrapper                  \\\\
-\textbf{Objektumorinentált}            &                                   &                          \\
-\textbf{technikák használata:}         & közvetett                         & natív                    \\\\
-\textbf{Típusellenőrzés:}              & futási időben                     & fordításai dőben         \\\\
-\textbf{Licenc:}                       & LGPL                              & LGPL                     \\\\
-\textbf{Ismertebb projektek:}          & GNOME,                            & GNOME,                   \\
-                                       & Evolution, Firefox, Gimp, \dots   & GParted, Inkscape, \dots \\
-\end{tabular}
-\caption{A \textit{GTK+} és \textit{gtkmm} tulajdonságainak összehasonlítása}
-\end{center}
-\end{table}
-%FIXME
-
-Ahogy az a fentiekből is látszik a a \textit{C++} nyelvű változatnak megvannak a maga komoly előnyei. Ezek közül talán a legfontosabb, hogy a nyelv nyújtotta módszereket, mint például az örököltetés, itt közvetlenül használhatjuk ki. Ez természetesen nem jelenti azt, hogy a \textit{GTK+} esetén erre ne lenne lehetőségünk, ugyanakkor meg kell jegyezni, hogy míg a \textit{gtkmm} esetén ez játszi könnyedséggel megtehető, addig az eredeti változat alkalmazásával ez kissé körülményes. Egy másik megfontolandó érv a típusbiztosság, melynek előnyeit nem lehet eléggé hangsúlyozni, hiszen hosszú órákon át tartó hibakereséstől óvhat meg minket. A \textit{GTK+} a \textit{GObject} révén --melyre egy későbbi részben részletesebben is foglalkozunk majd-- rendelkezik egy frappáns mechanizmussal, mely lehetővé teszi a futásidejű típusellenőrzést a \textit{widget}ek esetén, de nem vetekedhet a \textit{C++} nyújtotta fordítási idejű hibaüzenetekkel.
+Minden \textit{object}ből származó osztály, így a widgetek is, rendelkeznek referencia-számmal, mely tulajdonképpen azt fejezi ki, hogy hányan hivatkoznak az adott elemre. A \textit{GTK}, pontosabban ez esetben a \textit{GLib} lebegő referenciát (\textit{floating reference}) alkalmaz, mely azt jelenti, hogy az objektum létrejöttekor annak referenciája 1 lesz, de ezt a referenciát úgymond nem birtokolja senki, azaz ha a \textit{widget}et egy konténer osztályba (melyekről részletesebben a következő rész szól majd) kívánjuk tenni, akkor -- az első ilyen alkalommal -- a referenciaszám nem nő, annak ellenére sem, hogy ez valójában hivatkozást jelent az adott elemre. A változatlanul hagyott referencia-érték jelenti a lebegő referencia elsüllyesztését (\textit{sink}). Minden azt követő esetben a konténerből történő eltávolítás csökkenti, ahhoz való hozzáadás pedig növeli a referencia értékét. Érdemes felhívni a figyelmet arra, hogy az elmondottak alapján, ha hozzáadtuk \textit{widget}ünket egy \textit{container}hez, majd pedig eltávolítjuk belőle azt, akkor annak referenciája 0-ra csökken, ami maga után vonja a destruktor lefutását. Ezt elkerülhetjük, ha az eltávolítás előtt explicit módon növeljük a referenciát, amit aztán csökkentenünk kell, ha egy másik osztály ``birtokába'' adjuk a \textit{widget}et.
 
 \section{Fejlesztési sajátosságok}
 
@@ -145,10 +229,8 @@ Mint az későbbiekben megfigyelhető lesz a \textit{GTK+} \textit{header}ek ese
 
 \paragraph{Nevezéktan}
 
-A \textit{GTK+} minden saját makrót/függvényt \texttt{GTK}/\texttt{gtk} prefixszel lát el (\textit{GLib} esetén ez pusztán csak egy kis/nagy \texttt{g} betű), sőt egy adott részterület --például egy \textit{widget}-- saját ``névterülettel'' is rendelkezhet, azaz újabb prefixet vezethet be. Ezeket egymástól, illetve a ``valódi'' funkciót jelölő nevektől \texttt{\_} (aláhúzás) jellel választják el. A C++ wrapper kódát olvasva láthatjuk, hogy kihasználva a kézenfekvő nyelvi lehetőséget, a prefixek szerepét a névterek veszik át, annyi különbséggel, hogy ezek neveiben csak az első betű nagy.
+A \textit{GTK+} minden saját makrót/függvényt \texttt{GTK}/\texttt{gtk} prefixszel lát el (a \textit{GLib} esetén ez pusztán csak egy kis, illetve nagy \texttt{g} betű). Egy adott részterület -- például egy \textit{widget} -- saját ``névtérreel'' is rendelkezhet, azaz újabb prefixet vezethet be\footnote{a \textit{GtkWindow} típushoz tartozó függvények prefixe \texttt{gtk} helyett \texttt{gtk\_window}}. Ezeket egymástól, illetve a ``valódi'' funkciót jelölő nevektől \texttt{\_} (aláhúzás) jellel választják el. A \textit{C++} wrapper esetén -- kihasználva a kézenfekvő nyelvi lehetőséget -- a prefixek szerepét a névterek, illetve az osztályok veszik át\footnote{a \textit{Window} típus a \textit{gtkmm} esetén \texttt{Gtk} névtéren belül szereplő \texttt{Window} nevű osztály}.
 
 \paragraph{Nyelvhez kötődő módszerek}
 
 A mintapéldában megfigyelhető (az azonos funkciójú sorok párba állítása révén), hogy a \textit{C++} kód némileg egyszerűbb, hiszen az ablakunk létrehozásakor nem kell a window típusára (\textit{toplevel}) vonatkozó paramétert megadnunk, azonos helyen lehet a változó deklarációja és első felhasználása. Külön is említésre méltó, bár a \textit{C++} programozók számára nem meglepő, hogy a main függvényből való kilépéskor a \textit{gtkmm} változat windowja felszabadul, míg a \textit{GTK+} verzió esetén ez csak azért történik meg, mert magából a programból is kiléptünk egyúttal.
-
-
