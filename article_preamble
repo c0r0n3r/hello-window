@@ -6,5 +6,3 @@
 \geometry{verbose, tmargin=2.0cm, bmargin=2.0cm, lmargin=2.0cm, rmargin=2.0cm}
 
 \input{common_preamble}
-
-\makeindex
