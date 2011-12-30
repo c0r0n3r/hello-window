@@ -24,12 +24,12 @@ captionpos=b,
 basicstyle=\small\ttfamily\color{red},
 identifierstyle=\color{black},
 keywordstyle=\color{blue},
-columns=fixed, basewidth={0.42em, 0.38em},
+columns=fixed, basewidth={0.41em, 0.38em},
 showlines=true,
 escapeinside={/*@}{@*/},
 nolol=true,
 numbers=left,
-numberstyle=\scriptsize,
+numberstyle=\tiny,
 framexleftmargin=5mm
 }
 
