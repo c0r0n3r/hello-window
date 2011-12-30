@@ -19,11 +19,11 @@ A \textit{GTK+} többféle formában, többféle operációs rendszerre és graf
 
 \index{Linux@\textit{Linux}}
 \index{Windows@\textit{Windows}}
-\index{MAC OS X@\textit{MAC OS X}}
+\index{Mac OS X@\textit{Mac OS X}}
 \index{operációs rendszer!Linux@\textit{Linux}}
-\index{operációs rendszer!MAC OS X@\textit{MAC OS X}}
+\index{operációs rendszer!Mac OS X@\textit{Mac OS X}}
 \index{operációs rendszer!Windows@\textit{Windows}}
-A bináris változatok tekintetében elmondható, hogy mindaddig, amíg \textit{GNU}/\textit{Linux} alapú rendszereken dolgozunk különösebb nehézségekbe nem fogunk ütközni, hiszen nagy valószínűséggel az általunk használt disztribúció mind a fejlesztéshez (\textit{devel}), mind a hibajavításhoz (\textit{debug}) szükséges csomagokat tartalmazza. Ugyanakkor a \textit{GTK+} egy multiplatform eszköz, vagyis joggal várható el, hogy több operációs rendszeren is működjenek az általunk megírt kódok. A már említett \textit{GNU}/\textit{Linux} disztribúciókon túl -- amit a továbbiakban elsődlegesen, de közel sem kizárólagosan használunk majd -- a \textit{GTK+} mind a Microsoft \textit{Windows}, mind pedig az Apple \textit{MAC OS X} rendszerein elérhető.
+A bináris változatok tekintetében elmondható, hogy mindaddig, amíg \textit{GNU}/\textit{Linux} alapú rendszereken dolgozunk különösebb nehézségekbe nem fogunk ütközni, hiszen nagy valószínűséggel az általunk használt disztribúció mind a fejlesztéshez (\textit{devel}), mind a hibajavításhoz (\textit{debug}) szükséges csomagokat tartalmazza. Ugyanakkor a \textit{GTK+} egy multiplatform eszköz, vagyis joggal várható el, hogy több operációs rendszeren is működjenek az általunk megírt kódok. A már említett \textit{GNU}/\textit{Linux} disztribúciókon túl -- amit a továbbiakban elsődlegesen, de közel sem kizárólagosan használunk majd -- a \textit{GTK+} mind a Microsoft \textit{Windows}, mind pedig az Apple \textit{Mac OS X} rendszerein elérhető.
 
 A használható grafikus szerverekről elöljáróban annyit érdemes megemlíteni, hogy a \textit{GTK+} portabilitásának két alappillérének egyike az a megoldás, mely a felhasználó felület építőköveinek -- a \textit{GTK+} által használt terminológiával élve \textit{widget} -- implementációját elválasztja az azok megjelenítésére szolgáló rajzoló primitívek megvalósításától. Ennek révén biztosítható, hogy a \textit{GTK+} forráskód túlnyomó részének változatlansága mellett -- csupán egy újabb, úgynevezett \textit{backend} hozzáadásával -- alkalmassá tehető egy újabb grafikus szerver, vagy alrendszer (pl: X11, frame buffer, HTML5, \dots) alá.
 
@@ -51,7 +51,7 @@ A \textit{GTK+} a grafikus felhasználó felületek (\textit{GUI}) fejlesztésé
 A \textit{GIMP Drawing Kit} (\textit{GDK}) -- a \textit{GTK+} részeként terjesztett -- alacsony szintű rajzolási és ablakkezelési feladatok megvalósítására, egyszersmind a magasabb szintű rutinok elöl történő elfedésére szolgáló függvénykönyvtár. A \textit{GDK }fontos szerepet tölt be a \textit{GTK} különböző platformok közötti hordozhatóságának megteremtésében, lévén az általa nyújtotta -- viszonylag szűk körű -- funkcionalitást újraimplementálva a \textit{GTK+} alkalmas lehet egy újabb grafikus környezetben való futásra. Ezen funkciók alatt a már említett rajzolási primitíveken túl többek között rasztergrafikai feladatok, kurzor megjelenítése, illetve alacsony szintű ablakesemények implementálása értendő.
 
 \index{Linux@\textit{Linux}}
-\index{MAC OS X@\textit{MAC OS X}}
+\index{Mac OS X@\textit{Mac OS X}}
 \index{Windows@\textit{Windows}}
 \index{GDK backend@\textit{GDK} backend!Broadway@\textit{Broadway}}
 \index{GDK backend@\textit{GDK} backend!X11@\textit{X11}}
@@ -59,7 +59,7 @@ A \textit{GIMP Drawing Kit} (\textit{GDK}) -- a \textit{GTK+} részeként terjes
 \index{grafikus szerver!X11@\textit{X11}}
 \index{grafikus szerver!Wayland@\textit{Wayland}}
 \index{operációs rendszer!Linux@\textit{Linux}}
-\index{operációs rendszer!MAC OS X@\textit{MAC OS X}}
+\index{operációs rendszer!Mac OS X@\textit{Mac OS X}}
 \index{operációs rendszer!Windows@\textit{Windows}}
 A fentieknek köszönhető, hogy az eredetileg csak az \textit{X Window System}\footnote{ami a \textit{Linux} alapú rendszerek, a \textit{GDK} születésének idejében, gyakorlatilag kizárólagos grafikus szervere} (\textit{X11}) felett működni képes \textit{GDK}, mára nemcsak egyéb \textit{Linux} alapú szerveren (\textit{Wayland}), de más operációs rendszereken (\textit{Windows}, \textit{Mac OS X}), sőt akár webböngészőben is működni képes\footnote{ezen szolgáltatáshoz eléréséhez \textit{websocket} támogatásra van szükség a böngészőben, illetve a \textit{Broadway} elnevezésű \textit{backend} bekapcsolására a \textit{GTK+} fordításakor}. A grafikus alrendszer portolása mellett felmerülő problémák jelentékeny részét a \textit{GLib} függvénykönyvtár oldja meg.
 
