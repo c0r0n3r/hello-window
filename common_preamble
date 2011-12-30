@@ -109,3 +109,16 @@ framexleftmargin=5mm
 
 \renewcommand\lstlistingname{Kódrészlet}
 }
+
+\newcommand{\includetwingraphics}[8]{
+\begin{figure}[h]
+\begin{center}
+\subfloat[][#1]{\label{fig:#2}\includegraphics[width=0.35\linewidth]{images/#3}}
+\hspace{12pt}
+\subfloat[][#4]{\label{fig:#5}\includegraphics[width=0.35\linewidth]{images/#6}}
+\caption{#7}
+\label{fig:#8}
+\end{center}
+\end{figure}
+}
+
