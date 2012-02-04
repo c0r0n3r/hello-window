@@ -1,0 +1,290 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[latin2]{inputenc}
+\usepackage[hungarian]{babel}
+\usepackage{t1enc}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{url}
+
+%opening
+\title{Hello Window! - GTK+/gtkmm programozás GNU/Linux alatt}
+\author{Pfeiffer Szilárd}
+\date{2009. február 18.}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A \textit{GTK+} (\textit{GIMP Toolkit}) egy \textit{C} nyelven --ám objektum-orientált meg\-kö\-ze\-lí\-tés\-sel-- íródott, grafikus felhasználói felületek (\textit{GUI}) létrehozására használatos al\-kal\-ma\-zás-programozási interfész. A \textit{gtkmm} nem más, mint ennek a függvénykönyvtárnak a \textit{C++} változata, pontosabban fogalmazva \textit{wrapper}e. Mindkét terjesztése \textit{LGPL} licenc alatt történik, így bátran felhasználható mind szabad/ingyenes, mind kereskedelmi szoftverek létrehozására.
+
+A most kezdõdõ sorozat célja az abszolút kezdetektõl indulva bemutatni a \textit{GTK+} és a \textit{gtkmm} hasonlóságait, különbözõségeit, sajátosságait eljutva egy olyan szintre, ahol remélhetõleg a több éves tapasztalattal rendelkezõ fejlesztõk is találnak hasznos, megfontolásra érdemes ötleteket, információkat.
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Bevezetés}
+
+Jelen rész a \textit{GTK+} . Ehhez egy új példprogramot veszünk górcsõ alá, mely forráskódját tekintve némiképp ugyan bonyolultabb az elõzõ részben tárgyalttól, mûködésére nézve azonban nem sokban különbözik tõle.
+
+\subsection{Fogalmak}
+
+A korábban már megismert alapfogalmak újra elõkerülnek majd, most azonban általános ismertetésük helyett a jelen témánkhoz kapcsolódó specifikumaikat vázoljuk fel.
+
+\subsubsection{Main Loop}
+
+Ahogy arról az elõzõ részekben szó esett -- minden más felületprogramozási nyelvekhez hasonlóan -- a \textit{GTK} is eseményvezérelt (\textit{event-driven}). De mit is jelent ez?  Azt, hogy felhasználói interakciók híján -- figyelmen kívül hagyva az ütemezett eseményeket és néhány késõbbi részekben részletezendõ funkciót -- a \textit{GTK} a \textit{main loop}ban áll és várakozik valamiféle eseményre (\textit{event}), mint az egér megmozdítása, vagy egy kattintás, esetleg egy billentyûleütés. A \textit{main loop}ba történõ belépésre szolgál \textit{GTK+} esetén a \texttt{gtk\_main()}, míg \textit{gtkmm} esetén a \texttt{Gtk::Main::run()} függvény. Ha az említett akciók közül valamelyik bekövetkezik, az addig várakozó ciklus úgymond ``felébred'', majd a bekövetkezett eseményt propagálja -- kvázi üzenetet küld -- a megelelõ \textit{widget}(ek) felé.
+
+\subsubsection{Signal}
+
+Ez a közvetítõ üzenet (jel, jelzés) a szignál. Ilyen üzenetbõl számos létezik, hisz az egyes \textit{widget}típusokon különbözõ események lehetnek értelmezettek, gomb esetén a rá történõ kattintás, egy legördülõ menünél az egér menüelem fölé történõ mozgatása, míg egy \textit{widget}nél annak átméretezése. Minden ilyen eseménynek megvan a saját neve, mellyel hivatkozni lehet rá (pl.: ``button-pressed'', ``enter-notify-event``, ''size-request``). Itt érdemes megjegyezni, hogy a \textit{szignál}ok örklõdnek, azaz egy specifikus \textit{widget}, mint amilyen mondjuk egy \textit{RadioButton}, vagy egy \textit{CheckButton}, minden olyan szignállal rendelkezik, amivel õse a \textit{Button}, vagy akár annak az õse az a \textit{Widget} típus. A \textit{szignál}ok egyrészrõl arra szolgálnak, hogy a \textit{GTK} rendszerén belül az egyes \textit{widget}ek egymással kommunikálhassanak. Ha például egy gombot lenyomunk, akkor azt (illetve annak részeit) újra kell rajzolni, ha egy menüelemet kiválasztunk, azt át kell színezni, illetve az esetleges almenüpontokat ki kell rajzolni, míg átméretezésnél az egyes \textit{widget}ek helyigényét újra kell számolni. Másfelõl ha a program írói valamely esemény bekövetkezésérõl értesülni szeretnének, megadhatnánk eseménykezelõ függvényeket, melyek ezen esetekben meghívódnak.
+
+\subsubsection{Callback}
+
+Ezen függvények elnevezése a \textit{GTK+} terminológiában \textit{callback}. Az egyes konkrét prototípusok a \textit{szignál} fajtájától függenek. A \textit{C} nyelvû változat esetén elsõ paraméterük jellemzõen az a \textit{Widget} -- pontosabban szólva \textit{Object}, hiszen a \textit{szignál}kezelés ezen a szinten került implementásra a \textit{Glib}-ben -- melyen az esemény kiváltódott. Ezt a paramétert követik a \textit{szignál}hoz kapcsolódó egyéb jellemzõk, az utolsó pedig a szignál bekötésekor megadott, úgynevezett \textit{user data}, amirõl a példaprogram kapcsán részletesebben szólunk. Elöljáróban csak annyit, hogy ez egy meglehetõsen kényelmetlen és gyakorta nehézkesen használható megoldás, melyre a \textit{C++} nyelvû változat remek alternatívát kínál.
+
+Ennyi bevezetõ után lássuk az ''ehavi`` példaprogramunkat, majd annak értelmezését.
+
+\section{Szignálkezelés dióhéjban}
+
+Az elõzõ szám módszertanától eltérve az alábbiak szerint elemezzük a kódokat:
+
+\begin{itemize}
+ \item külön-külön vesszük számba ez egyes nyelvi változatok sajátosságait, mivel ezen példaprogramok kódjának hasonlósági foka szerény
+ \item elõször a \textit{C} nyelvû verziónak fogunk neki, hogy túl lehessünk a nehezén, azután meglátjuk mennyiben más a helyzet, ha \textit{gtkmm} használatára van módunk \textit{GTK+} helyett
+ \item ezt követõen egy külön rész foglalkozik a két verzió összehasonlításával
+ \item a kódot nem sorfolytonosan, hanem a futás logikája szerint követjük, lévén egy kicsit is bonyolultabb esetben -- mint amilyennek ez is mondható -- már ez a logikusabb
+\end{itemize}
+
+Az alábbi példaprogramok \textit{C/C++} nyelvû forrásfájljai, illetve azok eredetijei, a \textit{FLOSSzine}, valamint a \textit{GTK+}/\textit{gtkmm} oldalain az alábbi linkeken érhetõek el:
+\ \\\\
+\url{http://www.flosszine.org/sources/gtk_signal.c}\\
+\url{http://www.flosszine.org/sources/gtkmm_signal.cc}\\
+\url{http://library.gnome.org/devel/gtk-tutorial/stable/c39.html#SEC-HELLOWORLD}\\
+
+\subsection{GTK+}
+
+\subsubsection{A kód}
+
+\vspace{16pt}
+\fontsize{6pt}{6pt}
+\begin{verbatim}
+  1 #include <gtk/gtk.h>
+  2
+  3 static void hello( GtkWidget *widget,
+  4                    gpointer   data )
+  5 {
+  6   g_print ("%s\n", (const char *) data);
+  7 }
+  8
+  9 static gboolean delete_event( GtkWidget *widget,
+ 10                               GdkEvent  *event,
+ 11                               gpointer   data )
+ 12 {
+ 13   g_print ("delete event occurred\n");
+ 14
+ 15   return TRUE;
+ 16 }
+ 17
+ 18 static void destroy( GtkWidget *widget,
+ 19                      gpointer   data )
+ 20 {
+ 21     gtk_main_quit ();
+ 22 }
+ 23
+ 24 int main( int   argc,
+ 25           char *argv[] )
+ 26 {
+ 27   GtkWidget *window;
+ 28   GtkWidget *button;
+ 29
+ 30   gtk_init (&argc, &argv);
+ 31
+ 32   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+ 33
+ 34   g_signal_connect (G_OBJECT (window), "delete_event",
+ 35                     G_CALLBACK (delete_event), NULL);
+ 36
+ 37   g_signal_connect (G_OBJECT (window), "destroy",
+ 38                     G_CALLBACK (destroy), NULL);
+ 39
+ 40   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+ 41
+ 42   button = gtk_button_new_with_label ("Helló Világ");
+ 43
+ 44   g_signal_connect (G_OBJECT (button), "clicked",
+ 45                     G_CALLBACK (hello), NULL);
+ 46
+ 47   g_signal_connect_swapped (G_OBJECT (button), "clicked",
+ 48                             G_CALLBACK (gtk_widget_destroy),
+ 49                             G_OBJECT (window));
+ 50
+ 51   gtk_container_add (GTK_CONTAINER (window), button);
+ 52
+ 53   gtk_widget_show (button);
+ 54   gtk_widget_show (window);
+ 55
+ 56   gtk_main ();
+ 57
+ 58   return 0;
+ 59 }
+\end{verbatim} 
+
+\subsubsection{Részletek sorról sorra}
+
+\begin{enumerate}
+ \item[27-28] Annak szükségességérõl, hogy a változók egy függvény elején legyenek deklarálva az elõzõ részben esett szó, így erre itt nem térnünk ki. Ellenben fontos, hogy a változók típusa \texttt{GtkWidget}, a specifikusabb \textit{GtkWindow}, illetve \textit{GtkButton} helyett. Ennek megyarázata, hogy minden olyan függvény a \textit{GTK+}-ban mely egy új \textit{widget}et hozhatunk létre -- azaz a \texttt{\_new} végû metódusok -- egy \texttt{GtkWidget} típusú objektumra mutató pointerrel tér vissza. Ennek kényelmi okai vannak, jelesül, hogy elkerülhessük a folytonos típuskényszerítéseket, hisz legtöbbször olyan függvyéneket használunk, melyek \texttt{GtkWidget}eket kezelnek, tehát ilyen típusra mutatót vesznek át elsõ paraméterként. Ha egy specifikus -- mondjuk \texttt{GtkButton}-t kezelõ -- függvényt akarunk hívni, akkor vagy fordítási, vagy ami javasol, futás idejû típuskényszerítés alkalmazandó.
+
+ \item[32] Fõablakunk létrehozása, ahogy eddig is.
+
+ \item[34] Az elsõ szignálbekötés. Viszonylagos egyszerûsége ellenére számos apróságra érdemes figyelmet fordítani. Az elsõ maga a \texttt{g\_signal\_connect}, ami függvénynek tûnhet, pedig ugyanúgy, mint a \texttt{g\_signal\_connect\_swapped}, makró, melyek a \texttt{g\_sinal\_connect\_data} függvényt burkolják. A soron következõ érdekesség a \texttt{G\_OBJECT} makró, mely futás idejú típusellenõrzést hajt végre a neki megadott paraméteren, majd egy \texttt{GObject} típusra mutatóval tér vissza. A megrögzött \textit{C++} programozók joggal kérdezhetik, mi szükség erre, hisz egyfelõl majd elvégzi a típusellenõrzést a fordító, meg hát a \texttt{GtkWindow} típus úgy is leszármazottja a \textit{GObject} ''osztálynak``. Ez így is lenne, na de ez itt \textit{C}, tehát õs-, illetve származtatott osztályokról csak logikailag lehet szó, a típusellenõrzés tehát nem végezhetõ, sõt minden esetben a hívott függvénynek megfelelõ típuskényszerítõ makrót kell alkalmazni. A második paraméter a a szignál neve, jelen esetben, mellyel azt adjuk meg, hogy az elõzõ paraméterként megadott \textit{object} melyik szignáljára is szeretnénk \textit{callback}et kötni. Harmadik paraméter azon függvény címe, amelyik meghívódását ki szeretnénk váltani az esemény bekövetkezésekor. A függvénynevet itt is egy makró segítségével adjuk át, ami az elõzõekhez hasonlóan \textit{C} nyelvi hiányosságokra vezethetõ vissza. Mivel a meghívandó \textit{callback}ek prototípusai igen sokfélék lehetnek (ami magából a példából is látszik valamelyest és ezek mind külön típusnak minõsülnek a \textit{C} nyelvben ezért ahány féle \textit{callback} variáció létezik, annyiféle \textit{g\_signal\_connect} függvényre lenne szükség. Könnyen belátható, hogy a jogos lustaság más irányba vitte a \textit{GTK} fejlesztõit. A \texttt{G\_CALLBACK} tulajdonképpen egy fordítási idejû típuskényszerítés egy általános függvénytípusra, amivel ugyan egyre megoldottuk, hogy csak egyetlen \texttt{g\_signal\_connect\_data} függvényre legyen szükség, de elvesztettünk minden nemû típusbiztosságot. Ha például egy az adott szignálnak nem megfelelõ típusú függvényt adunk meg paraméterként, amit a példabeli függvénynevek felcserélésével könnyen megtehetünk, csúnya meglepetésekben lesz részünk, de csak futásidõben. Az utolsó paraméter az úgynevezett \textit{user data}, ami arra szolgál, hogy az eseménykezelõ függvényünknek, olyan adatokat adjunk át, melyek az esemény megtörténtébõl nem következnek. Ilyenek lehetnek például más \textit{widget}ek címe, ahogy azt látni is fogjuk. Ez esetben az átadott paraméter \texttt{NULL}, ami szintén egy makró mely egy jól nevelt \texttt{((void*) 0)} kifejezésre fejtõdik ki \textit{C} kód esetén. Zárszóként ehhez a sorhoz csak annyit, hogy a \texttt{delete\_event} eseményt az ablakkezelõ váltja ki, akkor, amikor az ablakot valamilyen módon (billentyûzet, menü, egér) bezárjuk.
+
+ \item[9] Ez a \texttt{delete\_event} szignálkezelõ függvénye, aminek egy \textit{gboolean} érékkel kell visszatérnie. Ha ez az érték 0, akkor a \textit{GTK} folytatja a szignál kezelését, azaz meghívja a \texttt{gtk\_widget\_destroy} függvényt az ablakunkra. Ha azonban a visszaetérési érék nem 0, ahogy itt sem az, akkor ezzel arra utasítjuk a \textit{GTK}-t, hogy a szignál további feldolgozásától tekintsen el, aminek révén elérhetjük, hogy hiány nyomogatjuk a jobb felsõ sarokban a \textit{x}-et ennek hatására bizony szinte semmi nem történik. Itt érdemes felhívni a figyelmet arra, hogy mivel a \textit{C} nyelvben, a \textit{C++}-al ellentétben, nincs bool típus annak analógiájára definiálták a \texttt{gboolean} típust (ami tulajdonképpen egy \texttt{int}) és annak két értékét makróként (\texttt{TRUE}, \texttt{FALSE}).
+
+ \item[37] Az elõzõhöz teljesen hasonló, annyi eltéréssel, hogy itt a \texttt{destroy} szignálra kötünk be eseménykezelõt, ami akkor hívodik meg, ha a \texttt{window} változóval meghívódik a \texttt{gtk\_widget\_destroy} függvényt. Ez több módon is lehetséges. Egyfelõl direkt módon egyszerû függvényhívással, amire ebben a kódban nincs példa, másrészrõl indirekt módon, amire viszont van, erre lesz jó a \textbf{47} sor. Illetve lenne még egy út, amit ebben a példakódban szintén elkerülünk.
+
+ \item[18] A \textit{destroy} szignál kezelése általánosságban nézve ritka és itt is csak az a szerepe, hogy a program valamilyen módon ki tudjon lépni. Ha ez a függvény meghívódik, akkor az ablakunk épp megszûnõ félben van. Ha ez az eset áll is fenn a programunk futása annak ellenére sem érne véget, hogy az ablakunk bezáródik, hiszen a \textit{main loop}ból nem lépnénk ki. Ezen helyzet elkerülésére ebben az eseménykezelõ függvényben meghívjuk a \textit{main loop}ból való kilépésre szolgáló \textit{gtk\_main\_quit}-ot.
+
+ \item[42] Egy nyomógom létrehozása.
+
+ \item[44] Eseménykezelõ függvény bekötése a gomb \texttt{clicked} szignáljára, ami a gomb lenyomásakor hívódik meg.
+
+ \item[47] A \textbf{44}. sortól csak a meghívandó eseménykezelõ függvényben, illetve az annak átadandó paraméterekben sorrendjében tér el. Ahogy az a függvény nevébõl (\texttt{g\_signal\_connect\_swapped}) következik, arról van szó, hogy a gomb lenyomásakor meghívandó \textit{callback} -- jelen esetben a \texttt{gtk\_widget\_destroy} -- paramétereiben a \textit{user\_data}, illetve az az object, amin az esemény kivátótik felcserélésre kerül. Kicsit konkrétabban fogalmazva a \textit{user\_data} lesz a \textit{callback} elsõ paramétere és a gomb a második. Mivel itt a \textit{callback} a \texttt{gtk\_widget\_destroy} függvény, ami paraméterként a destruálandó \textit{widget}et várja, a \textit{user\_data} pedig az ablakunk, nem nehéz kitalálni, hogy a gombra való kattintás eredményeként az ablak meg fog szûnni, de csak azután, hogy a \textit{Helló Világ} üzenet megjelent a konzolban.
+
+ \item[3] A fenti állítás csak azért igaz, mert a \textit{hello} függvény, mint eseménykezelõ elõbb kerül felkötésre, mint a \texttt{gtk\_widget\_destroy}, valamint azért, mert az eseménykezelõk alapvetõen a felkötés sorrendjében kerülnek meghívásra. Fordított esetben elõbb hívódna meg a \textit{destroy} az ablakra, ami --sok egyéb mellett -- leköti az eseménykezelõ függvényeket.
+
+ \item[51] A nyomógomb hozzáadása az ablakhoz.
+
+ \item[53,54] A létrehozott \textit{widget}ek megjelenítése.
+
+ \item[56] Belépés az eseményvezérelt szakaszba.
+
+\end{enumerate}
+
+Fentiek ismeretében nagy biztonsággal jósolhatjuk meg példaprogramunk mûködését. Az elindított alkalmazás egy ablakot jelenít meg, melyben egy \textit{Helló Világ} feliratú gomb lesz. Az ablak bezárásával hiába próbálkozunk egér, vagy billentyûzet segítségével, ezen kísérletek eredmény csupán egy-egy ''\textit{delete event occurred}`` sor a konzolban. Ha azonban le találnák nyomni gombunkat az ablak hirtelen eltûnik a konzolban egy ''\textit{Helló Világ}`` felirat jelenik meg és a program kilép. Lássuk, hogy érhetünk ehhez teljesen hasonló funkcionalitást \textit{C++}-ban.
+
+\subsection{gtkmm}
+
+\subsubsection{A kód}
+
+\vspace{16pt}
+\fontsize{6pt}{6pt}
+\begin{verbatim}
+  1 #include <gtkmm.h>
+  2 #include <iostream>
+  3 
+  4 static void hello(const Glib::ustring &hello_msg)
+  5 {
+  6   std::cout << hello_msg << std::endl;
+  7 }
+  8 
+  9 class MyWindow : public Gtk::Window
+ 10 {
+ 11 private:
+ 12   Gtk::Button button;
+ 13 
+ 14 protected:
+ 15   virtual bool on_delete_event(GdkEventAny *event)
+ 16   {
+ 17     std::cout << "delete event occurred" << std::endl;
+ 18 
+ 19     return true;
+ 20   }
+ 21 
+ 22   void on_button_clicked()
+ 23   {
+ 24     Gtk::Main::quit();
+ 25   }
+ 26 
+ 27 public:
+ 28   MyWindow() :
+ 29     button("Helló Világ")
+ 30   {
+ 31     button.signal_clicked().connect(sigc::bind(sigc::ptr_fun(hello), "Helló Világ"));
+ 32     button.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked));
+ 33 
+ 34     add(button);
+ 35 
+ 36     button.show();
+ 37   }
+ 38 };
+ 39 
+ 40 int main(int argc,
+ 41          char *argv[])
+ 42 {
+ 43   Gtk::Main kit(argc, argv);
+ 44 
+ 45   MyWindow window;
+ 46 
+ 47   Gtk::Main::run(window);
+ 48 
+ 49   return 0;
+ 50 }
+\end{verbatim}
+
+\subsubsection{Részletek sorról sorra}
+
+\begin{enumerate}
+ \item[43-47] Az korábbi számokban megjelent példaprogramokhoz képest egyetlen eltérést vehet észre a figyelmes olvasó. Mégpedig azt, hogy \texttt{Gtk::Window} helyett \texttt{MyWindow} típust használunk fõablakunk létrehozásához. Mivel azonban a \texttt{MyWindow} publikusan származik a \texttt{Gtk::Window} típusból ez a \textit{gtkmm } számára nem jelent különbséget. A \textit{C} változathoz képest a számaztatás itt nem csupán ''logikai'', vagyis minden a \textit{C++}-an megszokott elõny könnyedén realizálható. Erre példa, hogy a származtatás miatt nincs szükség semmilyen típuskényszerítésre mikor a \textit{Gtk::Main::run} hívjuk, ami pedig egy \textit{Gtk::Window} referenciát vesz át paraméterként.
+
+ \item[28-37] Saját osztályunk konstruktorában megtehetjük mindazokat a lépéseket, melyeket a \textit{C} nyelvû változat esetén a \texttt{main} függvényben voltunk kénytelenek implementálni, úgy is mint a szignálok felkötése, a gomb hozzáadása az ablakhoz, a \textit{widget}ek megjelenítése. Az egységbezárás ezen elõnyén túl a származtatásból fakadó örömöket is élvezhetjük, ugyanakkor persze az ebbõl fakadó kötelességeknek is eleget kell tenni. Ez esetben ez a konstruktor meghívását jelenti, ami rejtett módon megy végbe. Az õsosztály konstruktorának explicit hívása hiányában a \texttt{Gtk::Window} azon konstruktora fut le, mely paraméterek nélkül is hívható. Másrészrõl viszont az adattagként tárolt \textit{button}t is inicializálnunk kell. Itt is lehetne közvetve implicit módon hívni a paraméter nélküli konstruktort, azonban kézenfekvõbb azt a változatot használni, amivel egyszerre a gomb feliratát (\textit{label}) is megadhatjuk, így egy hívás a késõbbiekben megspórolható. Külön szót érdemelnek a szignálok bekötései. Különösebb programozó géniusz nem kell, hogy felfedezzük a szignálok eléréséhez egy \textit{signal\_}\textit{szignálnév} nevû tagfüggvény meghívását használhatjuk fel. Az ilyen formájú függvények egy, a \texttt{Glib::SignalProxyBase}-bõl származó, osztályt adnak vissza, melyek \texttt{connect} nevû metódusai valósítják meg azt, amit a \textit{GTK+} esetén a \texttt{g\_signal\_connect} makró tett meg. Elõnye ennek a módszernek, hogy típusbiztos, azaz a \texttt{connect} paraméterként csak olyan függvényt (\textit{slot}) fogad el, aminek a típusa megfelel az adott szignál kezeléséhez. További elõny, hogy a \textit{slot}okhoz nem csupán egy \textit{user data} csatolható, hanem tetszés szerinti, s ezek típusa is ellenõrzésre kerül fordításkor. Amennyiben azonban sikerül csupán egy apróságot is félreírnunk a szignál bekötésénél, vagy a \textit{slot} típusának megadásánál, a \textit{C++}-is template-ekkel történt megvalósításnak hála akár több oldalas, nehezen kibogarászható hibaüzenetekkel találhatjuk magunkat szemben.
+
+ \item[31-32] Lássuk akkor miként is érhetõ el ugyanaz \textit{gtkmm}-ben, mint ami korábban \textit{GTK+}-ban. Elsõ pillantásra is szembeszökõ, hogy mindkét sorban találunk olyan hívást, melyek nem a \texttt{Gtk} névtérben definiáltak. Ennek oka, hogy a \textit{gtkmm}-ben a szignálkezelést \textit{libsigc++} nevû függvénykönyvtárral valósították meg, bár az ilyen hívások jellemzõen csak a szignálok felkötésekor kerülnek elõ. A két tárgyalt sor közötti eltérés könnyen indokolható, ha figyelembe vesszük a megadott eseménykezelõ függvények típusát.
+
+ \item[31] Ha a megadni kívánt függvény statikus -- függetlenül attól, hogy osztályhoz tartozik-e vagy azon kívül definiált, esetleg tisztán \textit{C} nyelvû kódból származik -- \textit{slot} létrehozásához a \textit{sigc::ptr\_fun} alkalmazandó. Ebben a konkrét esetben a \textit{slot} létrehozásán túl, paramétereket is hozzákapcsolunk a \textit{clicked} esemény bekövetkeztekor meghívandó függvényhez. Ennek eszköze a \textit{sigc::bind}, melynek elsõ paramétere egy \textit{slot}, a továbbiak pedig a csatolandó paraméterek. Itt csupán egy ilyen van, a gomb lenyomására kiírandó üzenet szövege. Ez persze kissé kényszeredett, hiszen a paraméter értéke soha nem változik, így ennek igazi hasznát ebbõl a példából nehéz belátni.
+
+ \item[4-7] Statikus függvényük a lehetõ legegyszerûbb csupán azt szemlélteti miként is kell az átadott paraméterekez használni, ezesetben annak értékét a console-ra kiíratni, mûködését és funkcióját tekintve a \textit{C}-s változat azonos nevû függvényével analóg.
+
+ \item[32] Ha a megadni kívánt eseménykezelõ egy osztály tagfüggvénye, akkor a \textit{sigc::mem\_fun} használható arra, hogy \textit{slot}ot hosszunk létre belõle, azzal a különbséggel, hogy az osztály példányának címe lesz az elsõ paraméter és csak ezt követi a függvény címe. Fontos, hogy a függvényt teljes névtérlistával együtt kell megadni. Természetesen a korábban megismert \texttt{sigc::bind} it is alkalmazható.
+
+ \item[22-25] Ez a függvény sem több csupán, mint egy egyszerû példa, ugyanazt a célt szolgálja, mint a \textit{GTK+}-os verzió azonos nevû függvénye.
+
+ \item[15-20] Ezen függvény megértésének kulcsa a \texttt{virtual} kulcsszóban rejlik. Minden szignálhoz tartozik ugyanis egy -- az adott \textit{widget} által implementált -- kezelõ függvény, mely alkalmasint felülbírálható (ovverride). Ha ezt megtesszük, azzal a szignál kezelésének teljes folyamatát mi irányítjuk, ami mellett komoly érvek szólhatnak, de nem árt körültekintõnek lenni. Ebben az esetben a cél pont annak demonstráljuk, szabad kezet ad a \textit{gtkmm} abban, hogy egy származtatott \textit{widget} miként kívánja kezelni az õsosztály eseményeit. A visszatérési érték szerepe ugyan az, mint az elõzõ példában.
+\end{enumerate}
+
+A szignálkezelésrõl összegzésképpen annyit, hogy alapvetõen két lehetõség kínálkozik arra,. hogy az egyes \textit{widget}ek eseményei kezeljük:
+
+\begin{itemize}
+ \item \textit{Callback}eket kapcsolni azon \textit{widget}ek azon eseményihez, melyek számunkra érdekesek és ezekben megtenni a megfelelõ lépéseket
+
+ \item Felülbírálni a \textit{widget} saját eseménykezelõjét az öröklõdés mechanizmusai útján. Erre mindkét változat esetén van lehetõség, ám a \textit{GTK+} megoldása kissé körülményes és nehezebben megérthetõ, így annak ismertetése valmely késõbbi részre marad. A \textit{C++} nyelvi eszközeit kihasználva a \textit{gtkmm} viszont ezt oly könnyedén oldja meg, hogy kár lett volna kihagyni a bemutatást annak ellenére is, hogy a módszerre ritkán van szükség, hiszen többnyire arról van szó, hogy a különbözõ \textit{widget}példányok azonos szignáljainak kiváltódásakor más-más irányba szeretnénk terelni a program futását. A felülbírálás révén viszont arra nyílik lehetõség, hogy a szignál kezelésének módját változtassuk meg. Ha nem kívánunk egyebet tenni, mint ami amúgy is történne, hívjuk meg a felülbírált függvény szülõosztálybeli változatát. Ha azonban  ez elõtt, vagy után még valami mást is tenni szeretnénk, megtehetjük, hogy csak a függvény közepérõl hívjuk a szülõ metódusát, vagy akár el is hagyhatjuk az ha tudjuk mit és fõként hogyan szeretnénk kezelni.
+\end{itemize}
+
+\subsection{Egy "nyomkodható" ablak}
+
+\subsubsection{Fordítás és linkelés}
+
+A korábbiakhoz hasonlóan az alábbi parancssorok segítségével fordíthatóak e\-lem\-zett programjaink:
+
+\fontsize{8pt}{8pt}
+\ \\
+\texttt{gcc gtk\_signal.c -o gtk\_signal \`{}pkg-config {-}-cflags {-}-libs gtk+-2.0}
+\ \\
+\texttt{g++ gtkmm\_signal.cc -o gtkmm\_signal \`{}pkg-config gtkmm-2.4 {-}-cflags {-}-libs\`{}}
+\ \\
+
+\subsubsection{Futtatás}
+
+Próbálkozzunk ezúttal is a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsokkal abban a könyvtárban, ahol a fordítást elkövettük.
+
+\subsubsection{Eredmény}
+
+Bármily hihetetlen ezúttal sem történik semmi egyéb, mint az elõzõ alkalommal. Remélhetõleg azonban a különbség mégis érzékelhetõ annyiban, hogy legutóbb a meglepetéssel teli borzongást ablakunk váratlan felbukkanása, míg most a bennünk szikraként felvillanó megértés okozza.
+
+\nocite{gtktut}
+\nocite{gtkmmtut}
+\nocite{ggad}
+\nocite{gtktutmagy}
+
+\addcontentsline{toc}{section}{Hivatkozások}
+\bibliography{1}
+\bibliographystyle{plain}
+
+
+\end{document}
+
