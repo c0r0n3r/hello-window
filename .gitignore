@@ -21,3 +21,5 @@
 *.tin
 *.tms
 *.toc
+
+sources/*.pyc
