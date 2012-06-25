@@ -93,7 +93,7 @@ Ennek a várakozási ciklusnak az implementációja \textit{main loop}. A \texti
 
 \subsubsection{Referencia-számlálás}
 \index{referencia-számlálás}
-\index{''lebegő'' referencia}
+\index{lebegő referencia@''lebegő'' referencia}
 
 A \textit{GTK+} segítségével létrehozott felületek -- ahogy azt a későbbiekben látni fogjuk -- nem \textit{widget}ek szórvány halmazát, hanem egymással szoros összefüggésben álló (szülő-gyerek, modell-nézet- vezérlő kapcsolat) láncolatát jelentik. Ennek okán az megoldandó feladat, hogy az egymáshoz valamilyen szempont alapján kötődő elemek egymás oly módon tudják hivatkozni, hogy hivatkozások létrejötte, illetve megszűnése egyúttal a \textit{widget}ek memória menedzsmentjére is megoldást adjon. Ennek bevett módszere a referenciák tartása a hivatkozott elemekre, mellyel a \textit{GTK+} is él.
 
