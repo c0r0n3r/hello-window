@@ -8,10 +8,10 @@ if __name__ == "__main__":
 
 
   window = Gtk.Window() #*@ \label{gtkminimalpy:windownew} @*
-  window.connect("delete-event", #*@ \label{gtkminimalpy::delevent} @*
+  window.connect("delete-event", #*@ \label{gtkminimalpy:windowdelete} @*
                  Gtk.main_quit)
   window.show() #*@ \label{gtkminimalpy:windowshow} @*
-  
+
   Gtk.main() #*@ \label{gtkminimalpy:gtkrun} @*
 
 

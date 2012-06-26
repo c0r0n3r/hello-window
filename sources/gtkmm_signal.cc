@@ -1,60 +1,62 @@
-#include <gtkmm.h>
-#include <iostream>
+#include <gtkmm.h> /*@ \label{gtksignalcc:includebegin} @*/
+#include <iostream> /*@ \label{gtksignalcc:includeend} @*/
 
-static void hello(const Glib::ustring &hello_msg)
-
+void on_button_clicked(const Glib::ustring &hello_msg) /*@ \label{gtksignalcc:slotbuttonclicked} @*/
 {
   std::cout << hello_msg << std::endl;
 }
 
-bool MyWindow::on_delete_event(GdkEventAny *event)
-
-
+class MyWindow : public Gtk::Window /*@ \label{gtksignalcc:mywindowclass} @*/
 {
-  std::cout << "delete event occurred" << std::endl;
-
-  return true;
-}
-
-void MyWindow::destroy()
-
-{
-  Gtk::Main::quit();
-}
-
-class MyWindow : public Gtk::Window
-{
-private:
-  Gtk::Button button;
-
 protected:
-  virtual bool on_delete_event(GdkEventAny *event)
-  void destroy();
+  virtual bool on_delete_event(GdkEventAny *event) /*@ \label{gtksignalc:methoddeleteevent} @*/
+
+
+  {
+    std::cout << "delete event occurred" << event << std::endl;
+    return true;
+  }
 
 public:
-  MyWindow() :
-    button("Hello Window")
+  MyWindow() : /*@ \label{gtksignalcc:mywindowctorbegin} @*/
+    button("Helló Window!")
   {
-    button.signal_clicked().connect(
-    sigc::bind(sigc::ptr_fun(hello), "Hello Window"));
-    button.signal_clicked().connect(
-    sigc::mem_fun(*this, &MyWindow::destroy));
+
+
+
+
+
+
+
+
+    button.signal_clicked().connect( /*@ \label{gtksignalcc:sigcptrfun} @*/
+    sigc::bind(sigc::ptr_fun(on_button_clicked),
+    "Helló Window!"));
+    button.signal_clicked().connect( /*@ \label{gtksignalcc:sigcmemfun} @*/
+    sigc::mem_fun(*this, &MyWindow::hide));
+
 
     add(button);
 
     button.show();
-  }
+
+
+  } /*@ \label{gtksignalcc:mywindowctorend} @*/
+
+private:
+  Gtk::Button button;
 };
 
-
-int main(int argc,
-         char *argv[])
+int main(int argc, char *argv[]) /*@ \label{gtksignalcc:main} @*/
 {
-  Gtk::Main kit(argc, argv);
+
+
+  Gtk::Main kit(argc, argv); /*@ \label{gtksignalc:gtkmain} @*/
 
   MyWindow window;
 
-  Gtk::Main::run(window);
+
+  Gtk::Main::run(window); /*@ \label{gtksignalcc:gtkmainrun} @*/
 
   return 0;
 }
