@@ -14,10 +14,6 @@
 \addcontentsline{toc}{section}{\lstlistlistingname}
 \lstlistoflistings
 
-\nocite{gtktut}
-\nocite{gtkmmtut}
-\nocite{ggad}
-\nocite{gtktutmagy}
 \newpage
 \addcontentsline{toc}{section}{Irodalomjegyzék}
 \bibliography{book}
