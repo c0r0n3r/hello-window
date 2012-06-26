@@ -135,7 +135,7 @@ framexleftmargin=5mm
 }
 
 \newcommand{\lstcommand}[1]{
-\medskip \indent \lstinline[language=sh]{#1}
+\indent \lstinline[language=sh]{#1} \medskip
 }
 
 \newcommand{\lstinputfile}[4]{
