@@ -19,7 +19,7 @@ protected:
 
 public:
   MyWindow() : /*@ \label{gtksignalcc:mywindowctorbegin} @*/
-    button("Helló Window!")
+    button("Hello Window!")
   {
 
 
@@ -31,7 +31,7 @@ public:
 
     button.signal_clicked().connect( /*@ \label{gtksignalcc:sigcptrfun} @*/
     sigc::bind(sigc::ptr_fun(on_button_clicked),
-    "Helló Window!"));
+    "Hello Window!"));
     button.signal_clicked().connect( /*@ \label{gtksignalcc:sigcmemfun} @*/
     sigc::mem_fun(*this, &MyWindow::hide));
 
