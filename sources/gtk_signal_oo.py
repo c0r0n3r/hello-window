@@ -10,7 +10,7 @@ class MyWindow(Gtk.Window):
 
   def __init__(self):
     Gtk.Window.__init__(self)
-    my_window.connect("destroy", Gtk.main_quit)
+    self.connect("destroy", Gtk.main_quit)
 
 
     self.button = Gtk.Button("Hello Window")
