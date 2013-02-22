@@ -2,9 +2,8 @@
 
 \subsection{Beszerzése}
 \index{GTK}
-%FIXME
 
-A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik megoldás, hogy hagyatkozunk az általunk használt operációs rendszerre és az általa biztosított, vagy legalábbis arra elérhető változatot telepítjük. A másik lehetőség, hogy letöltjük a \textit{GTK+} és a függőségek forráskódját és némi nehézséget vállalva ezeket fordítjuk le. Előbbi eset bőségesen megfelel amennyiben még csak most ismerkedünk a \textit{GTK+} függvénykönyvtárral, illetve nem akarunk túlságosan belebonyolódni az grafikus alkalmazások fejlesztésébe. Elkerülhetetlenül az utóbbi változatot kell választanunk, ha jobban nis el szeretnénk merülni a \textit{GTK+} rejtelmeiben, ha esetleg hibákat javítanánk, vagy változásokat eszközölnénk magán a grafikus eszközkészleten.
+A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik megoldás, hogy hagyatkozunk az általunk használt operációs rendszerre és az általa biztosított, vagy legalábbis arra elérhető változatot telepítjük. A másik lehetőség, hogy letöltjük a \textit{GTK+} és a függőségek forráskódját és némi nehézséget vállalva ezeket fordítjuk le. Előbbi eset bőségesen megfelel amennyiben még csak most ismerkedünk a \textit{GTK+} függvénykönyvtárral, illetve nem akarunk túlságosan belebonyolódni az grafikus alkalmazások fejlesztésébe. Elkerülhetetlenül az utóbbit kell azonban választanunk, ha az átlagnál jobban el szeretnénk merülni a \textit{GTK+} rejtelmeiben, ha esetleg hibákat javítanánk, vagy változásokat eszközölnénk magán a grafikus eszközkészleten.
 
 \subsubsection{Bináris változat}
 \index{GTK}
@@ -12,7 +11,7 @@ A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik 
 \index{rpm}
 \index{bináris csomag}
 
-A \textit{GTK} változatok beszerzése nem jelent különösebben feladatot, amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez a bináris változatokon túl fejlesztői csomagokra is szükséges lesz, amit \textit{rpm}, illetve \textit{deb} alapú disztribúciók esetén rendre az alábbi parancsok kiadásával tehetünk meg:
+A \textit{GTK} változatok beszerzése nem jelent különösebb feladatot, amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez a bináris változatokon túl fejlesztői csomagokra is szükséges lesz, amit \textit{rpm}, illetve \textit{deb} alapú disztribúciók esetén rendre az alábbi parancsok kiadásával tehetünk meg:
 
 \lstcommand{sudo yum install gtk-devel-package}\\
 \lstcommand{sudo apt-get install gtk-dev-package}
@@ -33,17 +32,17 @@ A fenti csomagok természetesen csak a \textit{C} nyelvű változat -- azaz a \t
 \index{nyelv változatok!PyGObject}
 \index{Python}
 
-Amennyiben a \textit{GTK} alapú fejlesztéssel a \textit{Python} nyelv révén ismerkednénk a már említett fordított nyelvek helyett, akkor a fenti csomagokat nem, a \texttt{python-gtk2}, vagy a \texttt{pygtk2} csomagokat viszont be kell szereznünk.
+Amennyiben a \textit{GTK} alapú fejlesztéssel a \textit{Python} nyelv révén ismerkednénk a már említett fordított nyelvek helyett, akkor a fenti csomagokat nem, a \texttt{python-gi}, vagy a \texttt{python-gobject} csomagokat viszont be kell szereznünk.
 
 \paragraph{Dogtail}
 \index{Dogtail@\textit{Dogtail}}
 \index{Python}
 
-Az automata tesztek készítéséhez szükséges \textit{Python} függvénykönyvtár --a \textit{Dogtail}-- állományait az azonos nevű csomag tartalmazza, melyek installálása a fentiekhez hasonlóan történik.
+Az automata tesztek készítéséhez szükséges \textit{Python} függvénykönyvtár -- a \textit{Dogtail} -- állományait az azonos nevű csomag tartalmazza, melyek installálása a fentiekhez hasonlóan történik.
 
 \subsubsection{Forráskód}
 
-A \textit{GTK} forrásának beszerzésére több módszer is kínálkozik. Egyrészről az általunk használt \textit{Linux} disztribúció biztosít eszközöket forráscsomagok telepítésére. A korábbi \textit{deb}, illetve \textit{rpm} alapú rendszerek példájánál maradva ez rendre az alábbiak szerint történik.
+A \textit{GTK} forrásának beszerzésére szintén több módszer kínálkozik. Egyrészről az általunk használt \textit{Linux} disztribúció biztosít eszközöket forráscsomagok telepítésére. A korábbi \textit{deb}, illetve \textit{rpm} alapú rendszerek példájánál maradva ez rendre az alábbiak szerint történik.
 
 \lstcommand{apt-get source gtk-src-package}\\
 \lstcommand{yumloader --source gtk-src-package}\\
@@ -53,99 +52,56 @@ Lehetőség van természetesen az egyes verziók letöltésére a \textit{GNOME}
 \lstcommand{wget http://ftp.gnome.org/pub/gnome/sources/gtk+/major.minor/gtk+-major.minor.micro.tar.gz}\\
 \lstcommand{wget http://ftp.gnome.org/pub/gnome/sources/gtk+/major.minor/gtk+-major.minor.micro.tar.bz2}\\
 
-valamint rendelkezésre állnak az egyes projektek verziókelői is, ha szeretnénk mindig a legfrissebb forrás mellett dolgozni.
+valamint használhatóak e célra egyes projektek verziókelői is, ha szeretnénk mindig az aktuális forráskóddal dolgozni.
 
 \lstcommand{git clone git://git.gnome.org/gtk+}\\
 
-Ha azonban magunk szeretnénk a teljes \textit{GTK}-t fordítani --legyen szó a \textit{C}, vagy a \textit{C++} nyelvű változatról-- számolnunk kell azzal, hogy számos egyéb komponens (\textit{GLib}, \textit{Pango}, \textit{Cairo}, \textit{ATK}, \dots) fordítására, illetve az frissítéseket követő újrafordítására válik szükségessé, ami meglehetősen időigényes és fáradságos feladat, amit a \textit{Linux} disztribúción összeállítói már megtettek helyettünk. Így célszerű kezdetben ezt kihasználni és a saját fordításba csak akkor belekezdeni, ha arra feltétlenül szükségünk van.
-
-\subsection{Függőségei}
-\index{GDK@\textit{GDK}}
-\index{GLib@\textit{GLib}}
-
-\subsubsection{GTK+}
-
-
-%    The GTK library (-lgtk), the widget library, based on top of GDK.
-%
-%    The GDK library (-lgdk), the Xlib wrapper.
-%
-%    The gdk-pixbuf library (-lgdk_pixbuf), the image manipulation library.
-%
-%    The Pango library (-lpango) for internationalized text.
-%
-%    The gobject library (-lgobject), containing the type system on which GTK is based.
-%
-%    The gmodule library (-lgmodule), which is used to load run time extensions.
-%
-%    The GLib library (-lglib), containing miscellaneous functions; only g_print() is used in this particular example. GTK is built on top of GLib so you will always require this library. See the section on GLib for details.
-%
-%    The Xlib library (-lX11) which is used by GDK.
-%
-%    The Xext library (-lXext). This contains code for shared memory pixmaps and other X extensions.
-%
-%    The math library (-lm). This is used by GTK for various purposes.
-
-\subsubsection{gtkmm}
-
-\paragraph{libsigc++}
-
-\subsubsection{pygtk}
-
-\subsubsection{dogtail}
+Ha azonban magunk szeretnénk a teljes \textit{GTK}-t fordítani -- legyen szó a \textit{C}, vagy a \textit{C++} nyelvű változatról -- számolnunk kell azzal, hogy számos egyéb komponens (\textit{GLib}, \textit{Pango}, \textit{Cairo}, \textit{ATK}, \dots) fordítására, illetve az frissítéseket követő újrafordítására válik szükségessé, ami meglehetősen időigényes és fáradságos feladat, amit a \textit{Linux} disztribúción összeállítói már megtettek helyettünk. Így célszerű kezdetben ezt kihasználni és a saját fordításba csak akkor belekezdeni, ha arra feltétlenül szükségünk.
 
 \subsection{Fordítása}
-
-\subsubsection{Linux}
 \index{Autotools@\textit{Autotools}}
 \index{Automake@\textit{Automake}}
 \index{Autoconf@\textit{Autoconf}}
 \index{Libtool@\textit{Libtool}}
-%FIXME
 
-Amennyiben a korábban említett nehézségek ellenére mégis nekivágunk a \textit{GTK} fordításának, mindenekelőtt szükségünk lesz néhány eszközre, melyek a \textit{Linux} alapú rendszereken szokványosnak nevezhetők. A \textit{GNOME} projekt --sok más fejlesztési projekthez hasonlóan-- az \textit{Autotools}t\footnote{a \textit{GNU} fordítási rendszere, mely tulajdonképpen az \textit{Automake}, \textit{Autoconf}, \textit{Libtool} együttese.} használja moduljainak fordításához, melynek részleteibe nem célunk elmerülni, ugyanakkor néhány mondatban mégis érdemes megjegyezni az \textit{Autotools} egyes részeiről.
+Amennyiben a korábban említett nehézségek ellenére mégis nekivágunk a \textit{GTK} saját fordításának, akkor sem vagyunk magunkra hagyva. A \textit{GNOME} projekt része egy \textit{JHBuild} elnevezésű szoftver\footnote{telepítése a korábbiaknak leírtaknak megfelelőn történik}, amit a \textit{GNOME} projekt moduljaiból összeállított halmazok -- mint amilyen a \textit{GTK} és annak függőségei -- letöltésére, frissítésére, fordítására és fordítás eredményeként létrejött futtatási környezetben való munkára használhatunk.
 
-\paragraph{Autoconf}
-\paragraph{Automake}
-\paragraph{Libtool}
+Mindenekelőtt azonban szükségünk lesz néhány olyan eszközre, amik a \textit{Linux} alapú rendszereken fordítási feladatok ellátására kvázi szabványnak számítanak. A \textit{GNOME} -- sok más fejlesztési projekthez hasonlóan -- az \textit{Autotools}t\footnote{a \textit{GNU} fordítási rendszere, mely tulajdonképpen az \textit{Automake}, \textit{Autoconf}, \textit{Libtool} együttese.} használja moduljainak fordításához. Ennek részleteibe nem célunk ezen dokumentum keretében elmerülni, már csak azért sem, mert a \textit{JHBuild} ezen, fordításhoz szükséges, függőségek telepítését megoldja helyettünk.
 
-célszerű tisztában lennünk azzal, hogy mire szeretnénk felhasználni az így létrejött keretrendszerrel (bináris-, fejlécfájlok, egyéb fejlesztői eszközök), mivel a különböző igények különböző megoldási módozatokat kívánnak. Amennyiben --bár ez egy kevéssé valószínű eset-- a rendszeren lévő \textit{GTK} állományokat szeretnénk helyettesíteni, akkor kissé másként kell eljárnunk, mint ha egy alternatív változatot szeretnénk lefordítani, amit csak egyes esetekben szeretnénk használni.
+\lstcommand{jhbuild sanitycheck}\\
+\lstcommand{jhbuild bootstrap}
 
+Az parancs futtatásának hatására ellenőrzésre kerül a konfigurációban megadott könyvtárak írhatósága, a szükséges fordítási eszközök telepített mivolta. Ezt követően kerülhet sor a forráskódok letöltésére, a fordítás előtti konfigurálásra, magára  fordításra, valamint az elkészült bináris állományok telepítésére. Ehhez a következő parancsokat használhatjuk.
 
+\lstcommand{jhbuild update}\\
+\lstcommand{jhbuild make}
 
+A fordítás végeztével lehetőségünk van az újólag létrejött környezetbe úgymond belépni, vagy közvetlenül parancsokat futtatni. Ez gyakorlatilag ennyit tesz, hogy számos környezeti változó beállításának eredményeként saját a fordítandó alkalmazásaink és a fordítás eredményeként létrejött futtatandó állományok is a az új környezetben létrehozott függvénykönyvtárakat fogják használni a rendszeren található változatuk helyett.
 
-Előbbi esetben a \textit{GTK} egyes moduljainak fordításakor egy alkalmas könyvtárat\footnote{a különböző \textit{Linux} alapú rendszereken erre jellemzően a \texttt{/usr/local} könyvtár a megfelelő} kell megadnunk 
+\lstcommand{jhbuild run}\\
+\lstcommand{jhbuild shell}
 
-\lstinputfile
-{bash}
-{Fordítási környezet kialakítása}
-{lst:compileenv}
-{sources/compile_env}
-
-\subsubsection{Windows}
-
-\subsection{Ellenőrzése}
-%FIXME
+Ennek akkor van leginkább haszna, ha szeretnénk az általunk fejlesztett alkalmazást a rendszeren elérhető \textit{GTK} változaton kívül a legfrissebb verzión is kipróbálni, \textit{GTK} valamely modulján szeretnénk változtatni és ennek hatását látni alkalmazásunkra, vagy éppen csak nyomon követnénk a \textit{GTK} változásaik, aktuális fejlesztéseit még mielőtt azok az általunk használt disztribúcióban is megjelenik.
 
 \section{Saját alkalmazások}
-%FIXME
+
+Mivel a továbbiakban részletesen foglalkozunk majd a \textit{GTK} alapú alkalmazások létrehozásával, itt most csak a legfontosabb parancsokat vesszük számba, melyek révén a \textit{C}, illetve \textit{C++} nyelvű forrásfájlokból futtatható bináris állományokat hozhatunk létre.
 
 \subsection{Fordítás és linkelés}
 \label{sec:compilingandlinking}
-%FIXME
 
-Az alábbi parancssorok segítségével fordíthatóak elkészült programjaink:
+Akár a rendszeren található, akár \textit{JHBuild}, vagy más eszköz révén létrehozott környezetben lévő \textit{GTK} változatot is használunk, az alábbi parancssorok segítségével fordíthatóak le forrásfájljaink.
 
 \lstcompiles
 {gtk\_sourcefile.c}{gtk\_binary}
 {gtkmm\_sourcefile.cc}{gtkmm\_binary}
 
-Segítségünkre a \texttt{pkg-config} parancs van, hogy a \textit{gcc}-nek a megfelelő paramétereket meg tudjuk adni. A \texttt{--cflags} paraméter hatására a fordításhoz, míg a \texttt{--libs} eredményeképp a linkeléshez szükséges opciókat kapjuk vissza. A parancs két \texttt{\`} (backtick) közé zárt. aminek hatsára annak kimenete része lesz a fordító parancssorának, amivel pont az áhytott hatást érjük el.
+Ahhoz, hogy a \textit{GTK+}, illetve \textit{gtkmm} fordítási függőségeit ne magunknak kelljen megadnunk a \texttt{pkg-config} parancsot hívhatjuk segítségül, hogy a \textit{GCC} részére a megfelelő paramétereket meg tudjuk adni. A \texttt{--cflags} paraméter hatására a fordításhoz, míg a \texttt{--libs} eredményeképp a linkeléshez szükséges opciókat kapjuk vissza. A parancs két \texttt{\`} (backtick) közé zárt. aminek hatására a program kimenete része lesz a fordító parancssorának, amivel pont az kívánt hatást érjük el.
 
 \subsection{Futtatás}
 
-Ezel után már csak az örömteli pillanat van hátra, mikor is két különböző nyelven és függvénykönyvtárral lekódolt teljesen azonos funkciójú programunkat lefuttatjuk a \texttt{./gtk\_window}, illetve a \texttt{./gtkmm\_window} paranccsal.
+Ezek után már csak az örömteli pillanat van hátra, mikor a két különböző nyelven és függvénykönyvtárral lekódolt teljesen azonos funkciójú programunkat lefuttatjuk a \texttt{./gtk\_binary}, illetve a \texttt{./gtkmm\_binary} paranccsal.
 
-\subsection{Eredmény}
+Amennyiben a \textit{Python} nyelvű változat mellett tesszük le voksunkat a fordítás, mint lépés kimarad, a futtatás történhet közvetlenül (\texttt{./gtk\_script.py}), amennyiben van az adott fájlon futtatási jog, vagy a \textit{Python} interpreternek paraméterként (\texttt{python gtk\_sctipt.py}). A továbbiakban ezt az utóbbi sémát követjük.
 
-Voil\`{a}! Túlvagyunk két ablak --vagyis egy Windows-- lekódolásán. Ami eddi is közismert volt, újabb bizonyságot nyert, a Windows kódja lehet, hogy elegáns és egyszerű. ám az eredmény mégis hasznavehetetlen. Az utóbbin fogunk segíteni a következő részekben.
+Ezzel túl is vagyunk azon a rövid áttekintésen ami után már épp ideje nekilátnunk első ablakunk implementálásának, futtatásának és tesztelésének.
