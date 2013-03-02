@@ -1,0 +1,163 @@
+A szöveges adatbevitel leginkább kézenfekvő módjának tárgyalása már megtörtént. Ott a szöveget szabadon, illetve a validációnak megefelelően választhattuk meg, ezúttal viszont olyan adatok bevitelével foglalkozunk, ahol az értékkészlet lényegsen szűkebb, mint ami egy \texttt{GtkEntry}, vagy akát egy \texttt{GtkSpinButton} esetén szokásos. Az ebben a részben bemutatatndó \textit{widget}ek akkor használatosak, ha a választható értékek száma kicsi, adott esetben csupán kettő, de nem több, mint egy tucat.
+
+\section{Fogalmak}
+
+\subsection{Beviteli mezők típusai}
+
+Ahogy arról szó volt a szöveges bevitelről szóló részben, speciális esetek speciális \textit{widget}eket kívánnak, lévén az ilyen helyzetekben maguk a \textit{widget}ek jóval inkább testreszabhatóak, mint egy általános helyzetnek is megfelelő szöveges beviteli mező. A testreszabott \textit{widget}ek megjelenése, beviteli módszereik könnyen alkalmazkodhatnak az igényekhez.
+
+\subsubsection{Bináris változók}
+
+A specializáció egyik véglete, amikor az bevinni kívánt adat mindössze két értéket vehet fel. Az ilyen bináris adatok szép számban fordulnak elő, legyen szó akár egy opció ki-, vagy bekapcsolt értékéről, vagy más igaz hamis jellegű adatról.
+
+\includesinglegraphics
+{Jelölőnégyzet}
+{checkbutton}
+{check-button.png}
+
+Az opciókat érdemes lehet csoportokba szervezni, ahol az egyes elemek valamilyen logika mentén együvé tartoznak, ugyanakkor az általuk felvett értékek függetlenek egymástól. Ilyen helyzetekben is alkalmazható ez a \textit{widget}típus, lehetőség szerint függőleges elrendezésben, nyolcnál nem nagyobb elemszámú csoportokban.
+
+\subsubsection{Egymást kizáró elemek}
+
+\paragraph{Kis elemszám}
+
+Olyan esetekben, amikor néhány lehetőség -- ha mód van rá, nem több, mint nyolc -- közül választhatunk oly módon, hogy az egyes esetek kölcsönösen kizárják egymást, célszerű a felhasználónak minden lehetőséget megmutatni, megkönnyítendő a választást, viszont nem engednénk meg, hogy egyszerre egy elemnél többet ki lehessen választani.
+
+\includesinglegraphics
+{Rádiógombok}
+{radiogroup}
+{radio-group.png}
+
+\paragraph{Közepes elemszám}
+
+Amennyiben az elemek száma meghaladja az imént említetteket, a felhasználó felületen történő elhelyezés -- úgy, hogy az elemek egyidőben láthatóak legyenek -- már nehézkes. Ezen oknál fogva olyan megoldás alkalmazandó, ahol alapvetően csak az aktuálisan kiválasztott elem látszik, ugyanakkor mód van az összes lehetőség áttekintésére is.
+
+\includesinglegraphics
+{Combobox}
+{combobox}
+{combo-box.png}
+
+\subsubsection{Választott érték}
+
+\paragraph{Nincs választás}
+
+Azon esetekben, ahol nem tudunk megfelelő alapértelmezett értéket adni indulásképp, lehetőség van arra, hogy aktuálisan ne legyen egyetlen lehetséges elem sem kiválasztott állapotban. Ezt a helyzetet kezelnünk kell, vagyis az bevitt adatok validációjának erre a helyzetre is ki kell terjednie.
+
+\paragraph{Inkonzisztens állapot}
+\label{sec:toggleinconsistent}
+
+A bináris adatok bevitelére -- egyúttal természetesen megjelenítésére is -- szolágáló \textit{widget}ek lehetséges állapotainak száma, eltérően attól amit elsőre gondolnánk, három. A két kézenfekvő állapoton túl létezik egy inkonzisztens állapot is, ami sem egyik sem másik állapotnak nem felel meg. Gyakorlatban ennek akkor van jelentősége, amikor eltérő értékeket egyszerre megmutatni.
+
+\includesinglegraphics
+{Combobox}
+{combobox}
+{check-button-inconsistent.png}
+
+\section{Alapműveletek}
+
+\subsection{Létrehozás}
+
+A létrehozás nem rejt magában különösebb bonyodalmakat, hiszen maguk a \textit{widget}ek is rendkívül egyszerűnek mondhatók, ugyanakkor egy-egy gondolat erejéig mégis érdemes megállni.
+
+\subsubsection{\texttt{GtkCheckButton}}
+
+Az ehhez a típushoz tartozó \textit{widget}ek létrehozásánál érdemben csak egy paramétert kell megadnunk, mégpedig a jelölőnégyzet szövegét. A szöveggel szemben azonban támasztunk néhány követelményt, amiket célszerű a felhasználó felület készítése közben figyelembe venni. Az első kifejezetten a szövegre vonatkozik, ami szerint a szöveg első szavát nagy-, míg a többit kisbetűvel kezdjük. A másik csak közvetetten vonatkozik a szövegre magára, annyi lenne az elvárás, hogy minden jelölőnégyzet állítható legyen közvetlenül billentyűzetről is, amit a címkéknél már említett módszerrel (\textit{mnemonic}) érhetünk el.
+
+\lsttriplesource
+[numbers=none]
+{sources/check_button_create.h}
+{sources/check_button_create.hpp}
+{sources/check_button_create.py}
+{\textit{CheckButton} létrehozása}
+{lst:checkbuttoncreate}
+
+A \texttt{mnemonic}, valamint a \texttt{use\_underline} paraméterek célja azonos, a címkéknél korábban említett módszer -- miszerint a közvetlen elérést biztosító billentyűt aláhúzás jel (\texttt{\_}) előzi meg -- engedélyezésére szolgálnak. A \texttt{use\_underline} tulajdonság hamis értéke esetén az aláhúzás jel ekként jelenik meg, tehát a közvetlen eléréshez a \texttt{use\_underline} tulajdonság értékének igaznak kell lennie.
+
+A \textit{Python} nyelvű változat a konstruáláskor lehetőséget a beépített ionok (\textit{stock icon}) megadására, akár a \texttt{label} paraméter értékeként, amennyiben a \texttt{use\_stock} paraméter értéke igaz. Amennyiben az utóbbi érték hamis a \texttt{label} paraméter értéke szó szerint jelenik meg, akkor is ha az egy beépített ikon neve is egyben. A 
+
+\subsubsection{\texttt{GtkRadioButton}}
+
+Mivel a rádiógomb típus közvetlen leszármazottja az imént tárgyalt \textit{GtkCheckButton} típusnak, nem meglepő módon létrehozása is nagyban hasonlít a jelölőnégyzetek létrehozásával, legalábbis ami a címke szövegét illeti. Mivel ezt a \textit{widget}et csoportban használjuk -- lévén egymást kizáró lehetőségek közül választunk -- a csoportot valamilyen módon meg kell tudnunk adni.
+
+%FIXME: headers
+
+A gyakorlatban a rádiógomb-csoportok kódból történő létrehozása úgy történik, hogy az első rádiógombot úgymond önmagában, csoport nélkül hozzuk létre, a további rádiógombok esetén pedig az első elem létrejöttekor automatikusan elkészült csoportot használjuk fel. A csoportot a \texttt{get\_group} függvény segítségével kérdezhetjük le és a visszakapott csoportot adhatjuk át az újabb rádiógombok létrehozásakor paraméterként. Ha a rádiógomb már korábban elkészült, vagy a címke megadásával hoztuk létre, akkor a csoport természetesen utólag is átállítható (\texttt{set\_group}).
+
+\subsubsection{\texttt{GtkComboBoxText}}
+
+Amennyiben az elemek száma, vagy a helyhiány miatt úgy döntünk, hogy az egymást kizáró elemek közül nem rádiógombok csoportjából egyet megjelölve akarunk választani, akkor az elemeket listába szervezhetjük, ahol csak az aktuálisan kiválasztott elem jelenik meg a felületen. A létrehozás során csupán egy döntést kell meghoznunk, hogy az elem közötti választást lehetővé tesszük-e úgy is, hogy az elem szövegét a felhasználó egy egysoros beviteli mezőbe (\texttt{GtkEntry}) gépelhesse be.
+
+\lsttriplesource
+[numbers=none]
+{sources/combo_box_text_create.h}
+{sources/combo_box_text_create.hpp}
+{sources/combo_box_text_create.py}
+{\textit{ComboBoxText} létrehozása}
+{lst:comboboxtextcreate}
+
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!new@\texttt{new}} 
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!new\_with\_entry@\texttt{new\_with\_entry}} 
+
+Amint látszik az egyes nyelvi változatok valamelyest eltérnek egymástól, ám az eltérés nem számottevő. Voltaképpen a nyelvi különbözőségeknek megfelelő konstruktorok megvalósításokról beszélünk. A \textit{C++} változat esetén paraméterként vesszük át annak értékét, hogy a \texttt{ComboBoxText} tartalmazzon-e beviteli mezőt, vagy csak választani lehessen az elemek között, míg a \textit{C} változat erre két függvényt ad, ahogy a \textit{Python} is\footnote{a \textit{Python} változat \texttt{\_\_init\_\_} függvénye is tartalmazhatna alapértelmezett paraméter a beviteli mezőre vonatkozóan, viszont a \textit{C} változathoz a két külön metódus (a konstruktor és egy statikus metódus) áll közelebb}.
+
+\subsection{Kezelés}
+
+\subsubsection{\texttt{GtkCheckButton}}
+
+\paragraph{Billentyűzetről történő használat}
+
+A használhatóság szempontjából fontos kiemelni, hogy minden jelölőnégyzetnek adjunk meg közvetlen elérést biztosító billentyűt (\textit{mnemonic key}), mivel az nagyban könnyíti és gyorsítja a billentyűzetről történő használatot. Ez természetesen nem csak a \texttt{GtkCheckButton}, de az abból származó \texttt{GtkRadioButton} esetén is igaz.
+
+\subsubsection{\texttt{GtkComboBoxText}}
+
+\paragraph{Elemek hozzáadása}
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!prepend\_text@\texttt{prepend\_all}} 
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!append\_text@\texttt{append\_all}} 
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!insert\_text@\texttt{insert\_all}} 
+
+Elemek hozzáadására alapvetően három mód kínálkozik, amiből kettő tulajdonképpen a harmadik specializált esete. Adhatunk új elemet a már meglévő elemek elé (\texttt{prepend\_text}), mögé (\texttt{append\_text}), vagy beszúrhatjuk az a már meglévő elemek közé (\texttt{insert\_text}). Előbbi két esetben csupán a szöveget kell megadnunk, hiszen itt az új elem pozíciója adott, míg a harmadik esetben paraméterként az új elem pozícióját is meg kell adni. Amennyiben ez a pozícióként nullánál kisebb értéket adunk meg, akkor az új elem a meglévő elemek mögé, amennyiben nullát, akkor a meglévő elemek elé, míg pozitív szám esetén az adott pozícióra szúródik be.
+
+\paragraph{Elemek törlése}
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!remove@\texttt{remove}} 
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!remove\_all@\texttt{remove\_all}} 
+
+Elemek törlésére szintén két mód kínálkozik. Egyrészről törölhetünk egyes elemeket a pozíciójuk alapján (\texttt{remove}), vagy törölhetjük egyszerre akár az összes elemet is (\texttt{remove\_all}).
+
+\paragraph{Kiválasztott elem}
+\index{GtkComboBoxText@\texttt{GtkComboBoxText}!függvények!get\_active\_text@\texttt{get\_active\_text}} 
+
+A kiválasztott elem szövegének lekérdezésére a \texttt{get\_active\_text} függvény szolgál, aminek működése kézenfekvőnek tűnhet, mégsem az, mivel működése implicit módon a \textit{widget} bizonyos állapotaitól. Egyrészről, ha a \textit{widget} rendelkezik saját beviteli mezővel (\ref{lst:comboboxtextcreate}), akkor minden esetben az abban lévő értékkel tér vissza, ha nem akkor kiválasztott elem szövegével, ha nincs kiválasztva elem, akkor a nyelve változatnak megfelelő értékkel. Ez \textit{Python} esetén egy \texttt{None} érték, a \textit{C} esetén egy \texttt{NULL} pointer, míg a \textit{C++} esetén egy üres \texttt{Glib::ustring} objektum. 
+
+\subsection{Szignálok}
+
+\subsubsection{\texttt{GtkRadioButton}}
+\index{GtkRadioButton@\texttt{GtkRadioButton}}
+\index{GtkToggleButton@\texttt{GtkToggleButton}!szignálok!toggled@\texttt{toggled}}
+\index{GtkToggleButton@\texttt{GtkToggleButton}!tulajdonságok!active@\texttt{active}}
+
+A \texttt{GtkRadioButton}, pontosabban szólva annak őse a \texttt{GtkToggleButton} mindössze egy szignállal rendelkezik (\texttt{toggled}), ami a gomb állapotának -- vagy ha úgy tetszik értékének -- megváltozása után váltódik ki, ahogy az a nevéből és a korábban ismertetett hasonló célt szolgáló szignálok működéséből is következik. A szignál különösebb figyelmet csak a rádiógombok esetén érdemel, mivel itt midig két \textit{widget} szignálja váltódik ki közvetlenül egymás után. Ez annak következménye, hogy az azonos csoportba tartozó rádiógombok kölcsönösen kizárják egymást, így ha az egyikük aktívvá válik, akkor a korábban aktív állapotú gomb elveszti aktív státuszát. A szignálok kezelésekor tehát ügyelni kell arra, hogy ezen duplán megkapott szignálok esetén a megfelelő műveleteket csak egyszer hajtsuk végre.
+
+\section{Haladó műveletek}
+
+\subsubsection{\texttt{GtkCheckButton}}
+
+\paragraph{Inkonzisztens állapot}
+\index{GtkToggleButton@\texttt{GtkToggleButton}!tulajdonságok!active@\texttt{active}}
+\index{GtkToggleButton@\texttt{GtkToggleButton}!tulajdonságok!inconsistent@\texttt{inconsistent}}
+
+A \texttt{GtkToggleButton} típusból származó osztályok (\texttt{GtkCheckButton}, \texttt{GtkRadioButton}) esetén az inkonzisztens állapot (\ref{sec:toggleinconsistent}) használatakor arra kell tekintettel lennünk, hogy ezen állapot beállítása csak a \textit{widget} megjelenítésére van hatással, az aktív állapot értékét nem változtatja meg. Ezen túlmenően az inkonzisztens állapot megszüntetéséről is magunknak kell gondoskodnunk, mivel azt a felhasználói interakció (egérkattintás, gyorsbillentyű, \dots) nem változtatja, annak hatására csak az aktív állapot változik, pontosan ugyanúgy váltakozik, mint ha az inkonzisztens állapot be sem lenne állítva. 
+
+%TODO: example
+
+%\subsubsection{\texttt{GtkComboBoxText}}
+%
+%\paragraph{Azonosító megadása}
+%
+%TODO
+
+\section{Tesztelés}
+
+\subsection{Típusok}
+\subsection{Állapotok}
+\subsection{Műveletek}
+\subsection{Interfészek}
