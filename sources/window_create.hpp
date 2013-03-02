@@ -1,2 +1,2 @@
 
-Gtk::Window::Window (WindowType type = WINDOW_TOPLEVEL)
+explicit Window (WindowType type = WINDOW_TOPLEVEL);

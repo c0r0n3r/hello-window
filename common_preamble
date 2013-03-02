@@ -10,9 +10,10 @@
 \usepackage{natbib}
 
 %graphical object handling
-\usepackage{graphicx}
 \usepackage{float}
-\usepackage{subfig}
+\usepackage{graphicx}
+\usepackage[compatibility=false]{caption}
+\usepackage{subcaption}
 
 %index, toc, etc.
 \usepackage{makeidx}
@@ -106,6 +107,18 @@ framexleftmargin=5mm
 \lstinputlisting[nolol=false, showlines=false, caption={#5}, label=#6]{sources/null}
 \end{center}
 \end{minipage}
+}
+
+\newcommand{\lsttriplesourcev}[6][]{
+\noindent
+\begin{center}
+\begin{minipage}{0.4\linewidth}
+\lstinputlisting[language=C, numbers=none, linewidth=0.5\linewidth, escapeinside={/*@}{@*/}, #1]{#2}
+\lstinputlisting[language=C++, numbers=none, linewidth=0.5\linewidth, escapeinside={/*@}{@*/}, #1]{#3}
+\lstinputlisting[language=Python, numbers=none, linewidth=0.5\linewidth, escapeinside={\#*@}{@*}, #1]{#4}
+\lstinputlisting[nolol=false, showlines=false, linewidth=0.5\linewidth, caption={#5}, label=#6]{sources/null}
+\end{minipage}
+\end{center}
 }
 
 \newcommand{\lstinputsource}[4][]{

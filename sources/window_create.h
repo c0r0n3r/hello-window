@@ -1,2 +1,2 @@
-GtkWidget*
-gtk_window_new (GtkWindowType type);
+
+GtkWidget* gtk_window_new (GtkWindowType type);
