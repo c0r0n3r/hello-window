@@ -151,6 +151,10 @@ framexleftmargin=5mm
 \lstinputlisting[numbers=none]{#1}
 }
 
+\newcommand{\lstoneline}[2]{
+\medskip \indent \lstinline[#1]{#2}\\
+}
+
 \newcommand{\lstccompile}[2]{
 \medskip \indent \lstinline[language=sh]{gcc #1 -o #2 `pkg-config --cflags --libs gtk+-3.0`}
 }
@@ -178,15 +182,34 @@ framexleftmargin=5mm
 \renewcommand\lstlistingname{Kódrészlet}
 }
 
-\newcommand{\includetwingraphics}[8]{
+\newcommand{\includesinglegraphics}[3]{
 \begin{figure}[h]
 \begin{center}
-\subfloat[][#1]{\label{fig:#2}\includegraphics[width=0.35\linewidth]{images/#3}}
-\hspace{12pt}
-\subfloat[][#4]{\label{fig:#5}\includegraphics[width=0.35\linewidth]{images/#6}}
-\caption{#7}
-\label{fig:#8}
+\includegraphics[width=0.25\linewidth]{images/#3}
+\caption{#1}
+\label{fig:#2}
 \end{center}
+\end{figure}
+}
+
+\newcommand{\includetwingraphics}[8]{
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/#2}
+                \caption{#1}
+                \label{fig:#3}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{images/#5}
+                \caption{#4}
+                \label{fig:#6}
+        \end{subfigure}
+        \caption{#7}\label{fig:#8}
 \end{figure}
 }
 

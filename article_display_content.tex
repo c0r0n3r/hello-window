@@ -1,0 +1,230 @@
+sA szöveges adatbevitel legegyszerűbb módjairól ugyan volt szó az előző részben a kép azonban közel sem teljes, hiszen ablakok rendszerint nem csupán beviteli mezőkből állnak, hiszen magukból a mezőkből igencsak nehezen lehetne rájönni arra, hogy voltaképpen a mezőkbe mit is kellene írnunk. Ebben a részben néhány nélkülözhetetlen, teljesen általánosan használt megjelenítő \textit{widget}et veszünk górcső alá, úgy is mint a címkék, képek, súgó-, vagy leíróbuborékok.
+
+\section{Fogalmak}
+
+\subsection{Igazítás és helykitöltés}
+
+A \textit{GTK+} definiál egy olyan ősként szolgáló osztályt (\texttt{GtkMisc}), ami önmagában nem példányosítható, csupán a belőle származó osztályok (\texttt{GtkLabel}, \texttt{GtkImage}, \texttt{GtkArrow}) közös beállításait fogja össze. Mindössze két tulajdonságról -- igazítás (\textit{align}), helykitöltés (\textit{padding}) van szó tulajdonképpen, amik a \textit{widget} tartalmának elhelyezkedését befolyásolják magán a \textit{widget}en belül, azaz függetlenül a \textit{widget} konténerben elfoglalt helyétől és annak paramétereitől. Ez talán némiképp ködösen hangzik, de a származtatott osztályok ismeretében hamar világossá válik.
+
+Fontos már itt megjegyezni, hogy a \texttt{GtkMisc} némiképp idejétmúlt, szolgáltatásai egyszerűsített -- ugyanakkor a gyakorlati alkalmazás szempontjából mégis ugyanannyira kielégítő -- formában a \texttt{GtkWidget} típus által is implementáltak, így ezen típus tulajdonságainak használata újólag írt kódokban ellenjavallt. Két oknál fogva mégis célszerű ezzel a típussal foglalkozni. Az egyik a kézenfekvő ok, hogy a \texttt{GtkMisc} még mindig része a \textit{GTK+} függvénykönyvtárnak és meglehetősen régen az, ennek okán pedig számos korábbi kódban találkozhatunk vele.
+
+\subsection{\textit{Widget}ek}
+
+\subsubsection{Címkék}
+\index{GtkLabel@\texttt{GtkLabel}}
+
+Talán a legfontosabb és leggyakrabban használt kiegészítő \textit{widget}ek a címkék, ahol értelemszerű az igazítás (alignment) jelentése,ami azonos azzal, amit a szövegszerkesztő szoftverek esetén megszokhattunk. A helykitöltés (padding) működése a konténereknél már tárgyaltakkal egyezik meg.
+
+\includesinglegraphics
+{Címke}
+{label}
+{label.png}
+
+\subsubsection{Képek}
+\index{GtkImage@\texttt{GtkImage}}
+
+A \textit{GTK} -- mint minden más felhasználó felület fejlesztéséhez használt eszközkészlet -- lehetővé teszi képek megjelenítését a felhasználó felületek részeként. Az igazítás és a helykitöltés funkciója ebben az esetben is értelemszerű.
+
+\includesinglegraphics
+{Kép}
+{image}
+{image.png}
+
+Képek természetesen több forrásból is származhatnak. A felhasználói felületen természetesen megjeleníthetünk külső forrásból származó képeket, ikonokat, animációkat, melyeket fájlból tölthetünk be, ugyanakkor a \textit{GTK} maga is szállít számos olyan ikont, ami nehezen nélkülözhető még a legegyszerűbb felületeken sem. Ilyenek például a leggyakrabban előforduló gombok ( Ok, Mégsem, Alkalmaz, \dots ), az üzenetablakok ( hiba, figyelmeztető, információs, \dots ) ikonjai.
+
+\paragraph{Beépített ikonok}
+
+Ezek a beépített (\textit{stock}) ikonok a széles körben használt menüelemek, illetve eszközkészletek ikonjait jelentik, amikre azonosítók segítségével (\textit{id}) hivatkozhatunk képek, gombok, dialógusok létrehozásánál. A beépített ionokat sajátjainkra lecserélhetjük, illetve saját \textit{stock} ikonok regisztrálására is lehetőség van.
+
+\paragraph{Ikonhalmazok}
+
+Egy adott azonosítóhoz tartozó ikon méretbeli (menünek, gombnak, dialógusnak, \dots megfelelő méret), illetve a \textit{widget}ek lehetséges állapotainak (normál, kiválasztott, aktív,  \dots ) megfelelő variációk ikonhalmazokat hoznak létre, melyekben az egyes elemek a beépített ikonokhoz hasonlóan cserélhetőek.
+
+\subsubsection{Buborékok}
+\index{GtkTooltip@\texttt{GtkTooltip}}
+
+Némiképp méltatlanul hanyagolt \textit{widget} a súgó-, vagy más néven leíróbuborék (tooltip), pedig egy magára valamit is adó applikáció nem nélkülözheti ezt az eszközt, lévén ez a felhasználó informálásának egyik leginkább bevett módszere.
+
+\includesinglegraphics
+{Buborék}
+{tooltip}
+{tooltip.png}
+
+\subsection{Szövegformázás}
+
+A \textit{GTK}, pontosabban szólva a bevezető részben már említett \textit{Pango}, rendelkezik egy saját leíró (markup) nyelvvel, a szövegek formázását teszi lehetővé a felhasználó felületen. Ezen nyelv segítségével állíthatjuk be a szöveg megváltoztatni kívánt paramétereit, úgy mint betű típusa, mérete, stílusa, színe és így tovább. Ezen tulajdonságok leírását magával a szöveggel együtt adjuk meg.
+
+\lstoneline
+{language=xml}
+{<span foreground="blue" size="100">Blue text</span> is <i>cool</i>!}
+
+A példában először a \texttt{Blue text} szöveg színét, illetve méretét állítjuk át igényeknek megfelelően, úgy hogy a kívánt szöveg köré az egyes tulajdonságok (\texttt{foreground}, \texttt{size}), illetve azok értékeinek leírását helyezzük el. Ezzel a módszerrel ez egyes tulajdonságokat külön-külön adhatjuk meg, ugyanakkor a gyakran, és jellemzően egymagukban használt beállításokhoz (félkövér, dőlt, aláhúzott) léteznek önálló leírók is (\texttt{b}, \texttt{i}, \texttt{u}), ahogy ez a \texttt{cool} szövegrésznél is látszik.
+
+\subsection{\textit{Widget}ek összefüggései}
+
+Bizonyos típusú \textit{widget}ek sajátja, hogy nem önmagukban léteznek, hanem vagy valamilyen csoportnak tagjai, vagy egy konkrét \textit{widget}tel állnak valamilyen összefüggésben. Ez utóbbi igaz a címkék esetén is, amiknél megadható, hogy melyik másik \textit{widget} az, amire vonatkoznak, amit leírnak. Ez az összefüggés egyes \textit{widget}típusok esetén (pl: gombok) esetén automatikus, míg más esetekben (pl: beviteli mezők, listák, \dots ) magunknak kell megadnunk. Ezen kapcsolat megadásának közvetlen előnye egyrészről a tesztelés során mutatkozik meg, ahol a címke segít a leírt \textit{widget} megtalálásában, másrészről a felhasználó felület billentyűzetről történő használatát könnyíti meg, ahogy arról a későbbiekben szó esik.
+
+\section{Alapműveletek}
+
+\subsection{Létrehozás}
+
+Az ebben a fejezetben tárgyalt \textit{widget}ek esetén -- hasonlóan a korábbiakhoz -- a létrehozás maga nem különösebben bonyolult feladat. Némi rutint csak a létrehozást követő testreszabás igényel, amihez szükséges az alapvető működési sajátosságok tisztázása. A kezdeti beállításokat követően jellemzően ezen \textit{widget}ek nemigen változnak, úgyhogy ezt követően már csak a \textit{widget} konténerbe való behelyezése jelenthet kihívást.
+
+\subsubsection{\texttt{GtkLabel}}
+
+\index{GtkLabel@\texttt{GtkLabel}!függvények!new@\texttt{new}} 
+A legegyszerűbb eset, ha szeretnénk valamilyen statikus szöveget, mindenféle formázás nélkül megjeleníteni a felhasználói felületen. Erre a problémára a megoldás is rendkívül egyszerű. Mindhárom nyelvi változatban esetén csupán egyetlen paramétert kell megadnunk a címkét létrehozó függvénynek, ez pedig a címke szövege.
+
+\lsttriplesource
+[numbers=none]
+{sources/label_create.h}
+{sources/label_create.hpp}
+{sources/label_create.py}
+{Címke létrehozása}
+{lst:labelcreate}
+
+\index{GtkLabel@\texttt{GtkLabel}!függvények!new@\texttt{new}} 
+Ahogy látszik a különböző nyelvi változatoknál a címkék már létrehozáskor ennél változatosabban paraméterezhető. A létrehozás követően pedig további nyilván paraméterek is állíthatóak.  Későbbiekben meglátjuk mik ezek a paraméterek és milyen haszonnal bírnak a hétköznapi használat során, most vegyük sorra a létrehozás paramétereit.
+
+\begin{description}
+  \item[label] A címke szövege. Általánosságban véve a címkék szövegeinek megalkotásánál célszerű valamilyen egységes irányelvet követni. A \textit{GNOME} által követett irányelvek szerint a \texttt{GtkLabel} típus felhasználási területein -- legyen az a beviteli mezők címkéi, jelölőnégyzetek szövegei, vagy más egyéb -- a mondatok első szava írandó nagybetűvel, míg a többi kisbetűs.
+  \index{GtkLabel@\texttt{GtkLabel}!függvények!new\_with\_mnemonic@\texttt{new\_with\_mnemonic}} 
+  \item[mnemonic] A címkék leggyakoribb felhasználása a beviteli mezők illetve jelölőnégyzetek címkézése. Ezen esetekben a címkék szövegében megjelölhetünk egy karakter úgy, hogy egy aláhúzást karakter írunk elé a szövegben (pl: \texttt{"\_Label text"}), és azt a karaktert később a címke által hivatkozott \textit{widget} elérésére használhatjuk. A gyakorlatban ez a billentyűzetről történő navigációt -- ezzel együtt a felhasználói felület hatékonyabb használatát -- segíti elő azáltal, hogy a \textit{widget}, az előbb említett példánál maradva, az \texttt{Alt+L} billentyűvel aktiválható lesz.
+  
+  A címke által hivatkozott \textit{widget} alapértelmezés szerint az a \textit{widget} -- pontosabban az a konténer -- lesz amibe a címkét helyeztük, vagy annak első olyan szülője, ami implementálja a \texttt{GtkActivatable} interfészt. Az olyan \textit{widget}ek, amik maguk is tartalmaznak címkét (pl: gombok, jelölőnégyzetek, \dots ) ez a feltétel kézenfekvően adott, mivel a \textit{widget} implementálja a \texttt{GtkActivatable} interfészt. Amennyiben nem ez a helyzet, hanem például egy beviteli mezőt címkézünk, akkor magunknak kell megadnunk a kapcsolódó \textit{widget}et a \texttt{set\_mnemonic\_widget} függvény segítségével, aminek értelemszerűen az aktiválandó \textit{widget} a paramétere. Az aktiváláskor a beállított \textit{widget} az aktiválás hatására fókuszba kerül, ami egy beviteli mezőnél például azzal az előnnyel jár, hogy a nem kell váltogatnunk az egér és a billentyűzet között a felület használatakor.
+  \index{GtkMisc@\texttt{GtkMisc}!tulajdonságok!xalign@\texttt{xalign}}
+  \index{GtkMisc@\texttt{GtkMisc}!tulajdonságok!yalign@\texttt{yalign}}
+  \item[xalign, yalign] A vízszintes, illetve függőleges igazítás 0 és 1 közötti lebegőpontos értékekkel adhatóak meg, ahol a 0 a bal oldalt, illetve a felső pozíciót, az 1 pedig a jobb oldalt, illetve az alsó pozíciót jelenti. Mind a vízszintes, mind a függőleges igazítás alapértelmezett értéke 0,5. Ez az esetek jelentékeny részében nem felel meg az igényeknek, hiszen a címkéket többnyire balra, esetenként jobbra igazítjuk, vagyis az \texttt{xalign} tulajdonságot értéke 0, illetve 1 kell legyen. Bár a \texttt{GtkMisc} osztály, illetve annak tulajdonságai még érvényben vannak, a \textit{GTK} fejlesztői nem ajánlják használatukat újólag írt kódban, lévén a \texttt{GtkWidget} típus korábban már említett \texttt{halign}, valamint \texttt{valign} tulajdonságai helyettesítik őket.
+  \index{GtkMisc@\texttt{GtkMisc}!tulajdonságok!xpad@\texttt{xpad}}
+  \index{GtkMisc@\texttt{GtkMisc}!tulajdonságok!ypad@\texttt{ypad}}
+  \item[xpad, ypad] Az itt megadott értéknek megfelelően a vízszintesen, illetve függőlegesen ad térközt a \textit{widget} köré. Hasonlóan azonban az előbbiekhez ennek a módszernek a használata sem javasolt új kódokban, helyette a \texttt{GtkWidget} \texttt{margin} tulajdonsága állítandó.
+\end{description}
+
+\subsubsection{\texttt{GtkImage}}
+
+Ahogy arról szó esett a bevezetőben, képek létrehozására számos mód kínálkozik. Ezek közül most csak a népszerűbbeket vesszük számba. Az első és talán legfontosabb a fájlból való betöltés, amire a \texttt{new\_from\_file} függvényt használhatjuk. Amennyiben a megadott fájl betöltése valamilyen oknál fogva sikertelen (pl: fájl nem létezik, jogosultsági problémák, \dots ), akkor egy olyan képet kapunk vissza, ami a betöltési hibára utal.
+
+Amennyiben a fájl betöltése során felmerülő hibákat magunk szeretnénk kezelni egy alacsonyabb szintű megoldást kell választanunk, ami egyébiránt a \textit{GTK} fájlból való betöltés végző függvény hátterében is áll. Ezt a megoldás nem meglepő módon a \textit{GDK} adja, hiszen a kifejezetten grafikai kódok itt kapnak helyet. A \texttt{GdkPixbuf} típus szintén rendelkezik fájlból való betöltésre alkalmas függvénnyel (\texttt{new\_from\_file}), ami a \texttt{GtkImage} hasonló függvénnyel szemben hiba esetén a nyelvi változatnak megfelelő hibajelzés történik. A \textit{C} nyelvű változat esetén a hibát egy \texttt{GError} típusú változóban kaphatjuk vissza, míg a \texttt{C++}, illetve \texttt{Python} változat esetén kivél váltódik ki.
+
+%TODO: code sniplet of error handling
+
+A harmadik eset amikor egy beépített ikont szeretnénk képként használni, amit megtehetünk a \texttt{new\_from\_stock} függvény használva, ami paraméterként a beépített ikon (\textit{stock icon}) nevét veszi át paraméterként, éppúgy, ahogy teszi azt a gomb létrehozáskor.
+
+\subsubsection{\texttt{GtkTooltip}}
+
+A súgóbuborék funkciója és megadása is hasonlít némiképp címkééhez, hiszen mindkét \textit{widget} egy másik \textit{widget} azonosítására, szerepének tisztázására szolgál. Mindkét \textit{widget} valamilyen szöveges leírást ad hozzá tartozó felületi elemről, a címke rövidebb, míg a súgóbuborék rendszerint hosszabb formában. Ennek okán a súgóbuborék megadásának legegyszerűbb módja azonos a címke létrehozásánál leírtakkal, vagyis csupán a kívánt szöveget kell megadnunk paraméterként. Mivel a súgóbuborék csak konkrét \textit{widget}hez tartozhat, a függvény a \texttt{GtkWidget} típus függvénye (\texttt{set\_tooltip\_text}).
+
+\subsection{Megjelenítés}
+
+\subsubsection{\texttt{GtkLabel}}
+
+\paragraph{Formázás}
+
+A címkék szövegének formázására a bevezetőben említett \textit{Pango Markup Language} elnevezésű leírónyelv használható. A címkék létrehozása úgy történik, hogy a megadott szöveget alapértelmezetten nem tekintjük leíró nyelven megfogalmazottnak, azaz a \texttt{use-markup} tulajdonság értéke \texttt{FALSE}. Ez azonban a névkonvenciónak megfelelően a \texttt{set\_use\_markup} függvénnyel megváltoztatható. Ezzel azonban kellő óvatossággal kell bánnunk. Amennyiben a \texttt{use-markup} tulajdonság értéke \texttt{TRUE}, a címke szövege meg kell feleljen leíró nyelv szabályainak.
+
+Ez két esetben kritikus. Az egyik, ha a szöveg olyan elemeket tartalmaz, amik a leíró nyelvben is értelmezettek. Ebben az esetben az ilyen elemeket úgy kell megváltoztatnunk (escape), hogy leíró nyelvnek megfeleljen, ugyanakkor a jelentése ne változzon. A \textit{Glib} \texttt{markup\_escape\_text} függvénye pontosan a leírtakat implementálja. Ezen függvényt minden olyan esetben használandó, amikor nem statikus szövegről van szó, hanem a szöveg például felhasználótól származik. Ilyen lehet például egy korábban bekért név, ami tartalmazhat például kisebb, vagy nagyobb jelet. A másik kritikusnak mondható eset, ha a leíró nyelvű szöveget egy \texttt{printf} típusú formátumleíróval akarjuk létrehozni. Ehhez a szintén a \textit{Glib} részeként elérhető \texttt{markup\_printf\_escaped} függvény nyújt segítséget.
+
+\paragraph{Tördelés}
+
+Hosszabb szövegű címkék használata esetén -- ami jellemzően akkor fordul elő, ha egy magyarázó szöveget akarunk például egy üzenetablakban megjeleníteni -- célszerű tördelnünk a szöveget elkerülendő, hogy a szöveg helyigénye miatt a címke -- és ezzel együtt az üzenetablak -- vízszintes helyigénye aránytalanul megnőjön, ami esetleg ahhoz vezethet, hogy az ablak kilóg a munkaterületről, így annak egyes funkció -- legrosszabb esetben a bezáró gomb -- elérhetetlenné váljanak.
+
+Erre természetesen több módszer is kínálkozik. Magunk is megadhatunk a szövegben tördelést azáltal, hogy sortörést teszünk a szövegbe. Ez egyszerűbb estekben megteszi, de nem túl elegáns megoldás, mivel nem számol a megjelenítendő címke számára aktuálisan rendelkezésre álló hellyel, vagyis ha a címkét tartalmazó ablak méretét növeljük, a sortörés helye nem változik, a szöveg nem használja ki a rendelkezésre álló helyet, csökkenteni pedig csak addig lehet az ablak méretét, amíg el nem érjük a leghosszabb sor minimális helyigényét. A probléma akkor igazán szembetűnő, ha címke szövege nem statikus, hanem valamilyen felhasználótól származó adat (pl: objektum neve, IP cím, \dots ), vagy valamilyen módszerrel szűr lista (pl: hibás elemek listája) szerepel benne.
+
+Célravezető a \textit{GTK}, konkrétabban a \textit{Pango} által nyújtott kész megoldás használata. Ez lehetővé teszi a címke különböző módokon történő automatikus tördelését. Ehhez először is engedélyeznünk kell ezt a funkciót (\texttt{set\_line\_wrap}), másrészről választanunk kell tördelési módot. Ez utóbbi alapértelmezetten a szóhatárokon való tördelés (\texttt{PANGO\_WORD}), ami helyett a \texttt{set\_line\_wrap\_mode} függvény meghívásával beállíthatunk karakterenkénti (\texttt{PANGO\_WORD}), illetve vegyes (\texttt{PANGO\_WORD\_CHAR}), ami azt jelenti, hogy egy szó kifér a rendelkezésre álló helyen a sor végén, akkor szóhatáron történik meg a sortörés, ha nem, akkor az adott szóból annyi karaktert teszünk az adott sorba amennyi még oda kifér.
+
+\paragraph{Részben megmutatás}
+
+Ha a rendelkezésre álló hely csekély és a címke valamely részletéből (eleje, vége, esetleg mindkettő együtt) következtethetünk a címke teljes szövegére\footnote{bizonyos elnevezési konvenciók esetén a nevek első része mindig azonos, vagyis ez nem hordoz érdemben információt, így helyszűke esetén érdemes csak a szövegek végét megmutatni}, akkor elegendő lehet csak a ténylegesen információt hordozó részt megmutatnunk. A feleslegesnek ítélt részeket pedig úgymond kihagyhatjuk.
+
+Ez a kihagyás a gyakorlatban úgy történik, hogy megadjuk, melyik az a része a címkének (eleje, közepe, vagy vége) amit elhagyhatónak ítélünk és hely szűkében a tényleges szöveg helyett csak a kihagyás jelző karakter (ellipsis: '\dots ') írunk ki. A beállításra szolgáló függvény értelemszerűen a \texttt{set\_ellipsize}, paramétere pedig az elhanyagolás pozíciója, ami lehet a címke eleje (\texttt{PANGO\_ELLIPSIZE\_START}), közepe (\texttt{PANGO\_ELLIPSIZE\_MIDDLE}), vége (\texttt{PANGO\_ELLIPSIZE\_END}), illetve módunk van kikapcsolni ezt a funkciót (\texttt{PANGO\_ELLIPSIZE\_NONE}).
+
+\paragraph{Szélesség}
+
+Az előző két funkció használatakor két tulajdonság révén kontrollálhatjuk a címke szövegének szélességét. Az egyik (\texttt{width-chars}) a szöveg kívánt szélességét adja meg karakterekben, míg a másik (\texttt{max-width-cars}) révén a maximális szélességet határozhatjuk meg szintén karakterekben. Mindkét tulajdonság esetén megadható \texttt{-1}, mint szélesség, ami automatikus szélességkalkulációt jelent, ami érthető okoknál fogva az alapértelmezett érték.
+
+\subsection{Kezelés}
+
+\subsubsection{\texttt{GtkLabel}}
+
+\paragraph{Kijelölés}
+
+Alapértelmezetten a címkék nem kijelölhetőek és ez a működés a legtöbb esetben meg is felel a kívánalmaknak. Vannak azonban olyan esetek, ahol kifejezetten zavaró, ha a szövegeket nem lehet kijelölni és ezzel együtt másolni sem. Ilyen eset például, amikor hibaüzeneteket jelenítünk meg címkék segítségével. Az ehhez hasonló esetekben a felhasználó számára roppant bosszantó, hogy bár a hibaüzenet látható, mégsem lehet az egyszerűen átmásolni például egy hibabejelentő űrlapra. Ennek elkerülésére a címkét kijelölhetővé tehetjük (\texttt{set\_selectable}, ám célszerű ezt csak akkor megtenni, ha a címke fontos és manuálisan nehézkesen reprodukálható információt tartalmaz, mivel a kijelölhetőség egyben fókuszálhatóságot is jelent, ami billentyűzetről való kezelést megnehezíti.
+
+\section{Haladó műveletek}
+
+\subsection{\texttt{GtkLabel}}
+
+\paragraph{Hivatkozás}
+
+A címkék formázásának egy speciális esete, amikor hivatkozást szeretnénk a szövegben elhelyezni. A \textit{HTML} esetén használatos módszert alkalmazhatjuk a \textit{Pango} leíró nyelv esetén is, vagyis a hivatkozás szövege \texttt{<a>} nyitó-, illetve \texttt{</a>} záróelem között helyezkedik el, míg a hivatkozás a \texttt{href} attribútum értékeként adható meg. A hivatkozások épp úgy viselkednek, mint ahogy azt a böngészők esetén megszoktuk, vagyis a hivatkozás szövege aláhúzott, színe pedig megváltozik a hivatkozás első aktiválása után.
+
+A hivatkozás aktiválásának eseményét magunk is kezelhetjük, a \texttt{activate-link} szignál segítségével. A kezelőfüggvényben a kívánt műveletsor hajtható végre, annak függvényében, hogy a címke melyik hivatkozása került aktiválásra, amit az értéket a kezelőfüggvény paramétereként is megkapunk. A függvény visszatérési értéke -- hasonlóan a \texttt{delete-event} szignálhoz -- azt fejezi, ki, hogy az eseményt kezeltük-e. Ezért az ott leírtak ennek az szignálnak a kezelésénél is alkalmazhatóak.
+
+\subsection{\texttt{GtkTooltip}}
+
+\paragraph{Testre szabott súgóablak}
+
+\subparagraph{Formázás}
+
+A korábban leírt formázó nyelv a súgóablakok szövegében is alkalmazható. A \texttt{GtkWidget} osztály \texttt{set\_toolip\_markup} függvénye paraméterként ilyen leírónyelvű szöveget vesz át paraméterként és annak megfelelően formázza a súgóablakban megjelenő szöveget.
+
+\subparagraph{Saját ablak}
+
+Amennyiben ennél is tovább szeretnénk menni -- esetleg képeket helyeznénk el a súgóablakban -- akkor saját súgóablakra van szükségünk. Ezt a saját ablakot a korábban már ismertetett módszerekkel hozhatjuk létre és abban gyakorlatilag bármit elhelyezhetünk. A megjelenítésről,  eltüntetésről, illetve ezek időzítéséről továbbra is a \textit{GTK} gondoskodik, nekünk csak a tartalmat kell biztosítanunk. Az elkészült ablak beállítható a \texttt{GtkWidget} osztály \texttt{set\_tooltip\_window} nevű függvényével, aminek a beállítandó ablak a paramétere, vagy a nyelvnek megfelelő \texttt{NULL} érték, ami az alapértelmezett ablak visszaállítását jelenti. Amennyiben a szokásos sárga súgóablak témát szeretnénk viszontlátni, az ablak nevét \texttt{gtk-tooltip} értékre kell állítanunk, amit könnyedén megtehetünk a \texttt{GtkWidget} osztály \texttt{set\_name} függvényével.
+
+\section{Tesztelés}
+
+\subsection{Objektum}
+
+A \textit{Dogtail} \texttt{Node} típusa által reprezentált objektum az amin keresztül gyakorlatilag minden információ elérésére lehetőségünk van, amire a tesztelés során szükségünk lehet. Számos esetben közvetlenül az objektum függvényének meghívása, vagy attribútum kiolvasása révén, más esetekben valamilyen interfészen keresztül. Előbbiekből néhányat veszünk a továbbikban sorra.
+
+\paragraph{Keresés}
+
+Az ebben a részben tárgyalt \textit{widget}típusok közül a \texttt{GtkTooltip} a legegyszerűbb és egyszersmind a leggyakoribb esetben nem valódi típus, mint ahogy azt a fejlesztésről szóló részben tárgyaltuk, ennek okán a tesztelés során sem jelenik meg külön típusként, kiolvasására \texttt{Node} objektumból közvetlenül van lehetőség. A \texttt{GtkLabel} és a \texttt{GtkImage} típusú objektumok az akadálymentesítés szempontjából betöltött szerepének neve (\textit{roleName}) \texttt{label}, illetve \texttt{icon}. Az ilyen típusú elemek keresésénél tehát ezeket az értékeket kell megadni a \texttt{roleName} paraméternek.
+
+A másik keresési lehetőség, hogy az objektum nevére keresünk. A címke esetén az objektum 
+
+\paragraph{Súgószöveg}
+
+Az egyes \textit{widget}hez tartozó súgóbuborék szövegét rendkívül egyszerűen megállapíthatjuk, ez a \\texttt{Node} objektum \texttt{description} attribútumának értéke.
+
+\subsection{Állapotok}
+
+\subsubsection{\texttt{GtkLabel}}
+
+\paragraph{Többsoros szöveg}
+
+%TODO ref
+A címkék alapvetően alkalmasak többsoros megjelenítésre, így egy állapot ezen \textit{widget}ek kapcsán bizonyos lesz mégpedig a \texttt{MULTI\_LINE}, amit a korábbiakban ismertetetteknek megfelelően a \texttt{getState} függvénnyel tudunk lekérdezni. Létezik egy másik -- ezzel ellentétes értelmű -- státusz is, ami a címkék esetén természetesen sosem lesz része az állapothalmaznak, ez pedig a \texttt{SIGNLE\_LINE}.
+
+\paragraph{Fókuszálhatóság}
+
+A címkék kapcsán fontos lehet, hogy a szöveget ki lehessen jelölni, ami egyúttal magával vonja, hogy az adott \textit{widget} fókuszálhatóvá is válik, ami alapértelmezés szerint nem igaz. Ezt a működést tehát ellenőrizni is tudjuk a megfelelő állapoton (\texttt{FOCUSABLE}) meglétén keresztül.
+
+\subsection{Interfészek}
+
+\subsubsection{Csak olvasható szöveg}
+
+A csak olvasható szövegek kezelésére az \textit{ATK} egy külön interfészt definiált (\texttt{AtkText}). Az olyan elemekhez, amik az akadálymentesítés és éppúgy a tesztelés szempontjából is csak olvasni szokás, az \textit{ATK} megvalósító implementáció csak olvasási hozzáférést ad, annak ellenére is, hogy természetesen megvalósítható lenne, az írást biztosító implementáció is. Ilyen elemek például a címkék, a táblázatos megjelenítést biztosító \textit{widget}ek egyes cellái, illetve minden olyan elem, ami írható hozzáférést is ad, mint például egy egysoros beviteli mező.
+
+Az interfészen keresztül nem csupán a szöveget magát, de annak egyes részeit, illetve az egyes részek formázási paramétereit is elérhetjük. A \texttt{queryText} függvénnyel lekérdezhető interfész objektum számos szolgáltatást nyújt, bár ezek jelentékeny részére -- mint amilyen például a szövegrészek kezelése -- a címkék során nem, vagy csak nagyon ritkán lesz szükségünk, így ezekkel majd egy későbbi részben foglalkozunk. A legfontosabb információ természetesen maga a szöveg, esetenként annak hossza, előbbi a \texttt{getText} függvényen, utóbbi a \texttt{characterCount} attribútum révén érhető el. A \texttt{getText} függvény esetén fontos körülmény, hogy az két kötelező paraméterrel is rendelkezik, a kíván szöveg kezdeti- és végpozíciójának indexével, ahol a második paraméter esetén a $-1$ érték a szöveg végét jelenti. Mivel teljes szöveg a leggyakrabban érdeklődésre számot tartó érték, a \textit{Dogtail} ehhez a \textit{text} interfészt, illetve annak működését elrejtő elérést is biztosít a \texttt{Node} osztály \texttt{text} tagja révén, aminek kiolvasása a \texttt{queryText().getText(0, -1)} szerinti hívásával közel egyenértékű. A különbség az, hogy \texttt{text} attribútum kiolvasása kezeli azt a helyzetet, hogy az adott objektum nem implementálja a \textit{text} interfészt, ilyen esetben \texttt{None} értékkel tér vissza, míg ilyen esetekben a \texttt{queryText} függvényhívás -- minden más interfész lekérdezéséhez hasonlóan -- \texttt{NotImplementedError} kivételt dob.
+
+A szöveg, amit a \texttt{text} interfészen keresztül kiolvashatunk csak a nyers szöveget tartalmazza aze egyszerű kezelés érdekében annak formázási paramétereit nem. Ha azt szeretnénk megtudni, hogy az egyes karakterek miként vannak formázva, akkor a \textit{text} interfész \texttt{getAttributeRun} függvényét használhatjuk, aminek egyetlen paraméter a karakter sorszáma, visszatérési értéke pedig egy lista, ami első eleme egy újabb lista, ami a karakter formázási paramétereinek tartalmazza, másik két eleme pedig annak szövegrésznek a kezdő és végpozíciója, ami ugyanezen paraméterekkel lett formázva.
+
+\subsubsection{Kép}
+
+A képek kezelésére létezik egy külön interfész az \textit{ATK} függvénykönyvtárban, amihez tartozó implementációt a \textit{Dogatil} egy \texttt{Node} objektumára a \texttt{queryImage} függvénnyel kérdezhetünk le. Az interfész sajnos nem nyújt különösebben széles körű szolgáltatásokat, mindössze a kép méretét, elhelyezkedését és leírását áll módunkban lekérdezni. Sajnálatosan a \textit{Dogatil} ehhez nem sok segítsége nyújt, ezért is kell az \textit{Image} interfészt elkérnünk és azt magunknak kezelnünk. Ez az interfész viszont már átvisz minket a \textit{Dogtail} alatt meghúzó \textit{AT SPI}\footnote{a rövidítés az angol \textit{Assistive Technology Service Provider Interface} kifejezést takarja} világába, aminek részleteiben nem célunk elmerülni, így itt csak azokat a hívásokat ismertetjük, amikre a képek tesztelésénél szükségünk lehet.
+
+\index{AtkObject@\texttt{AtkObject}}
+\index{AtkObject@\texttt{AtkObject}!függvények!set\_image\_description@\texttt{set\_image\_description}}
+%TODO ref to at spi in intro
+Az előbb említett paraméterek közül a legegyszerűbb a kép mérete, amit a \texttt{getImageDescription} paraméter nélküli függvény hívása révén kérdezhetünk le, ami az \textit{x}, illetve \textit{y} irányú pixelben vett méretek listáját adja vissza. A pozíció lekérdezése is teljesen hasonlóan működik, méret helyett az \textit{x}, \textit{y} koordinátákat visszakapva a listában, viszont a pozíció maga relatív és hogy mire relatív azt a \texttt{getImagePosition} függvénynek paraméterként kell átadnunk. Ez a paraméter lehet a \texttt{pyatspi} modul \texttt{WINDOW\_COORDS}, vagy \texttt{DESKTOP\_COORDS} értéke, aminek megfelelően vagy az ablakhoz, vagy magához a munkaterülethez képest értelmezendőek a koordináták. Lehetőség vagy a két értékpár együttes lekérdezésére is a \texttt{getImageExtents} függvénnyel, ami ugyanazt a paraméter veszi át, mint a \texttt{getImagePosition} és szintén egy listával tér vissza, aminek első két eleme a relatív koordinátákat, második két elem pedig a méreteket tartalmazza. Ezen értékekből messzemenő következtetéseket levonni nem lehet. Különösen akkor vagyunk bajban ha két azonos méretű ikon között szeretnénk különbséget tennünk a tesztelés során, ami nem ritka példa, hiszen szokás különböző színű ikonokkal mondjuk valamilyen állapotot jelezni. Ebben az esetben mentsvárunk a kép leírása lehet, amit a \texttt{Node} \texttt{imageDescription} értéke tartalmaz és amit alkalmazásunk fejlesztésekor az \texttt{AtkObject} \texttt{set\_image\_description} függvénnyel állíthatunk be.
+
+\subsection{Viszonyok}
+
+Az egyes \textit{widget}ek között bizonyos vonatkozásokban összefüggések állhatnak fenn. Ezeket az összefüggéseket -- amiket szabad fordításban nevezhetünk viszonyoknak (\textit{relation}) --,  a \textit{Dogtail} segítségével is le tudjuk kérdezni. Túlnyomó többségben nem is viszonyokról, hanem viszonypárokról beszélünk, amik között $1:1$ és $1:N$ típusú kapcsolatok egyaránt vannak.
+
+\index{Atspi.Accessible@\texttt{Atspi.Accessible}}
+Általánosságban az mondható el, hogy minden egyes \texttt{Accessible} objektum többféle viszonyban is lehet, több más objektummal. Első körben tehát azt tudhatjuk meg, hogy mik azok a viszonyok, amikkel összekapcsolják az adott objektumot más objektumokkal. Ennek lekérdezésére a \texttt{getRelationSet} függvény szolgál, ami egy konténert ad vissza, benne a viszonyok leírására szolgáló \texttt{Atspi.Relation} objektumokkal. Ezen objektumokból kideríthető a viszony típusa a \texttt{getRelationType} függvény hívásával, valamint, hogy a hány objektummal áll fenn az adott viszony, amit a \texttt{getNTargets} függvény visszatérési értéke ad meg. Az $N$ darab objektum egyesével a \texttt{getTarget} függvény révén érhető el paraméterként egy sorszámot átadva.
+
+Az egyik viszony, a címkére és az általa felcímkézett \textit{widget}re vonatkozik, ahol természetesen több címke is vonatkozhat ugyanarra \textit{widget}re, viszont egy címke egyszerre csak egy \textit{widget}et vonatkozhat. Ez következik a \texttt{GtkLabel} osztály \texttt{set\_mnemonic\_widget} függvény használatából is, hiszen paraméterként csak egy \textit{widget} adható meg. A viszony típusa ebben az irányban \texttt{pyatspi.RELATION\_LABEL\_FOR}, ahol tehát a \texttt{getNTargets} függvény mindig egyet ad vissza, míg az ellenkező irányban a viszony típusa \texttt{pyatspi.RELATION\_LABELLED\_BY}, ahol több cél is lehetséges, de ez nem jellemző. Erre a gyakran használt viszonypárra a \texttt{Node} osztály is ad megoldást, a \textit{relation} interfész közvetlen használatánál számottevően egyszerűbbet. Egy adott \texttt{Node} címkéinek listája a \texttt{labeller}, az adott \texttt{Node} által címkézett objektum pedig a \texttt{labelee} attribútum keresztül érhető el.
