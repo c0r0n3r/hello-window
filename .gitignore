@@ -22,4 +22,6 @@
 *.tms
 *.toc
 
+*.xmpi
+
 sources/*.pyc
