@@ -1,11 +1,16 @@
+*.4ct
+*.4tc
 *.aux
 *.bbl
 *.blg
+*.css
+*.dvi
 *.haux
 *.hidx
 *.hind
 *.html
 *.htoc
+*.idv
 *.idx
 *.ilg
 *.ind
@@ -17,10 +22,15 @@
 *.out
 *.pdf
 *.swp
+*.swo
 *.tid
 *.tin
+*.tmp
 *.tms
 *.toc
+*.xref
+
+*.*~
 
 *.xmpi
 
