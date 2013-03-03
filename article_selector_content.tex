@@ -11,8 +11,8 @@ Ahogy arról szó volt a szöveges bevitelről szóló részben, speciális eset
 A specializáció egyik véglete, amikor az bevinni kívánt adat mindössze két értéket vehet fel. Az ilyen bináris adatok szép számban fordulnak elő, legyen szó akár egy opció ki-, vagy bekapcsolt értékéről, vagy más igaz hamis jellegű adatról.
 
 \includesinglegraphics
-{Jelölőnégyzet}
-{checkbutton}
+{Jelölőnégyzet\cite{gtkref}}
+{fig:checkbutton}
 {check-button.png}
 
 Az opciókat érdemes lehet csoportokba szervezni, ahol az egyes elemek valamilyen logika mentén együvé tartoznak, ugyanakkor az általuk felvett értékek függetlenek egymástól. Ilyen helyzetekben is alkalmazható ez a \textit{widget}típus, lehetőség szerint függőleges elrendezésben, nyolcnál nem nagyobb elemszámú csoportokban.
@@ -24,8 +24,8 @@ Az opciókat érdemes lehet csoportokba szervezni, ahol az egyes elemek valamily
 Olyan esetekben, amikor néhány lehetőség -- ha mód van rá, nem több, mint nyolc -- közül választhatunk oly módon, hogy az egyes esetek kölcsönösen kizárják egymást, célszerű a felhasználónak minden lehetőséget megmutatni, megkönnyítendő a választást, viszont nem engednénk meg, hogy egyszerre egy elemnél többet ki lehessen választani.
 
 \includesinglegraphics
-{Rádiógombok}
-{radiogroup}
+{Rádiógombok\cite{gtkref}}
+{fig:radiogroup}
 {radio-group.png}
 
 \paragraph{Közepes elemszám}
@@ -33,8 +33,8 @@ Olyan esetekben, amikor néhány lehetőség -- ha mód van rá, nem több, mint
 Amennyiben az elemek száma meghaladja az imént említetteket, a felhasználó felületen történő elhelyezés -- úgy, hogy az elemek egyidőben láthatóak legyenek -- már nehézkes. Ezen oknál fogva olyan megoldás alkalmazandó, ahol alapvetően csak az aktuálisan kiválasztott elem látszik, ugyanakkor mód van az összes lehetőség áttekintésére is.
 
 \includesinglegraphics
-{Combobox}
-{combobox}
+{ComboBox\cite{gtkref}}
+{fig:combobox}
 {combo-box.png}
 
 \subsubsection{Választott érték}
@@ -49,8 +49,8 @@ Azon esetekben, ahol nem tudunk megfelelő alapértelmezett értéket adni indul
 A bináris adatok bevitelére -- egyúttal természetesen megjelenítésére is -- szolágáló \textit{widget}ek lehetséges állapotainak száma, eltérően attól amit elsőre gondolnánk, három. A két kézenfekvő állapoton túl létezik egy inkonzisztens állapot is, ami sem egyik sem másik állapotnak nem felel meg. Gyakorlatban ennek akkor van jelentősége, amikor eltérő értékeket egyszerre megmutatni.
 
 \includesinglegraphics
-{Combobox}
-{combobox}
+{Inkonzisztens állapot jelölőnégyzetek esetén\cite{gnomehig}}
+{fig:checkbuttoninconsistent}
 {check-button-inconsistent.png}
 
 \section{Alapműveletek}
