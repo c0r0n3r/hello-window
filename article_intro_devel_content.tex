@@ -4,7 +4,7 @@
 \index{GTK}
 %FIXME
 
-A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik megoldás, hogy hagyatkozunk az általunk használt operációs rendszerre elérhető \textit{GTK+} változatra és azt telepítjük. A másik lehetőség, hogy letöltjük a \textit{GTK+} és a függőségek forráskódját és némi nehézséget vállalva ezeket fordítjuk le. Előbbi eset bőségesen megfelel amennyiben még csak most ismerkedünk a \textit{GTK+}-val, illetve nem akarunk túlságosan belebonyolódni az grafikus alkalmazások fejlesztésébe. Elkerülhetetlenül az utóbbi változatot kell választanunk, ha mélyebben is szeretnénk megismerkedni a \textit{GTK+} rejtelmeivel, ha komolyabb hibákat szeretnénk javítani, vagy szeretnénk változásokat szeretnénk eszközölni magán a grafikus függvénykönyvtáron.
+A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik megoldás, hogy hagyatkozunk az általunk használt operációs rendszerre és az általa biztosított, vagy legalábbis arra elérhető változatot telepítjük. A másik lehetőség, hogy letöltjük a \textit{GTK+} és a függőségek forráskódját és némi nehézséget vállalva ezeket fordítjuk le. Előbbi eset bőségesen megfelel amennyiben még csak most ismerkedünk a \textit{GTK+} függvénykönyvtárral, illetve nem akarunk túlságosan belebonyolódni az grafikus alkalmazások fejlesztésébe. Elkerülhetetlenül az utóbbi változatot kell választanunk, ha jobban nis el szeretnénk merülni a \textit{GTK+} rejtelmeiben, ha esetleg hibákat javítanánk, vagy változásokat eszközölnénk magán a grafikus eszközkészleten.
 
 \subsubsection{Bináris változat}
 \index{GTK}
@@ -12,7 +12,7 @@ A \textit{GTK+} beszerzésére alapvetően két módszer kínálkozik. Az egyik 
 \index{rpm}
 \index{bináris csomag}
 
-A \textit{GTK} nyelv változatok beszerzése nem jelent különösebben nehéz feladatot amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez a bináris változatokon túl fejlesztői csomagokra is szükséges lesz, amit \textit{rpm}, illetve \textit{deb} alapú disztribúciók esetén rendre az alábbi parancsok kiadásával tehetünk meg:
+A \textit{GTK} változatok beszerzése nem jelent különösebben feladatot, amennyiben valamelyik népszerű \textit{Linux} disztribúciót használjuk, hiszen azok nagy valószínűséggel már amúgy is telepítve vannak az általunk használt rendszeren, lévén vélhetőleg már használunk ezen eszközök segítségével fejlesztett szoftvereket. A fejlesztéshez, illetve teszteléshez a bináris változatokon túl fejlesztői csomagokra is szükséges lesz, amit \textit{rpm}, illetve \textit{deb} alapú disztribúciók esetén rendre az alábbi parancsok kiadásával tehetünk meg:
 
 \lstcommand{sudo yum install gtk-devel-package}\\
 \lstcommand{sudo apt-get install gtk-dev-package}
@@ -20,21 +20,21 @@ A \textit{GTK} nyelv változatok beszerzése nem jelent különösebben nehéz f
 \paragraph{GTK+}
 \index{GTK+}
 
-A \textit{GTK+} fejlécfájlokat és egyéb állományokat --melyekről a későbbiekben (\ref{sec:compilingandlinking}) még részletesebben is esik szó-- a \textit{Debian}/\textit{Ubuntu}, illetve \textit{Fedora} rendszereken a \texttt{libgtk-3-dev}, illetve a \texttt{libgtk3-devel} csomagok tartalmazzák.
+A \textit{GTK+} fejlécfájlokat és egyéb állományokat -- melyekről a későbbiekben (\ref{sec:compilingandlinking}) még részletesebben is esik szó -- a \textit{Debian}/\textit{Ubuntu}, illetve \textit{Fedora} rendszereken a \texttt{libgtk-3-dev}, illetve a \texttt{gtk3-devel} csomagok tartalmazzák.
 
 \paragraph{gtkmm}
 \index{gtkmm}
 
-A fenti csomagok természetesen csak a \textit{C} nyelvű változat --azaz a \textit{GTK+}-- használatához elegendőek, amennyiben a \textit{C++} nyelvet --ezzel együtt a \textit{gtkmm} függvénykönyvtárat-- kívánjuk használni, további csomagokra (\texttt{libgtk-3-dev}, vagy \texttt{libgtk3-devel}) is szert kell tennünk.
+A fenti csomagok természetesen csak a \textit{C} nyelvű változat -- azaz a \textit{GTK+} -- használatához elegendőek, amennyiben a \textit{C++} nyelvet -- ezzel együtt a \textit{gtkmm} függvénykönyvtárat -- kívánjuk használni, további csomagokra (\texttt{libgtkmm-3.0-dev}, vagy \texttt{gtkmm3-devel}) is szert kell tennünk.
 
-\paragraph{PyGTK}
-\index{PyGTK}
+\paragraph{PyGObject}
+\index{PyGObject}
 \index{Python}
 
-Amennyiben a \textit{GTK} alapú fejlesztéssel a \textit{Python} nyelv révén ismerkednénk a már említett fordított nyelvek helyett, akkor a fenti csomagokra nem, a \texttt{python-gtk2}, vagy a \texttt{pygtk2} csomagokat viszont be kell szereznünk.
+Amennyiben a \textit{GTK} alapú fejlesztéssel a \textit{Python} nyelv révén ismerkednénk a már említett fordított nyelvek helyett, akkor a fenti csomagokat nem, a \texttt{python-gtk2}, vagy a \texttt{pygtk2} csomagokat viszont be kell szereznünk.
 
 \paragraph{Dogtail}
-\index{Dogtail}
+\index{Dogtail@\textit{Dogtail}}
 \index{Python}
 
 Az automata tesztek készítéséhez szükséges \textit{Python} függvénykönyvtár --a \textit{Dogtail}-- állományait az azonos nevű csomag tartalmazza, melyek installálása a fentiekhez hasonlóan történik.
@@ -58,16 +58,69 @@ valamint rendelkezésre állnak az egyes projektek verziókelői is, ha szeretn�
 Ha azonban magunk szeretnénk a teljes \textit{GTK}-t fordítani --legyen szó a \textit{C}, vagy a \textit{C++} nyelvű változatról-- számolnunk kell azzal, hogy számos egyéb komponens (\textit{GLib}, \textit{Pango}, \textit{Cairo}, \textit{ATK}, \dots) fordítására, illetve az frissítéseket követő újrafordítására válik szükségessé, ami meglehetősen időigényes és fáradságos feladat, amit a \textit{Linux} disztribúción összeállítói már megtettek helyettünk. Így célszerű kezdetben ezt kihasználni és a saját fordításba csak akkor belekezdeni, ha arra feltétlenül szükségünk van.
 
 \subsection{Függőségei}
-%FIXME
+\index{GDK@\textit{GDK}}
+\index{GLib@\textit{GLib}}
+
+\subsubsection{GTK+}
+
+
+%    The GTK library (-lgtk), the widget library, based on top of GDK.
+%
+%    The GDK library (-lgdk), the Xlib wrapper.
+%
+%    The gdk-pixbuf library (-lgdk_pixbuf), the image manipulation library.
+%
+%    The Pango library (-lpango) for internationalized text.
+%
+%    The gobject library (-lgobject), containing the type system on which GTK is based.
+%
+%    The gmodule library (-lgmodule), which is used to load run time extensions.
+%
+%    The GLib library (-lglib), containing miscellaneous functions; only g_print() is used in this particular example. GTK is built on top of GLib so you will always require this library. See the section on GLib for details.
+%
+%    The Xlib library (-lX11) which is used by GDK.
+%
+%    The Xext library (-lXext). This contains code for shared memory pixmaps and other X extensions.
+%
+%    The math library (-lm). This is used by GTK for various purposes.
+
+\subsubsection{gtkmm}
+
+\paragraph{libsigc++}
+
+\subsubsection{pygtk}
+
+\subsubsection{dogtail}
 
 \subsection{Fordítása}
+
+\subsubsection{Linux}
+\index{Autotools@\textit{Autotools}}
+\index{Automake@\textit{Automake}}
+\index{Autoconf@\textit{Autoconf}}
+\index{Libtool@\textit{Libtool}}
 %FIXME
+
+Amennyiben a korábban említett nehézségek ellenére mégis nekivágunk a \textit{GTK} fordításának, mindenekelőtt szükségünk lesz néhány eszközre, melyek a \textit{Linux} alapú rendszereken szokványosnak nevezhetők. A \textit{GNOME} projekt --sok más fejlesztési projekthez hasonlóan-- az \textit{Autotools}t\footnote{a \textit{GNU} fordítási rendszere, mely tulajdonképpen az \textit{Automake}, \textit{Autoconf}, \textit{Libtool} együttese.} használja moduljainak fordításához, melynek részleteibe nem célunk elmerülni, ugyanakkor néhány mondatban mégis érdemes megjegyezni az \textit{Autotools} egyes részeiről.
+
+\paragraph{Autoconf}
+\paragraph{Automake}
+\paragraph{Libtool}
+
+célszerű tisztában lennünk azzal, hogy mire szeretnénk felhasználni az így létrejött keretrendszerrel (bináris-, fejlécfájlok, egyéb fejlesztői eszközök), mivel a különböző igények különböző megoldási módozatokat kívánnak. Amennyiben --bár ez egy kevéssé valószínű eset-- a rendszeren lévő \textit{GTK} állományokat szeretnénk helyettesíteni, akkor kissé másként kell eljárnunk, mint ha egy alternatív változatot szeretnénk lefordítani, amit csak egyes esetekben szeretnénk használni.
+
+
+
+
+Előbbi esetben a \textit{GTK} egyes moduljainak fordításakor egy alkalmas könyvtárat\footnote{a különböző \textit{Linux} alapú rendszereken erre jellemzően a \texttt{/usr/local} könyvtár a megfelelő} kell megadnunk 
 
 \lstinputfile
 {bash}
 {Fordítási környezet kialakítása}
 {lst:compileenv}
 {sources/compile_env}
+
+\subsubsection{Windows}
 
 \subsection{Ellenőrzése}
 %FIXME
